@@ -1,0 +1,21 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  database:
+    container_name: database
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - app-network
+    volumes:
+      - ./.docker/pgdata:/var/lib/postgresql

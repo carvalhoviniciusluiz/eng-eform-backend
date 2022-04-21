@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "inlineSourceMap": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "inlineSources": true,
+    "alwaysStrict": true,
+    "allowJs": false,
+    "target": "esnext",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": ["*"]
+    },
+    "incremental": true
+  }
+}
