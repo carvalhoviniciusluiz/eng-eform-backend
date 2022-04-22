@@ -10,16 +10,129 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
+  id             String    @id @default(uuid())
+  email          String    @unique @db.VarChar(191)
+  role           Role      @default(USER)
+  passwordHashed String?   @map("password_hashed") @db.VarChar(191)
+  createdAt      DateTime? @default(now()) @map("created_at")
+  updatedAt      DateTime? @updatedAt @map("updated_at")
+  deleted        DateTime?
+
+  forms            Form[]
+  publicationForms FormConsumer[]
+
+  companyId String?  @map("company_id")
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  @@index([email])
+  @@map("users")
+}
+
+model Company {
   id        String    @id @default(uuid())
-  email     String    @unique @db.VarChar(191)
-  roles     String[]
+  name      String?   @db.VarChar(191)
+  initials  String    @db.VarChar(100)
   createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deleted   DateTime?
 
-  passwordHashed String? @map("password_hashed") @db.VarChar(191)
+  users User[]
+  forms Form[]
 
-  @@index([email])
-  @@map("users")
+  @@index([initials])
+  @@map("companies")
+}
+
+enum FormStatus {
+  PUBLISHED
+  DRAFT
+  REMOVED
+}
+
+model Form {
+  id        String    @id @default(uuid())
+  name      String?   @db.VarChar(191)
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deleted   DateTime?
+
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+  authorId  String  @map("author_id")
+  author    User    @relation(fields: [authorId], references: [id])
+
+  authorDraft Json        @map("author_draft")
+  status      FormStatus? @default(DRAFT)
+
+  Survey        Survey[]
+  formConsumers FormConsumer[]
+
+  @@map("forms")
+}
+
+model FormConsumer {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+  formId String @map("form_id")
+  form   Form   @relation(fields: [formId], references: [id])
+
+  assignedAt DateTime? @map("assigned_at")
+
+  @@map("form_consumers")
+}
+
+model Survey {
+  id        String    @id @default(uuid())
+  name      String?   @db.VarChar(191)
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deleted   DateTime?
+
+  formId String @map("form_id")
+  form   Form   @relation(fields: [formId], references: [id])
+
+  children Survey[] @relation("children")
+
+  parent   Survey? @relation("children", fields: [parentId], references: [id])
+  parentId String? @map("parent_id")
+
+  questions Question[]
+
+  @@index([name])
+  @@map("surveys")
+}
+
+model Question {
+  id        String    @id @default(uuid())
+  content   String?   @db.VarChar(191)
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deleted   DateTime?
+
+  surveyId String @map("survey_id")
+  survey   Survey @relation(fields: [surveyId], references: [id])
+
+  Answer Answer[]
+
+  @@map("questions")
+}
+
+model Answer {
+  id        String    @id @default(uuid())
+  content   String?   @db.VarChar(191)
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deleted   DateTime?
+
+  questionId String   @map("question_id")
+  question   Question @relation(fields: [questionId], references: [id])
+
+  @@map("answers")
 }
