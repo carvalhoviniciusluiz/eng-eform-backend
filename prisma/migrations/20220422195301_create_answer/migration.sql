@@ -1,3 +1,6 @@
+-- AlterEnum
+ALTER TYPE "Role" ADD VALUE 'MASTER';
+
 -- CreateTable
 CREATE TABLE "answers" (
     "id" TEXT NOT NULL,

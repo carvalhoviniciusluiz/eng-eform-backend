@@ -23,7 +23,7 @@ import { CompanyPaginateResponseDto } from '~/companies/dtos/company-paginate.re
 
 @ApiTags('Companies')
 @ApiBearerAuth()
-@Roles('admin')
+@Roles('master')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('companies')
 export class CompaniesController {

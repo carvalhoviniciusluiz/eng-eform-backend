@@ -23,7 +23,7 @@ import { UsersService } from '~/users/users.service';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-@Roles('admin')
+@Roles('admin', 'master')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('users')
 export class UsersController {
