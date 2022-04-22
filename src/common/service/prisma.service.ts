@@ -1,26 +1,32 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { IS_DEV } from '~/app.vars';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  // constructor() {
-  //   super({
-  //     log: [
-  //       { emit: 'event', level: 'query' },
-  //       { emit: 'stdout', level: 'info' },
-  //       { emit: 'stdout', level: 'warn' },
-  //       { emit: 'stdout', level: 'error' }
-  //     ],
-  //     errorFormat: 'colorless'
-  //   });
-  // }
+  constructor() {
+    let options: any;
+    if (IS_DEV) {
+      options = {
+        log: [
+          { emit: 'event', level: 'query' },
+          { emit: 'stdout', level: 'info' },
+          { emit: 'stdout', level: 'warn' },
+          { emit: 'stdout', level: 'error' }
+        ],
+        errorFormat: 'colorless'
+      };
+    }
+    super(options);
+  }
 
   async onModuleInit() {
-    // this.$on<any>('query', (event: Prisma.QueryEvent) => {
-    //   console.log('Query: ' + event.query);
-    //   console.log('Params: ' + event.params);
-    //   console.log('Duration: ' + event.duration + 'ms');
-    // });
+    this.$on<any>('query', (event: Prisma.QueryEvent) => {
+      console.log('Query: ' + event.query);
+      console.log('Params: ' + event.params);
+      console.log('Duration: ' + event.duration + 'ms');
+    });
+
     this.$use(async (params, next) => {
       if (params.action === 'delete') {
         params.action = 'update';
