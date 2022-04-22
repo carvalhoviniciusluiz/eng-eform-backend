@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
 import { IsEmail, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import { transformToNumber, transformToObject } from '~/common/utils';
@@ -8,7 +8,7 @@ export class UserPaginateDTO {
   @IsOptional()
   @IsNumber()
   @Transform(transformToNumber)
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description: 'Value for page.',
     example: 1
@@ -42,7 +42,7 @@ export class UserPaginateDTO {
   @IsOptional()
   @IsString()
   @IsEmail()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Value for email filter.',
     example: 'carvalho.viniciusluiz@gmail.com'

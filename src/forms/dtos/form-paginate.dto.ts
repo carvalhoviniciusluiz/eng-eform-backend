@@ -3,7 +3,7 @@ import { Expose, Transform } from 'class-transformer';
 import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import { transformToNumber, transformToObject } from '~/common/utils';
 
-export class CompanyPaginateDTO {
+export class FormPaginateDTO {
   @Expose()
   @IsOptional()
   @IsNumber()
@@ -43,8 +43,8 @@ export class CompanyPaginateDTO {
   @IsString()
   @ApiPropertyOptional({
     type: String,
-    description: 'Value for initials filter.',
+    description: 'Value for name filter.',
     example: 'xpto'
   })
-  initials?: string;
+  name?: string;
 }
