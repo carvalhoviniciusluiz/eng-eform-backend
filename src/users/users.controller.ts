@@ -15,13 +15,16 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User as UserModel } from '@prisma/client';
+import { Roles } from '~/common/decorators';
+import { RolesGuard } from '~/common/guards';
 import { UserPaginateDTO, UserRequestDTO } from '~/users/dtos';
 import { UserPaginateResponseDto } from '~/users/dtos/user-paginate.response.dto';
 import { UsersService } from '~/users/users.service';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@Roles('admin')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
