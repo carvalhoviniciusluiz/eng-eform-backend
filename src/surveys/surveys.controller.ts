@@ -70,7 +70,7 @@ export class SurveysController {
   }
 
   @Post()
-  async createForm(@Param('formId') formId: string, @Body() surveyData: SurveyRequestDTO): Promise<SurveyModel> {
+  async createSurvey(@Param('formId') formId: string, @Body() surveyData: SurveyRequestDTO): Promise<SurveyModel> {
     const { name } = surveyData;
     return this.surveyService.create({
       name,
@@ -83,7 +83,7 @@ export class SurveysController {
   }
 
   @Patch('/:id')
-  async updateForm(
+  async updateSurvey(
     @Param('formId') formId: string,
     @Param('id') id: string,
     @Body() surveyData: SurveyRequestDTO
@@ -105,7 +105,7 @@ export class SurveysController {
   }
 
   @Delete('/:id')
-  async deleteForm(@Param('id') id: string): Promise<SurveyModel> {
+  async deleteSurvey(@Param('id') id: string): Promise<SurveyModel> {
     return this.surveyService.delete({ id });
   }
 }

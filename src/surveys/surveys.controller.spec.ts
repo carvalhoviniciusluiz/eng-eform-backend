@@ -86,25 +86,25 @@ describe('SurveysController', () => {
     jest.spyOn(service, 'create').mockImplementationOnce(async () => {
       throw new Error();
     });
-    const promise = controller.createForm('id', {} as any);
+    const promise = controller.createSurvey('id', {} as any);
     await expect(promise).rejects.toThrowError();
   });
 
   it('should create new record', async () => {
     jest.spyOn(service, 'create').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.createForm('id', {} as any);
+    const response = await controller.createSurvey('id', {} as any);
     expect(response).toEqual({});
   });
 
   it('should update record', async () => {
     jest.spyOn(service, 'update').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.updateForm('id', faker.datatype.uuid(), {} as any);
+    const response = await controller.updateSurvey('id', faker.datatype.uuid(), {} as any);
     expect(response).toEqual({});
   });
 
   it('should delete record', async () => {
     jest.spyOn(service, 'delete').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.deleteForm(faker.datatype.uuid());
+    const response = await controller.deleteSurvey(faker.datatype.uuid());
     expect(response).toEqual({});
   });
 });
