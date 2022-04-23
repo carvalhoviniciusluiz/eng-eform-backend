@@ -17,8 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Form as FormModel, User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
-import { FormPaginateDTO, FormRequestDTO } from '~/forms/dtos';
-import { FormPaginateResponseDto } from '~/forms/dtos/form-paginate.response.dto';
+import { FormPaginateDTO, FormPaginateResponseDto, FormRequestDTO } from '~/forms/dtos';
 import { FormsService } from '~/forms/forms.service';
 
 @ApiTags('Forms')
