@@ -10,7 +10,7 @@ const QuestionMock = {
   survey: {}
 };
 
-describe('SurveysService', () => {
+describe('QuestionsService', () => {
   let service: QuestionsService;
   let prisma: PrismaService;
 
