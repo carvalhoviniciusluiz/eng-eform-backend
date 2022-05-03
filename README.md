@@ -299,7 +299,7 @@ yarn test:ci
 **Note:** O resultado deve ser igual a imagem:
 
 <p align="left">
-  `...`
+  <img width="587" alt="Captura de Tela 2022-05-03 às 08 59 16" src="https://user-images.githubusercontent.com/22005684/166448902-8becae65-98ed-452e-81cf-4afc09441731.png">
 </p>
 
 ### **Rodando o Projeto:** <a name="run"></a>
