@@ -1,7 +1,10 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { User as UserModel } from '@prisma/client';
 import { AuthService } from '~/auth/auth.service';
 import { AuthCredentialsRequestDTO, AuthSignUpRequestDTO } from '~/auth/dtos';
+import { GetUser } from '~/common/decorators';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,5 +26,11 @@ export class AuthController {
       }
       throw error;
     }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/refreshToken')
+  async refreshToken(@GetUser() user: UserModel) {
+    return this.authService.generateToken(user);
   }
 }

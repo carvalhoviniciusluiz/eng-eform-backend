@@ -17,7 +17,6 @@ export const IS_DEV = !IS_TEST && !IS_PROD;
 
 export const JWT_SECRET = configService.get<string>('JWT_SECRET');
 export const JWT_SECRET_EXPIRES_IN = configService.get<string>('JWT_SECRET_EXPIRES_IN');
-export const JWT_SECRET_REFRESHTOKEN = configService.get<string>('JWT_SECRET_REFRESHTOKEN');
 export const JWT_SECRET_REFRESHTOKEN_EXPIRES_IN = configService.get<string>('JWT_SECRET_REFRESHTOKEN_EXPIRES_IN');
 
 export const CACHE_MAX_NUMBER = configService.get<string>('CACHE_MAX_NUMBER');

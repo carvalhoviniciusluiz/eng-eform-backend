@@ -28,6 +28,17 @@ describe('AuthService', () => {
     expect(response).not.toBeNull();
   });
 
+  it('should ensure return credentials', async () => {
+    jest.spyOn(usersService, 'getUser').mockImplementationOnce(() => undefined);
+    const response = await service.generateToken({} as any);
+    const { accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn, tokenType } = response;
+    expect(accessToken).not.toBeUndefined();
+    expect(accessTokenExpiresIn).not.toBeUndefined();
+    expect(refreshToken).not.toBeUndefined();
+    expect(refreshTokenExpiresIn).not.toBeUndefined();
+    expect(tokenType).toBe('bearer');
+  });
+
   it('should throw UnauthorizedException with user undefined', async () => {
     jest.spyOn(usersService, 'getUser').mockImplementationOnce(() => undefined);
 

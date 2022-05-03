@@ -64,4 +64,10 @@ describe('AuthController', () => {
     });
     await expect(promise).rejects.toThrowError();
   });
+
+  it('should return new credentials data', async () => {
+    jest.spyOn(service, 'generateToken').mockImplementationOnce(async () => ({} as any));
+    const response = await controller.refreshToken({} as any);
+    expect(response).not.toBeUndefined();
+  });
 });
