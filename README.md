@@ -44,7 +44,6 @@ __DETALHAMENTO__
 | POSTGRES_HOST | Define a porta usada pelo banco de dados.
 | JWT_SECRET | Define a palavra-secreta usada para gerar o token de acesso.
 | JWT_SECRET_EXPIRES_IN | Define o tempo de vida do token.
-| JWT_SECRET_REFRESHTOKEN | Define a palavra-secreta usada para gerar o refresh-token.
 | JWT_SECRET_REFRESHTOKEN_EXPIRES_IN | Define o tempo de vida do refresh-token.
 
 </details>
@@ -323,6 +322,7 @@ __NOTA__: caso tenha dúvidas veja a sessão `Configurações > Dotenv` & `Confi
 #### Auth
 *   `#POST /v1/auth` - Rota não autenticada, devolve as credenciais de acesso de um usuário.
 *   `#POST /v1/auth/signup` - Rota não autenticada, para registro de novos usuários.
+*   `#POST /v1/auth/refreshToken` - Rota autenticada, devolve novas credenciais de acesso.
 
 #### Users
 *   `#GET /v1/users` - Rota autenticada, devolve uma lista de usuários paginados.
@@ -330,7 +330,30 @@ __NOTA__: caso tenha dúvidas veja a sessão `Configurações > Dotenv` & `Confi
 *   `#GET /v1/users/{id}` - Rota autenticada, devolve um usuário pelo id.
 *   `#PATCH /v1/users/{id}` - Rota autenticada, atualiza um usuário pelo id.
 *   `#DELETE /v1/users/{id}` - Rota autenticada, remove um usuário pelo id.
-
+#### Companies
+*   `#GET /v1/companies` - Rota autenticada, devolve uma lista de companhias paginados.
+*   `#POST /v1/companies` - Rota autenticada, registra novos companhias.
+*   `#GET /v1/companies/{id}` - Rota autenticada, devolve um companhia pelo id.
+*   `#PATCH /v1/companies/{id}` - Rota autenticada, atualiza um companhia pelo id.
+*   `#DELETE /v1/companies/{id}` - Rota autenticada, remove um companhia pelo id.
+#### Forms
+*   `#GET /v1/forms` - Rota autenticada, devolve uma lista de forms paginados.
+*   `#POST /v1/forms` - Rota autenticada, registra novos forms.
+*   `#GET /v1/forms/{id}` - Rota autenticada, devolve um form pelo id.
+*   `#PATCH /v1/forms/{id}` - Rota autenticada, atualiza um form pelo id.
+*   `#DELETE /v1/forms/{id}` - Rota autenticada, remove um form pelo id.
+#### Surveys
+*   `#GET /v1/surveys` - Rota autenticada, devolve uma lista de enquetes paginados.
+*   `#POST /v1/surveys` - Rota autenticada, registra novas enquetes.
+*   `#GET /v1/surveys/{id}` - Rota autenticada, devolve uma enquete pelo id.
+*   `#PATCH /v1/surveys/{id}` - Rota autenticada, atualiza uma enquente pelo id.
+*   `#DELETE /v1/surveys/{id}` - Rota autenticada, remove uma enquete pelo id.
+#### Questions
+*   `#GET /v1/questions` - Rota autenticada, devolve uma lista de perguntas paginados.
+*   `#POST /v1/questions` - Rota autenticada, registra novas perguntas.
+*   `#GET /v1/questions/{id}` - Rota autenticada, devolve uma pergunta pelo id.
+*   `#PATCH /v1/questions/{id}` - Rota autenticada, atualiza uma pergunta pelo id.
+*   `#DELETE /v1/questions/{id}` - Rota autenticada, remove uma pergunta pelo id.
 
 **Note:** Toda a documentação está disponível via [Swagger](https://swagger.io/), você pode [clicar aqui](https://eng-eform-backend.herokuapp.com/api) para acessar.
 
