@@ -20,6 +20,13 @@ import { RolesGuard } from '~/common/guards';
 import { FormPaginateDTO, FormPaginateResponseDto, FormRequestDTO } from '~/forms/dtos';
 import { FormsService } from '~/forms/forms.service';
 
+type WhereProps = {
+  name: {
+    startsWith: string;
+  };
+  companyId: string;
+};
+
 @ApiTags('Forms')
 @ApiBearerAuth()
 @Roles('admin', 'master')
@@ -30,16 +37,29 @@ export class FormsController {
 
   @UseInterceptors(CacheInterceptor)
   @Get()
-  async getAll(@Query() params: FormPaginateDTO): Promise<FormPaginateResponseDto> {
+  async getAll(@Query() params: FormPaginateDTO, @GetUser() user: UserModel): Promise<FormPaginateResponseDto> {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
+    const { companyId } = user;
     const hasName = !!name;
-    const options = hasName
+    const hasCompanyId = !!companyId;
+
+    const where = {} as WhereProps;
+
+    if (hasName) {
+      where.name = {
+        startsWith: name
+      };
+    }
+
+    if (hasCompanyId) {
+      where.companyId = companyId;
+    }
+
+    const hasConditions = !!Object.keys(where).length;
+
+    const options = hasConditions
       ? {
-          where: {
-            name: {
-              startsWith: name
-            }
-          }
+          where
         }
       : {
           skip,
