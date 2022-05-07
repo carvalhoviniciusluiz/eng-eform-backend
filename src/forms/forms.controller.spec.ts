@@ -48,7 +48,7 @@ describe('FormsController', () => {
       count: 0,
       forms: []
     }));
-    const response = await controller.getAll({});
+    const response = await controller.getAll({}, {} as any);
     expect(response.meta).toBeDefined();
     expect(response.data.length).toBe(0);
   });
@@ -58,7 +58,7 @@ describe('FormsController', () => {
       count: 1,
       forms: [{}] as any
     }));
-    const response = await controller.getAll({});
+    const response = await controller.getAll({}, { companyId: '1' } as any);
     expect(response.meta).toBeDefined();
     expect(response.data.length).toBe(1);
   });
@@ -68,9 +68,12 @@ describe('FormsController', () => {
       count: 1,
       forms: [{}] as any
     }));
-    const response = await controller.getAll({
-      name: faker.random.word()
-    });
+    const response = await controller.getAll(
+      {
+        name: faker.random.word()
+      },
+      {} as any
+    );
     expect(response.meta).toBeDefined();
     expect(response.data.length).toBe(1);
   });
@@ -79,7 +82,7 @@ describe('FormsController', () => {
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => {
       throw new Error();
     });
-    const promise = controller.getAll({});
+    const promise = controller.getAll({}, {} as any);
     await expect(promise).rejects.toThrowError();
   });
 
