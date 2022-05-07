@@ -4,12 +4,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
+import { FormsService } from '~/forms/forms.service';
 import { SurveysController } from '~/surveys/surveys.controller';
 import { SurveysService } from '~/surveys/surveys.service';
 
 describe('SurveysController', () => {
   let controller: SurveysController;
   let service: SurveysService;
+  let formService: FormsService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +25,7 @@ describe('SurveysController', () => {
           provide: APP_INTERCEPTOR,
           useClass: CacheInterceptor
         },
+        FormsService,
         SurveysService,
         PrismaService
       ],
@@ -30,6 +33,7 @@ describe('SurveysController', () => {
     }).compile();
     controller = module.get<SurveysController>(SurveysController);
     service = module.get<SurveysService>(SurveysService);
+    formService = module.get<FormsService>(FormsService);
   });
 
   it('should be defined', () => {
@@ -37,6 +41,7 @@ describe('SurveysController', () => {
   });
 
   it('should return empty list', async () => {
+    jest.spyOn(formService, 'getForm').mockImplementationOnce(async () => [] as any);
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 0,
       surveys: []
@@ -47,6 +52,7 @@ describe('SurveysController', () => {
   });
 
   it('should return not empty list', async () => {
+    jest.spyOn(formService, 'getForm').mockImplementationOnce(async () => [] as any);
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
       surveys: [{}] as any
@@ -57,6 +63,7 @@ describe('SurveysController', () => {
   });
 
   it('should return not empty list filter by email', async () => {
+    jest.spyOn(formService, 'getForm').mockImplementationOnce(async () => [] as any);
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
       surveys: [{}] as any

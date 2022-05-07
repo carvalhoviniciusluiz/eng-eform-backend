@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Survey as SurveyModel } from '@prisma/client';
+import { Form as FormModel, Survey as SurveyModel } from '@prisma/client';
 import { PaginatedResultDTO } from '~/common/dtos';
 
 export class SurveyPaginateResponseDto extends PaginatedResultDTO {
@@ -8,12 +8,22 @@ export class SurveyPaginateResponseDto extends PaginatedResultDTO {
   })
   data: any;
 
-  constructor(rows: SurveyModel[], count: number, page: number, pageSize: number) {
+  @ApiProperty({
+    example: {}
+  })
+  parent: any;
+
+  constructor(form: FormModel, rows: SurveyModel[], count: number, page: number, pageSize: number) {
     super(rows, count, page, pageSize);
     this.data = rows.map(survey => ({
       id: survey.id,
       name: survey.name,
       updatedAt: survey.updatedAt
     }));
+    this.parent = {
+      id: form.id,
+      name: form.name,
+      updatedAt: form.updatedAt
+    };
   }
 }
