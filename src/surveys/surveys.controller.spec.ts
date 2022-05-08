@@ -99,7 +99,15 @@ describe('SurveysController', () => {
   it('should update record', async () => {
     jest.spyOn(service, 'update').mockImplementationOnce(async () => ({} as any));
     const response = await controller.updateSurvey('id', faker.datatype.uuid(), {} as any);
-    expect(response).toEqual({});
+    expect(response).toBeUndefined();
+  });
+
+  it('should throw badrequest', async () => {
+    jest.spyOn(service, 'update').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.updateSurvey('id', faker.datatype.uuid(), {} as any);
+    await expect(promise).rejects.toThrowError();
   });
 
   it('should delete record', async () => {

@@ -87,21 +87,25 @@ export class SurveysController {
     @Param('formId') formId: string,
     @Param('id') id: string,
     @Body() surveyData: SurveyRequestDTO
-  ): Promise<SurveyModel> {
+  ): Promise<any> {
     const { name } = surveyData;
-    return this.surveyService.update({
-      where: {
-        id
-      },
-      data: {
-        name,
-        form: {
-          connect: {
-            id: formId
+    try {
+      await this.surveyService.update({
+        where: {
+          id
+        },
+        data: {
+          name,
+          form: {
+            connect: {
+              id: formId
+            }
           }
         }
-      }
-    });
+      });
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 
   @Delete('/:id')
