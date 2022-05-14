@@ -34,7 +34,7 @@ export class QuestionsController {
     @Param('surveyId') surveyId: string,
     @Query() params: QuestionPaginateDTO
   ): Promise<QuestionPaginateResponseDto> {
-    const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, content } = params;
+    const { page: skip = 0, limit: take = 10, orderBy = { content: 'asc' }, content } = params;
     const hasContent = !!content;
     const options = hasContent
       ? {
