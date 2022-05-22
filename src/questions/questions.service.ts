@@ -48,8 +48,11 @@ export class QuestionsService {
   }): Promise<QuestionModel> {
     const { where, data } = params;
     return this.prisma.question.update({
+      where,
       data,
-      where
+      include: {
+        answers: true
+      }
     });
   }
 

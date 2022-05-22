@@ -5,8 +5,36 @@ import * as faker from 'faker';
 import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
+import { QuestionRequestDTO } from '~/questions/dtos';
+import { AnswerTypeEnum } from '~/questions/enums';
 import { QuestionsController } from '~/questions/questions.controller';
 import { QuestionsService } from '~/questions/questions.service';
+
+// https://github.com/typestack/class-transformer/issues/874#issuecomment-1070896580
+jest.mock('class-transformer', () => {
+  return {
+    ...(jest.requireActual('class-transformer') as any),
+    Type: (typeReturn: () => void) => {
+      typeReturn();
+      return jest.requireActual('class-transformer').Type(typeReturn);
+    }
+  };
+});
+
+const questionMock: QuestionRequestDTO = {
+  content: 'content+1',
+  answers: {
+    type: AnswerTypeEnum.OBJECTIVE,
+    data: [
+      {
+        content: 'content+1'
+      },
+      {
+        content: 'content+2'
+      }
+    ]
+  }
+};
 
 describe('QuestionsController', () => {
   let controller: QuestionsController;
@@ -94,7 +122,7 @@ describe('QuestionsController', () => {
     jest.spyOn(service, 'create').mockImplementationOnce(async () => {
       throw new Error();
     });
-    const promise = controller.createQuestion('id', {} as any);
+    const promise = controller.createQuestion('id', questionMock);
     await expect(promise).rejects.toThrowError();
   });
 
@@ -105,7 +133,8 @@ describe('QuestionsController', () => {
           answers: [{}]
         } as any)
     );
-    const response = await controller.createQuestion('id', {} as any);
+    const response = await controller.createQuestion('id', questionMock);
+
     expect(response.question).not.toBeUndefined();
     expect(response.answers).not.toBeUndefined();
   });

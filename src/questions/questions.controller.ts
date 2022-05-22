@@ -97,7 +97,7 @@ export class QuestionsController {
         },
         content,
         answers: {
-          create: answers
+          create: answers.data
         }
       });
 
@@ -118,16 +118,35 @@ export class QuestionsController {
     @Param('id') id: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionModel> {
-    const { content } = questionData;
     return this.questionService.update({
       where: {
-        id
+        id: '269b8a8e-d8a7-4fe4-aa62-fd920b0246f7'
       },
       data: {
-        content,
+        content: 'content+1',
+        answers: {
+          connectOrCreate: [
+            {
+              where: {
+                id: 'a43cd6ec-18d2-4bea-9a9f-f797485006a8'
+              },
+              create: {
+                content: 'content+5'
+              }
+            },
+            {
+              where: {
+                id: ''
+              },
+              create: {
+                content: 'bla bla bla+etc'
+              }
+            }
+          ]
+        },
         survey: {
           connect: {
-            id: surveyId
+            id: 'f734f9c7-f1f6-4100-9b7b-657d12e202c1'
           }
         }
       }
