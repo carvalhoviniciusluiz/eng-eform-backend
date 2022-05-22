@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Answer as AnswerModel, Question as QuestionModel } from '@prisma/client';
 
-export class QuestionPostResponseDto {
+export class QuestionResponseDto {
   @ApiProperty({
     example: {
       id: '269b8a8e-d8a7-4fe4-aa62-fd920b0246f7',

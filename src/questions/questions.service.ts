@@ -8,7 +8,10 @@ export class QuestionsService {
 
   async getQuestion(questionWhereUniqueInput: Prisma.QuestionWhereUniqueInput): Promise<QuestionModel | null> {
     return this.prisma.question.findUnique({
-      where: questionWhereUniqueInput
+      where: questionWhereUniqueInput,
+      include: {
+        answers: true
+      }
     });
   }
 

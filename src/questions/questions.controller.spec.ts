@@ -113,9 +113,16 @@ describe('QuestionsController', () => {
   });
 
   it('should return one record', async () => {
-    jest.spyOn(service, 'getQuestion').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getQuestion').mockImplementationOnce(
+      async () =>
+        ({
+          answers: [{}]
+        } as any)
+    );
     const response = await controller.getQuestion(faker.datatype.uuid());
-    expect(response).toEqual({});
+
+    expect(response.question).not.toBeUndefined();
+    expect(response.answers).not.toBeUndefined();
   });
 
   it('should create and throw error', async () => {

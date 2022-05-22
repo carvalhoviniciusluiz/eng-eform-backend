@@ -21,8 +21,8 @@ import { RolesGuard } from '~/common/guards';
 import {
   QuestionPaginateDTO,
   QuestionPaginateResponseDto,
-  QuestionPostResponseDto,
-  QuestionRequestDTO
+  QuestionRequestDTO,
+  QuestionResponseDto
 } from '~/questions/dtos';
 import { QuestionsService } from '~/questions/questions.service';
 
@@ -76,17 +76,19 @@ export class QuestionsController {
   }
 
   @Get('/:id')
-  async getQuestion(@Param('id') id: string): Promise<QuestionModel> {
-    return this.questionService.getQuestion({
+  async getQuestion(@Param('id') id: string): Promise<QuestionResponseDto> {
+    const question = await this.questionService.getQuestion({
       id
     });
+
+    return new QuestionResponseDto(question);
   }
 
   @Post()
   async createQuestion(
     @Param('surveyId') surveyId: string,
     @Body() questionData: QuestionRequestDTO
-  ): Promise<QuestionPostResponseDto> {
+  ): Promise<QuestionResponseDto> {
     const { content, answers } = questionData;
     try {
       const question = await this.questionService.create({
@@ -102,7 +104,7 @@ export class QuestionsController {
         }
       });
 
-      return new QuestionPostResponseDto(question);
+      return new QuestionResponseDto(question);
     } catch (error) {
       this.logger.fail({
         code: error.code,
