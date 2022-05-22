@@ -98,6 +98,7 @@
     "jest-extended": "^2.0.0",
     "npm-check-updates": "^12.5.9",
     "prettier": "^2.6.2",
+    "prisma-erd-generator": "^0.11.3",
     "supertest": "^6.2.2",
     "ts-jest": "^27.1.4",
     "ts-loader": "^9.2.8",

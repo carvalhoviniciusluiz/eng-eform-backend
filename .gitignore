@@ -8,6 +8,7 @@
 .docker
 package-lock.json
 /docker
+*.png
 
 # Logs
 logs
