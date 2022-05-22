@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "ERD.png"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -120,14 +125,14 @@ model Question {
   surveyId String @map("survey_id")
   survey   Survey @relation(fields: [surveyId], references: [id])
 
-  Answer Answer[]
+  answers Answer[]
 
   @@map("questions")
 }
 
 model Answer {
   id        String    @id @default(uuid())
-  content   String?   @db.VarChar(191)
+  content   String    @db.VarChar(191)
   createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deleted   DateTime?

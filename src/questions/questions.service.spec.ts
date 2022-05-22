@@ -2,6 +2,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 import { QuestionsService } from '~/questions/questions.service';
@@ -25,6 +26,13 @@ describe('QuestionsService', () => {
         {
           provide: APP_INTERCEPTOR,
           useClass: CacheInterceptor
+        },
+        {
+          provide: AppLogger,
+          useValue: {
+            setContext: jest.fn(),
+            fail: jest.fn()
+          }
         },
         QuestionsService,
         PrismaService

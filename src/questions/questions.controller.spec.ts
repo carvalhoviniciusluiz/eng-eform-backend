@@ -2,6 +2,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 import { QuestionsController } from '~/questions/questions.controller';
@@ -22,6 +23,13 @@ describe('QuestionsController', () => {
         {
           provide: APP_INTERCEPTOR,
           useClass: CacheInterceptor
+        },
+        {
+          provide: AppLogger,
+          useValue: {
+            setContext: jest.fn(),
+            fail: jest.fn()
+          }
         },
         QuestionsService,
         PrismaService
@@ -91,9 +99,15 @@ describe('QuestionsController', () => {
   });
 
   it('should create new record', async () => {
-    jest.spyOn(service, 'create').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'create').mockImplementationOnce(
+      async () =>
+        ({
+          answers: [{}]
+        } as any)
+    );
     const response = await controller.createQuestion('id', {} as any);
-    expect(response).toEqual({});
+    expect(response.question).not.toBeUndefined();
+    expect(response.answers).not.toBeUndefined();
   });
 
   it('should update record', async () => {

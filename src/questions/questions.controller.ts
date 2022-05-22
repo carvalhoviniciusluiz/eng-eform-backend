@@ -15,9 +15,15 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Question as QuestionModel } from '@prisma/client';
+import { AppLogger } from '~/app.logger';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
-import { QuestionPaginateDTO, QuestionPaginateResponseDto, QuestionRequestDTO } from '~/questions/dtos';
+import {
+  QuestionPaginateDTO,
+  QuestionPaginateResponseDto,
+  QuestionPostResponseDto,
+  QuestionRequestDTO
+} from '~/questions/dtos';
 import { QuestionsService } from '~/questions/questions.service';
 
 @ApiTags('Questions')
@@ -26,7 +32,9 @@ import { QuestionsService } from '~/questions/questions.service';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('surveys/:surveyId/questions')
 export class QuestionsController {
-  constructor(private readonly questionService: QuestionsService) {}
+  constructor(private readonly questionService: QuestionsService, private readonly logger: AppLogger) {
+    this.logger.setContext(QuestionsController.name);
+  }
 
   @UseInterceptors(CacheInterceptor)
   @Get()
@@ -58,6 +66,11 @@ export class QuestionsController {
       const { questions, count } = await this.questionService.getAll(options);
       return new QuestionPaginateResponseDto(questions, take, skip, count);
     } catch (error) {
+      this.logger.fail({
+        code: error.code,
+        message: error?.meta?.cause,
+        error: error.stack
+      });
       throw new BadRequestException();
     }
   }
@@ -73,16 +86,30 @@ export class QuestionsController {
   async createQuestion(
     @Param('surveyId') surveyId: string,
     @Body() questionData: QuestionRequestDTO
-  ): Promise<QuestionModel> {
-    const { content } = questionData;
-    return this.questionService.create({
-      content,
-      survey: {
-        connect: {
-          id: surveyId
+  ): Promise<QuestionPostResponseDto> {
+    const { content, answers } = questionData;
+    try {
+      const question = await this.questionService.create({
+        survey: {
+          connect: {
+            id: surveyId
+          }
+        },
+        content,
+        answers: {
+          create: answers
         }
-      }
-    });
+      });
+
+      return new QuestionPostResponseDto(question);
+    } catch (error) {
+      this.logger.fail({
+        code: error.code,
+        message: error?.meta?.cause,
+        error: error.stack
+      });
+      throw new BadRequestException();
+    }
   }
 
   @Patch('/:id')

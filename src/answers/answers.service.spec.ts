@@ -6,10 +6,6 @@ import { AnswersService } from '~/answers/answers.service';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 
-const answerMock = {
-  question: {}
-};
-
 describe('AnswersService', () => {
   let service: AnswersService;
   let prisma: PrismaService;
@@ -64,7 +60,9 @@ describe('AnswersService', () => {
 
   it('should create a new record', async () => {
     prisma.answer.create = jest.fn().mockReturnValueOnce({});
-    const response = await service.create(answerMock);
+    const response = await service.create({
+      content: 'xxxx'
+    } as any);
     expect(response).not.toBeUndefined();
   });
 
@@ -74,7 +72,9 @@ describe('AnswersService', () => {
       where: {
         id: faker.datatype.uuid()
       },
-      data: answerMock
+      data: {
+        content: 'xxxx'
+      }
     });
     expect(response).not.toBeUndefined();
   });

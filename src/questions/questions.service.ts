@@ -35,7 +35,10 @@ export class QuestionsService {
 
   async create(data: Prisma.QuestionCreateInput): Promise<QuestionModel> {
     return this.prisma.question.create({
-      data
+      data,
+      include: {
+        answers: true
+      }
     });
   }
 
