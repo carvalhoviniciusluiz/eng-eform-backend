@@ -133,7 +133,18 @@ describe('QuestionsController', () => {
           answers: [{}]
         } as any)
     );
-    const response = await controller.createQuestion('id', questionMock);
+
+    const newQuestionMock = {
+      ...questionMock,
+      answers: {
+        ...questionMock.answers,
+        type: AnswerTypeEnum.MULTIPLE
+      }
+    };
+
+    console.log(newQuestionMock);
+
+    const response = await controller.createQuestion('id', newQuestionMock);
 
     expect(response.question).not.toBeUndefined();
     expect(response.answers).not.toBeUndefined();

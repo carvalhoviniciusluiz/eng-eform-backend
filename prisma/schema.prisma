@@ -21,6 +21,17 @@ enum Role {
   MASTER
 }
 
+enum FormStatus {
+  PUBLISHED
+  DRAFT
+  REMOVED
+}
+
+enum QuestionType {
+  OBJECTIVE
+  MULTIPLE
+}
+
 model User {
   id             String    @id @default(uuid())
   email          String    @unique @db.VarChar(191)
@@ -53,12 +64,6 @@ model Company {
 
   @@index([initials])
   @@map("companies")
-}
-
-enum FormStatus {
-  PUBLISHED
-  DRAFT
-  REMOVED
 }
 
 model Form {
@@ -121,6 +126,8 @@ model Question {
   createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deleted   DateTime?
+
+  type QuestionType? @default(OBJECTIVE)
 
   surveyId String @map("survey_id")
   survey   Survey @relation(fields: [surveyId], references: [id])

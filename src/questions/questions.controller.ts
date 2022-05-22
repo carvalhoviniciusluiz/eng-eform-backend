@@ -24,6 +24,7 @@ import {
   QuestionPostResponseDto,
   QuestionRequestDTO
 } from '~/questions/dtos';
+import { AnswerTypeEnum } from '~/questions/enums';
 import { QuestionsService } from '~/questions/questions.service';
 
 @ApiTags('Questions')
@@ -88,6 +89,11 @@ export class QuestionsController {
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionPostResponseDto> {
     const { content, answers } = questionData;
+    const questionIsObjective = answers.type === AnswerTypeEnum.OBJECTIVE.toString();
+    const questionType = questionIsObjective ? 'OBJECTIVE' : 'MULTIPLE';
+
+    console.log(questionType);
+
     try {
       const question = await this.questionService.create({
         survey: {
@@ -96,6 +102,7 @@ export class QuestionsController {
           }
         },
         content,
+        type: questionType,
         answers: {
           create: answers.data
         }

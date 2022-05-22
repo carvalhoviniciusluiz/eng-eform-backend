@@ -1,4 +1,4 @@
 export enum AnswerTypeEnum {
-  OBJECTIVE,
-  MULTIPLE
+  OBJECTIVE = 'OBJECTIVE',
+  MULTIPLE = 'MULTIPLE'
 }
