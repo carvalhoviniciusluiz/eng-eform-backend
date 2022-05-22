@@ -35,6 +35,7 @@ export class QuestionPostResponseDto {
   constructor(question: QuestionModel) {
     this.question = {
       id: question.id,
+      type: question.type,
       content: question.content,
       updatedAt: question.updatedAt
     };

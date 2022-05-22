@@ -142,8 +142,6 @@ describe('QuestionsController', () => {
       }
     };
 
-    console.log(newQuestionMock);
-
     const response = await controller.createQuestion('id', newQuestionMock);
 
     expect(response.question).not.toBeUndefined();
