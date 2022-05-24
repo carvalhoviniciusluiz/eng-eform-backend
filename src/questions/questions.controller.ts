@@ -129,7 +129,7 @@ export class QuestionsController {
     // @Param('surveyId') surveyId: string,
     @Param('id') id: string,
     @Body() questionData: QuestionRequestDTO
-  ): Promise<QuestionModel> {
+  ): Promise<QuestionResponseDto> {
     const {
       content,
       answers: { data: answers, type }
@@ -163,8 +163,9 @@ export class QuestionsController {
           }
         }
       };
+      const question = await this.questionService.update(params);
 
-      return await this.questionService.update(params);
+      return new QuestionResponseDto(question);
     } catch (error) {
       this.reportLoggerAndThrowException(error);
     }

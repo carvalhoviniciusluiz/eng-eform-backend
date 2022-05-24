@@ -188,7 +188,8 @@ describe('QuestionsController', () => {
     };
 
     const response = await controller.updateQuestion(faker.datatype.uuid(), updatedQuestionMock);
-    expect(response).toEqual({ answers: [{}] });
+    expect(response.question).not.toBeUndefined();
+    expect(response.answers).not.toBeUndefined();
   });
 
   it('should delete record', async () => {
