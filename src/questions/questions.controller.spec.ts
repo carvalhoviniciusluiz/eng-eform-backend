@@ -112,6 +112,14 @@ describe('QuestionsController', () => {
     await expect(promise).rejects.toThrowError();
   });
 
+  it('should call getQuestion and throw error', async () => {
+    jest.spyOn(service, 'getQuestion').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.getQuestion(faker.datatype.uuid());
+    await expect(promise).rejects.toThrowError();
+  });
+
   it('should return one record', async () => {
     jest.spyOn(service, 'getQuestion').mockImplementationOnce(
       async () =>
@@ -155,10 +163,32 @@ describe('QuestionsController', () => {
     expect(response.answers).not.toBeUndefined();
   });
 
+  it('should call update and throw error', async () => {
+    jest.spyOn(service, 'update').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.updateQuestion(faker.datatype.uuid(), questionMock);
+    await expect(promise).rejects.toThrowError();
+  });
+
   it('should update record', async () => {
-    jest.spyOn(service, 'update').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.updateQuestion('id', faker.datatype.uuid(), {} as any);
-    expect(response).toEqual({});
+    jest.spyOn(service, 'update').mockImplementationOnce(
+      async () =>
+        ({
+          answers: [{}]
+        } as any)
+    );
+
+    const updatedQuestionMock = {
+      ...questionMock,
+      answers: {
+        ...questionMock.answers,
+        type: AnswerTypeEnum.MULTIPLE
+      }
+    };
+
+    const response = await controller.updateQuestion(faker.datatype.uuid(), updatedQuestionMock);
+    expect(response).toEqual({ answers: [{}] });
   });
 
   it('should delete record', async () => {

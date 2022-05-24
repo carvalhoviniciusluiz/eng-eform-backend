@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
 import { AuthController } from '~/auth/auth.controller';
@@ -28,6 +29,28 @@ describe('AuthController', () => {
       password: faker.internet.password()
     });
     expect(response).toEqual({});
+  });
+
+  it('should throw Unauthorize if credentials not found', async () => {
+    jest.spyOn(service, 'signIn').mockImplementationOnce(async () => {
+      throw new UnauthorizedException();
+    });
+    const promise = controller.signIn({
+      email: faker.internet.email(),
+      password: faker.internet.password()
+    });
+    await expect(promise).rejects.toThrow('Unauthorize');
+  });
+
+  it('should throw error if other error', async () => {
+    jest.spyOn(service, 'signIn').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.signIn({
+      email: faker.internet.email(),
+      password: faker.internet.password()
+    });
+    await expect(promise).rejects.toThrowError();
   });
 
   it('should return credentials data', async () => {

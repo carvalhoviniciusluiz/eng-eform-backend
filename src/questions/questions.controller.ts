@@ -26,6 +26,11 @@ import {
 } from '~/questions/dtos';
 import { QuestionsService } from '~/questions/questions.service';
 
+type Answer = {
+  id?: string;
+  content: string;
+};
+
 @ApiTags('Questions')
 @ApiBearerAuth()
 @Roles('admin', 'master')
@@ -34,6 +39,15 @@ import { QuestionsService } from '~/questions/questions.service';
 export class QuestionsController {
   constructor(private readonly questionService: QuestionsService, private readonly logger: AppLogger) {
     this.logger.setContext(QuestionsController.name);
+  }
+
+  reportLoggerAndThrowException(error: any) {
+    this.logger.fail({
+      code: error.code,
+      message: error?.meta?.cause ?? error?.message,
+      error: error.stack
+    });
+    throw new BadRequestException();
   }
 
   @UseInterceptors(CacheInterceptor)
@@ -66,22 +80,21 @@ export class QuestionsController {
       const { questions, count } = await this.questionService.getAll(options);
       return new QuestionPaginateResponseDto(questions, take, skip, count);
     } catch (error) {
-      this.logger.fail({
-        code: error.code,
-        message: error?.meta?.cause,
-        error: error.stack
-      });
-      throw new BadRequestException();
+      this.reportLoggerAndThrowException(error);
     }
   }
 
   @Get('/:id')
   async getQuestion(@Param('id') id: string): Promise<QuestionResponseDto> {
-    const question = await this.questionService.getQuestion({
-      id
-    });
+    try {
+      const question = await this.questionService.getQuestion({
+        id
+      });
 
-    return new QuestionResponseDto(question);
+      return new QuestionResponseDto(question);
+    } catch (error) {
+      this.reportLoggerAndThrowException(error);
+    }
   }
 
   @Post()
@@ -91,7 +104,7 @@ export class QuestionsController {
   ): Promise<QuestionResponseDto> {
     const { content, answers } = questionData;
     try {
-      const question = await this.questionService.create({
+      const params = {
         survey: {
           connect: {
             id: surveyId
@@ -102,58 +115,59 @@ export class QuestionsController {
         answers: {
           create: answers.data
         }
-      });
+      };
+      const question = await this.questionService.create(params);
 
       return new QuestionResponseDto(question);
     } catch (error) {
-      this.logger.fail({
-        code: error.code,
-        message: error?.meta?.cause,
-        error: error.stack
-      });
-      throw new BadRequestException();
+      this.reportLoggerAndThrowException(error);
     }
   }
 
   @Patch('/:id')
   async updateQuestion(
-    @Param('surveyId') surveyId: string,
+    // @Param('surveyId') surveyId: string,
     @Param('id') id: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionModel> {
-    return this.questionService.update({
-      where: {
-        id: '269b8a8e-d8a7-4fe4-aa62-fd920b0246f7'
-      },
-      data: {
-        content: 'content+1',
-        answers: {
-          connectOrCreate: [
-            {
-              where: {
-                id: 'a43cd6ec-18d2-4bea-9a9f-f797485006a8'
-              },
-              create: {
-                content: 'content+5'
-              }
-            },
-            {
-              where: {
-                id: ''
-              },
-              create: {
-                content: 'bla bla bla+etc'
-              }
-            }
-          ]
+    const {
+      content,
+      answers: { data: answers, type }
+    } = questionData;
+    try {
+      const upsert = answers?.map((answer: Answer) => ({
+        where: {
+          id: answer.id ?? ''
         },
-        survey: {
-          connect: {
-            id: 'f734f9c7-f1f6-4100-9b7b-657d12e202c1'
+        create: {
+          content: answer.content
+        },
+        update: {
+          content: answer.content
+        }
+      }));
+      const params = {
+        where: {
+          id
+        },
+        // survey: {
+        //   connect: {
+        //     id: surveyId
+        //   }
+        // },
+        data: {
+          content,
+          type,
+          answers: {
+            upsert
           }
         }
-      }
-    });
+      };
+
+      return await this.questionService.update(params);
+    } catch (error) {
+      this.reportLoggerAndThrowException(error);
+    }
   }
 
   @Delete('/:id')

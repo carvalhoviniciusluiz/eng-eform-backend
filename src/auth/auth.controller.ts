@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { User as UserModel } from '@prisma/client';
@@ -12,8 +12,16 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  signIn(@Body() params: AuthCredentialsRequestDTO) {
-    return this.authService.signIn(params);
+  async signIn(@Body() params: AuthCredentialsRequestDTO) {
+    try {
+      return await this.authService.signIn(params);
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException();
+      }
+
+      throw new BadRequestException();
+    }
   }
 
   @Post('/signup')
