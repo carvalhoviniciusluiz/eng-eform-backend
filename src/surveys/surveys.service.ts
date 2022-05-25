@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Survey as SurveyModel } from '@prisma/client';
 import { PrismaService } from '~/common/service';
+import { SurveyDataResponse } from '~/surveys/types';
 
 @Injectable()
 export class SurveysService {
@@ -17,16 +18,34 @@ export class SurveysService {
     take?: number;
     where?: Prisma.SurveyWhereInput;
     orderBy?: Prisma.SurveyOrderByWithRelationInput;
-  }): Promise<{ count: number; surveys: SurveyModel[] }> {
+  }): Promise<{ count: number; surveys: SurveyDataResponse[] }> {
     const { skip, take, where, orderBy } = params;
     const count = await this.prisma.survey.count();
     const surveys = await this.prisma.survey.findMany({
       skip,
       take,
       where,
-      orderBy
+      orderBy,
+      select: {
+        id: true,
+        name: true,
+        updatedAt: true,
+        form: {
+          select: {
+            id: true,
+            name: true,
+            updatedAt: true
+          }
+        },
+        parent: {
+          select: {
+            id: true,
+            name: true,
+            updatedAt: true
+          }
+        }
+      }
     });
-
     return {
       count,
       surveys

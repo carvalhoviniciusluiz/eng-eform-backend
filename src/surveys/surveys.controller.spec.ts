@@ -49,7 +49,11 @@ describe('SurveysController', () => {
   it('should return not empty list', async () => {
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
-      surveys: [{}] as any
+      surveys: [
+        {
+          form: {}
+        }
+      ] as any
     }));
     const response = await controller.getAll(faker.datatype.uuid(), {});
     expect(response.meta).toBeDefined();
@@ -59,7 +63,11 @@ describe('SurveysController', () => {
   it('should return not empty list filter by email', async () => {
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
-      surveys: [{}] as any
+      surveys: [
+        {
+          form: {}
+        }
+      ] as any
     }));
     const response = await controller.getAll(faker.datatype.uuid(), {
       name: faker.random.word()
@@ -89,7 +97,12 @@ describe('SurveysController', () => {
   it('should return not empty child list', async () => {
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
-      surveys: [{}] as any
+      surveys: [
+        {
+          form: {},
+          parent: {}
+        }
+      ] as any
     }));
     const response = await controller.getChildAll(faker.datatype.uuid(), faker.datatype.uuid(), {});
     expect(response.meta).toBeDefined();
@@ -99,7 +112,12 @@ describe('SurveysController', () => {
   it('should return not empty child list filter by email', async () => {
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
-      surveys: [{}] as any
+      surveys: [
+        {
+          form: {},
+          parent: {}
+        }
+      ] as any
     }));
     const response = await controller.getChildAll(faker.datatype.uuid(), faker.datatype.uuid(), {
       name: faker.random.word()

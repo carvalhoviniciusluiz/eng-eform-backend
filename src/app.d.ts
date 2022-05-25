@@ -1,3 +1,3 @@
 declare module 'AppLogger' {
-  print(obj);
+  fail(obj);
 }
