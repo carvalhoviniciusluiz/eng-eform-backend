@@ -197,4 +197,12 @@ describe('QuestionsController', () => {
     const response = await controller.deleteQuestion(faker.datatype.uuid());
     expect(response).toEqual({});
   });
+
+  it('should call delete and throw error', async () => {
+    jest.spyOn(service, 'delete').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.deleteQuestion(faker.datatype.uuid());
+    await expect(promise).rejects.toThrowError();
+  });
 });

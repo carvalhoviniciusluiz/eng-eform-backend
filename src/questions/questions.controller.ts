@@ -173,6 +173,10 @@ export class QuestionsController {
 
   @Delete('/:id')
   async deleteQuestion(@Param('id') id: string): Promise<QuestionModel> {
-    return this.questionService.delete({ id });
+    try {
+      return await this.questionService.delete({ id });
+    } catch (error) {
+      this.reportLoggerAndThrowException(error);
+    }
   }
 }
