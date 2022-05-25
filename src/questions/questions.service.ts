@@ -10,7 +10,11 @@ export class QuestionsService {
     return this.prisma.question.findUnique({
       where: questionWhereUniqueInput,
       include: {
-        answers: true
+        answers: {
+          where: {
+            deleted: null
+          }
+        }
       }
     });
   }
@@ -40,7 +44,11 @@ export class QuestionsService {
     return this.prisma.question.create({
       data,
       include: {
-        answers: true
+        answers: {
+          where: {
+            deleted: null
+          }
+        }
       }
     });
   }
@@ -54,7 +62,11 @@ export class QuestionsService {
       where,
       data,
       include: {
-        answers: true
+        answers: {
+          where: {
+            deleted: null
+          }
+        }
       }
     });
   }
