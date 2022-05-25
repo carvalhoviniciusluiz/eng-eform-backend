@@ -19,7 +19,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest --maxWorkers=1 --detectOpenHandles",
     "test:watch": "jest --watch",
-    "test:ci": "jest --coverage",
+    "test:ci": "jest --coverage --detectOpenHandles",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:staged": "yarn test --bail --findRelatedTests",
     "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles",

@@ -62,6 +62,43 @@ export class SurveysController {
     }
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @Get('/:surveyId/surveys')
+  async getChildAll(
+    @Param('formId') formId: string,
+    @Param('surveyId') surveyId: string,
+    @Query() params: SurveyPaginateDTO
+  ): Promise<SurveyPaginateResponseDto> {
+    const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
+    const hasName = !!name;
+    const options = hasName
+      ? {
+          where: {
+            name: {
+              startsWith: name
+            },
+            formId,
+            parentId: surveyId
+          }
+        }
+      : {
+          where: {
+            formId,
+            parentId: surveyId
+          },
+          skip,
+          take,
+          orderBy
+        };
+
+    try {
+      const { surveys, count } = await this.surveyService.getAll(options);
+      return new SurveyPaginateResponseDto(surveys, take, skip, count);
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
+
   @Get('/:id')
   async getSurvey(@Param('id') id: string): Promise<SurveyModel> {
     return this.surveyService.getSurvey({
@@ -77,6 +114,29 @@ export class SurveysController {
       form: {
         connect: {
           id: formId
+        }
+      }
+    });
+  }
+
+  @Post('/:surveyId/surveys')
+  async createSurveyChild(
+    @Param('formId') formId: string,
+    @Param('surveyId') surveyId: string,
+    @Body() surveyData: SurveyRequestDTO
+  ): Promise<SurveyModel> {
+    const { name } = surveyData;
+
+    return this.surveyService.create({
+      name,
+      form: {
+        connect: {
+          id: formId
+        }
+      },
+      parent: {
+        connect: {
+          id: surveyId
         }
       }
     });

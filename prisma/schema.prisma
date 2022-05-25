@@ -111,8 +111,8 @@ model Survey {
 
   children Survey[] @relation("children")
 
-  parent   Survey? @relation("children", fields: [parentId], references: [id])
   parentId String? @map("parent_id")
+  parent   Survey? @relation("children", fields: [parentId], references: [id])
 
   questions Question[]
 
