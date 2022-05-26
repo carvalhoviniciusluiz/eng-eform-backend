@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Survey as SurveyModel } from '@prisma/client';
+import { Prisma, Survey as SurveyModel } from '@prisma/client';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import { SurveyPaginateDTO, SurveyPaginateResponseDto, SurveyRequestDTO } from '~/surveys/dtos';
@@ -36,18 +36,20 @@ export class SurveysController {
   ): Promise<SurveyPaginateResponseDto> {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
     const hasName = !!name;
-    const options = hasName
+    const options: Prisma.SurveyFindManyArgs = hasName
       ? {
           where: {
             name: {
               startsWith: name
             },
-            formId
+            formId,
+            parentId: null
           }
         }
       : {
           where: {
-            formId
+            formId,
+            parentId: null
           },
           skip,
           take,
@@ -71,7 +73,7 @@ export class SurveysController {
   ): Promise<SurveyPaginateResponseDto> {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
     const hasName = !!name;
-    const options = hasName
+    const options: Prisma.SurveyFindManyArgs = hasName
       ? {
           where: {
             name: {

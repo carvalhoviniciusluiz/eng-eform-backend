@@ -13,12 +13,7 @@ export class SurveysService {
     });
   }
 
-  async getAll(params: {
-    skip?: number;
-    take?: number;
-    where?: Prisma.SurveyWhereInput;
-    orderBy?: Prisma.SurveyOrderByWithRelationInput;
-  }): Promise<{ count: number; surveys: SurveyDataResponse[] }> {
+  async getAll(params: Prisma.SurveyFindManyArgs): Promise<{ count: number; surveys: SurveyDataResponse[] }> {
     const { skip, take, where, orderBy } = params;
     const count = await this.prisma.survey.count();
     const surveys = await this.prisma.survey.findMany({
