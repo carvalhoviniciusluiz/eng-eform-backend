@@ -32,21 +32,22 @@ export class SurveyPaginateResponseDto extends PaginatedResultDTO {
   })
   parent: any;
 
-  constructor(rows: SurveyDataResponse[], count: number, page: number, pageSize: number) {
+  constructor(form: any, parent: any, rows: SurveyDataResponse[], count: number, page: number, pageSize: number) {
     super(rows, count, page, pageSize);
 
-    const [row] = rows;
+    this.form = {
+      id: form.id,
+      name: form.name,
+      updatedAt: form.updatedAt
+    };
 
-    const form = row?.form;
-    const hasForm = !!form;
-    if (hasForm) {
-      this.form = form;
-    }
-
-    const parent = row?.parent;
     const hasParent = !!parent;
     if (hasParent) {
-      this.parent = parent;
+      this.parent = {
+        id: parent.id,
+        name: parent.name,
+        updatedAt: parent.updatedAt
+      };
     }
 
     this.data = rows.map(survey => ({

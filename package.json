@@ -18,7 +18,7 @@
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest --maxWorkers=1 --detectOpenHandles",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watch --detectOpenHandles",
     "test:ci": "jest --coverage --detectOpenHandles",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:staged": "yarn test --bail --findRelatedTests",

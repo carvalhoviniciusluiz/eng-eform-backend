@@ -17,6 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Prisma, Survey as SurveyModel } from '@prisma/client';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
+import { FormsService } from '~/forms/forms.service';
 import { SurveyPaginateDTO, SurveyPaginateResponseDto, SurveyRequestDTO } from '~/surveys/dtos';
 import { SurveysService } from '~/surveys/surveys.service';
 
@@ -26,7 +27,7 @@ import { SurveysService } from '~/surveys/surveys.service';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('forms/:formId/surveys')
 export class SurveysController {
-  constructor(private readonly surveyService: SurveysService) {}
+  constructor(private readonly surveyService: SurveysService, private readonly formService: FormsService) {}
 
   @UseInterceptors(CacheInterceptor)
   @Get()
@@ -57,8 +58,13 @@ export class SurveysController {
         };
 
     try {
+      const form = await this.formService.getForm({
+        id: formId
+      });
+
       const { surveys, count } = await this.surveyService.getAll(options);
-      return new SurveyPaginateResponseDto(surveys, take, skip, count);
+
+      return new SurveyPaginateResponseDto(form, null, surveys, take, skip, count);
     } catch (error) {
       throw new BadRequestException();
     }
@@ -94,8 +100,12 @@ export class SurveysController {
         };
 
     try {
+      const form = await this.formService.getForm({ id: formId });
+      const parent = await this.surveyService.getSurvey({ id: surveyId });
+
       const { surveys, count } = await this.surveyService.getAll(options);
-      return new SurveyPaginateResponseDto(surveys, take, skip, count);
+
+      return new SurveyPaginateResponseDto(form, parent, surveys, take, skip, count);
     } catch (error) {
       throw new BadRequestException();
     }
