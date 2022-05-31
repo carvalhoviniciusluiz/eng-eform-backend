@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { QuestionType } from '@prisma/client';
 import { Expose } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsEnum } from 'class-validator';
 import { AnswerRequestDTO } from '~/answers/dtos';
-import { AnswerTypeEnum } from '~/questions/enums';
 
 export class AnswerRequestCollectionDTO {
   @Expose()
-  @IsEnum(AnswerTypeEnum)
+  @IsEnum(QuestionType)
   @ApiProperty({
-    type: AnswerTypeEnum,
+    type: QuestionType,
     description: 'Answers type',
     example: 'objective'
   })
-  type: AnswerTypeEnum;
+  type: QuestionType;
 
   @Expose()
   @IsArray()

@@ -1,12 +1,12 @@
 import { CacheInterceptor, CacheModule } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+import { QuestionType } from '@prisma/client';
 import * as faker from 'faker';
 import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 import { QuestionRequestDTO } from '~/questions/dtos';
-import { AnswerTypeEnum } from '~/questions/enums';
 import { QuestionsController } from '~/questions/questions.controller';
 import { QuestionsService } from '~/questions/questions.service';
 
@@ -24,7 +24,7 @@ jest.mock('class-transformer', () => {
 const questionMock: QuestionRequestDTO = {
   content: 'content+1',
   answers: {
-    type: AnswerTypeEnum.OBJECTIVE,
+    type: QuestionType.OBJECTIVE,
     data: [
       {
         content: 'content+1'
@@ -153,7 +153,7 @@ describe('QuestionsController', () => {
       ...questionMock,
       answers: {
         ...questionMock.answers,
-        type: AnswerTypeEnum.MULTIPLE
+        type: QuestionType.MULTIPLE
       }
     };
 
@@ -183,7 +183,7 @@ describe('QuestionsController', () => {
       ...questionMock,
       answers: {
         ...questionMock.answers,
-        type: AnswerTypeEnum.MULTIPLE
+        type: QuestionType.MULTIPLE
       }
     };
 

@@ -3,20 +3,22 @@ import {
   CacheInterceptor,
   Controller,
   Get,
+  Param,
   Query,
   UseInterceptors,
   VERSION_NEUTRAL
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FormPaginateDTO, FormPaginateResponseDto } from '~/forms/dtos';
-import { FormsService } from '~/forms/forms.service';
+import { FormResponseDTO } from '~/root/dtos';
+import { RootService } from '~/root/root.service';
 
 @ApiTags('Root')
 @Controller({
   version: VERSION_NEUTRAL
 })
 export class RootController {
-  constructor(private readonly formService: FormsService) {}
+  constructor(private readonly rootService: RootService) {}
 
   @UseInterceptors(CacheInterceptor)
   @Get()
@@ -38,8 +40,21 @@ export class RootController {
         };
 
     try {
-      const { forms, count } = await this.formService.getAll(options);
+      const { forms, count } = await this.rootService.getAll(options);
       return new FormPaginateResponseDto(forms, take, skip, count);
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
+
+  @Get('/:id')
+  async getForm(@Param('id') id: string): Promise<any> {
+    try {
+      const form = await this.rootService.getForm({
+        id
+      });
+
+      return new FormResponseDTO(form);
     } catch (error) {
       throw new BadRequestException();
     }

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from '~/common/service';
-import { FormsService } from '~/forms/forms.service';
 import { RootController } from '~/root/root.controller';
+import { RootService } from '~/root/root.service';
 
 @Module({
   controllers: [RootController],
-  providers: [FormsService, PrismaService]
+  providers: [RootService, PrismaService]
 })
 export class RootModule {}

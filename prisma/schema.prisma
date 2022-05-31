@@ -81,7 +81,7 @@ model Form {
   authorDraft Json        @map("author_draft")
   status      FormStatus? @default(DRAFT)
 
-  Survey        Survey[]
+  surveys        Survey[]
   formConsumers FormConsumer[]
 
   @@map("forms")
