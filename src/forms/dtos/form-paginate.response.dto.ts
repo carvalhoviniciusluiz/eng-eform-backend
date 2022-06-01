@@ -13,6 +13,7 @@ export class FormPaginateResponseDto extends PaginatedResultDTO {
     this.data = rows.map(comapany => ({
       id: comapany.id,
       name: comapany.name,
+      status: comapany.status,
       updatedAt: comapany.updatedAt
     }));
   }
