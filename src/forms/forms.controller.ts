@@ -14,18 +14,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Form as FormModel, User as UserModel } from '@prisma/client';
+import { Form as FormModel, Prisma, User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import { FormPaginateDTO, FormPaginateResponseDto, FormRequestDTO } from '~/forms/dtos';
 import { FormsService } from '~/forms/forms.service';
-
-type WhereProps = {
-  name: {
-    startsWith: string;
-  };
-  companyId: string;
-};
 
 @ApiTags('Forms')
 @ApiBearerAuth()
@@ -43,11 +36,12 @@ export class FormsController {
     const hasName = !!name;
     const hasCompanyId = !!companyId;
 
-    const where = {} as WhereProps;
+    const where = {} as Prisma.FormWhereInput;
 
     if (hasName) {
       where.name = {
-        startsWith: name
+        startsWith: name,
+        mode: 'insensitive'
       };
     }
 
