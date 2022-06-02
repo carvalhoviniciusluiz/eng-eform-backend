@@ -7,7 +7,12 @@ generator client {
 
 generator erd {
   provider = "prisma-erd-generator"
-  output   = "ERD.png"
+  output   = "erd.png"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "dbml"
 }
 
 datasource db {

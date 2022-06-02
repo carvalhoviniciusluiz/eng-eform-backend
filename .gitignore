@@ -9,6 +9,7 @@
 package-lock.json
 /docker
 *.png
+dbml
 
 # Logs
 logs
