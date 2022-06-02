@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npx @nestjs/cli build",
+    "build": "npx prisma generate && npx @nestjs/cli build",
     "build:compile": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
@@ -27,7 +27,7 @@
     "update:packages": "yarn ncu -u",
     "prisma": "prisma",
     "prisma:studio": "prisma studio",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma",
     "prisma:db:migrate": "prisma migrate dev --name",
     "prisma:db:push": "prisma db push",
     "prisma:db:seed": "prisma db seed"
@@ -98,7 +98,8 @@
     "jest-extended": "^2.0.0",
     "npm-check-updates": "^13.0.3",
     "prettier": "^2.6.2",
-    "prisma-erd-generator": "^0.11.3",
+    "prisma-dbml-generator": "^0.9.1",
+    "prisma-erd-generator": "^0.11.4",
     "supertest": "^6.2.3",
     "ts-jest": "^28.0.3",
     "ts-loader": "^9.3.0",
