@@ -38,6 +38,7 @@ export class SurveyPaginateResponseDto extends PaginatedResultDTO {
     this.form = {
       id: form.id,
       name: form.name,
+      status: form.status,
       updatedAt: form.updatedAt
     };
 

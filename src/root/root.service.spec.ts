@@ -6,13 +6,6 @@ import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 import { RootService } from '~/root/root.service';
 
-// const formMock = {
-//   name: faker.random.word(),
-//   author: {},
-//   authorDraft: JSON.stringify({}),
-//   company: {}
-// };
-
 describe('RootService', () => {
   let service: RootService;
   let prisma: PrismaService;

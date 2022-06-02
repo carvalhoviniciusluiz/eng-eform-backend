@@ -23,8 +23,11 @@ describe('RootController', () => {
           provide: APP_INTERCEPTOR,
           useClass: CacheInterceptor
         },
-        RootService,
-        PrismaService
+        {
+          provide: PrismaService,
+          useValue: jest.fn()
+        },
+        RootService
       ],
       controllers: [RootController]
     }).compile();
