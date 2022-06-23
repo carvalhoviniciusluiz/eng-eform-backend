@@ -12,6 +12,7 @@ describe('SurveysController', () => {
   let controller: SurveysController;
   let service: SurveysService;
   let formService: FormsService;
+  let surveyService: SurveysService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +35,7 @@ describe('SurveysController', () => {
     controller = module.get<SurveysController>(SurveysController);
     service = module.get<SurveysService>(SurveysService);
     formService = module.get<FormsService>(FormsService);
+    surveyService = module.get<SurveysService>(SurveysService);
   });
 
   it('should be defined', () => {
@@ -123,6 +125,7 @@ describe('SurveysController', () => {
 
   it('should return not empty child list filter by email', async () => {
     jest.spyOn(formService, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(surveyService, 'getSurvey').mockImplementationOnce(async () => ({} as any));
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
       surveys: [
