@@ -34,9 +34,10 @@ export class FormsController {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
     const { companyId } = user;
     const hasName = !!name;
-    const hasCompanyId = !!companyId;
 
-    const where = {} as Prisma.FormWhereInput;
+    const where = {
+      companyId
+    } as Prisma.FormWhereInput;
 
     if (hasName) {
       where.name = {
@@ -45,17 +46,12 @@ export class FormsController {
       };
     }
 
-    if (hasCompanyId) {
-      where.companyId = companyId;
-    }
-
-    const hasConditions = !!Object.keys(where).length;
-
-    const options = hasConditions
+    const options = hasName
       ? {
           where
         }
       : {
+          where,
           skip,
           take,
           orderBy
