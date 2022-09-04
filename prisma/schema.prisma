@@ -90,6 +90,7 @@ model Form {
 
   surveys        Survey[]
   formConsumers FormConsumer[]
+  questionAnswers QuestionAnswer[]
 
   @@map("forms")
 }
@@ -140,6 +141,7 @@ model Question {
   survey   Survey @relation(fields: [surveyId], references: [id])
 
   answers Answer[]
+  questionAnswers QuestionAnswer[]
 
   @@map("questions")
 }
@@ -154,5 +156,25 @@ model Answer {
   questionId String   @map("question_id")
   question   Question @relation(fields: [questionId], references: [id])
 
+  questionAnswers QuestionAnswer[]
+
   @@map("answers")
+}
+
+model QuestionAnswer {
+  id        String    @id @default(uuid())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deleted   DateTime?
+
+  formId String   @map("form_id")
+  form   Form @relation(fields: [formId], references: [id])
+
+  questionId String   @map("question_id")
+  question   Question @relation(fields: [questionId], references: [id])
+
+  answerId String   @map("answer_id")
+  answer   Answer @relation(fields: [answerId], references: [id])
+
+  @@map("question_answers")
 }

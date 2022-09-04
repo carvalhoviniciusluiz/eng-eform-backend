@@ -1,9 +1,11 @@
 import {
   BadRequestException,
+  Body,
   CacheInterceptor,
   Controller,
   Get,
   Param,
+  Post,
   Query,
   UseInterceptors,
   VERSION_NEUTRAL
@@ -58,5 +60,10 @@ export class RootController {
     } catch (error) {
       throw new BadRequestException();
     }
+  }
+
+  @Post('/:id')
+  async saveForm(@Param('id') id: string, @Body() formRequestData: any): Promise<any> {
+    console.log({ id, formRequestData });
   }
 }
