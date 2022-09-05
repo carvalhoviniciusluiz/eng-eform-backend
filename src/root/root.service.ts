@@ -71,4 +71,44 @@ export class RootService {
       forms
     };
   }
+
+  createQuestionAnswerList(formId: string, data: { [key: string]: string | string[] }[]) {
+    const questions = Object.keys(data);
+    return questions.reduce((acc, questionId) => {
+      const answerIdOrArray = data[questionId as any];
+      const isArray = Array.isArray(answerIdOrArray);
+
+      if (isArray) {
+        for (const value of answerIdOrArray) {
+          acc.push({
+            formId,
+            questionId,
+            answerId: value
+          });
+        }
+      } else {
+        acc.push({
+          formId,
+          questionId,
+          answerId: answerIdOrArray
+        });
+      }
+
+      return acc;
+    }, []);
+  }
+
+  async saveQuestionAnswers({ formId, data }: { formId: string; data: { [key: string]: string | string[] }[] }) {
+    const newData = this.createQuestionAnswerList(formId, data);
+
+    await this.prisma.questionAnswer.createMany({
+      data: newData
+    });
+  }
+
+  async create(data: Prisma.FormCreateInput): Promise<FormModel> {
+    return this.prisma.form.create({
+      data
+    });
+  }
 }

@@ -63,7 +63,17 @@ export class RootController {
   }
 
   @Post('/:id')
-  async saveForm(@Param('id') id: string, @Body() formRequestData: any): Promise<any> {
-    console.log({ id, formRequestData });
+  async saveQuestionAnswers(
+    @Param('id') formId: string,
+    @Body() requestData: { [key: string]: string | string[] }[]
+  ): Promise<void> {
+    try {
+      await this.rootService.saveQuestionAnswers({
+        formId,
+        data: requestData
+      });
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 }
