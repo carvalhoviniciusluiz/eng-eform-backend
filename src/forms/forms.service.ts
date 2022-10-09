@@ -8,7 +8,15 @@ export class FormsService {
 
   async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput): Promise<FormModel | null> {
     return this.prisma.form.findUnique({
-      where: formWhereUniqueInput
+      where: formWhereUniqueInput,
+      include: {
+        questions: {
+          where: {
+            parentId: null
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      }
     });
   }
 
