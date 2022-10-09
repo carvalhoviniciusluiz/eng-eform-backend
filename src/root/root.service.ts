@@ -10,39 +10,15 @@ export class RootService {
     return this.prisma.form.findUnique({
       where: formWhereUniqueInput,
       include: {
-        surveys: {
+        questions: {
+          where: {
+            parentId: null
+          },
           include: {
-            questions: {
-              include: {
-                answers: true
-              }
-            },
+            answers: true,
             children: {
               include: {
-                questions: {
-                  include: {
-                    answers: true
-                  }
-                },
-                children: {
-                  include: {
-                    questions: {
-                      include: {
-                        answers: true
-                      }
-                    },
-                    children: {
-                      include: {
-                        questions: {
-                          include: {
-                            answers: true
-                          }
-                        },
-                        children: true
-                      }
-                    }
-                  }
-                }
+                answers: true
               }
             }
           }

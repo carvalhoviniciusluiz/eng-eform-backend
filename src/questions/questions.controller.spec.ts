@@ -6,6 +6,7 @@ import * as faker from 'faker';
 import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
+import { FormsService } from '~/forms/forms.service';
 import { QuestionRequestDTO } from '~/questions/dtos';
 import { QuestionsController } from '~/questions/questions.controller';
 import { QuestionsService } from '~/questions/questions.service';
@@ -39,6 +40,7 @@ const questionMock: QuestionRequestDTO = {
 describe('QuestionsController', () => {
   let controller: QuestionsController;
   let service: QuestionsService;
+  let formsService: FormsService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,26 +55,48 @@ describe('QuestionsController', () => {
           useClass: CacheInterceptor
         },
         {
+          provide: PrismaService,
+          useValue: jest.fn()
+        },
+        {
           provide: AppLogger,
           useValue: {
             setContext: jest.fn(),
             fail: jest.fn()
           }
         },
-        QuestionsService,
-        PrismaService
+        {
+          provide: FormsService,
+          useValue: {
+            getForm: jest.fn()
+          }
+        },
+        {
+          provide: QuestionsService,
+          useValue: {
+            delete: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            getAll: jest.fn(),
+            getQuestion: jest.fn()
+          }
+        }
       ],
       controllers: [QuestionsController]
     }).compile();
     controller = module.get<QuestionsController>(QuestionsController);
     service = module.get<QuestionsService>(QuestionsService);
+    formsService = module.get<FormsService>(FormsService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(service).toBeDefined();
+    expect(formsService).toBeDefined();
   });
 
   it('should return empty list', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 0,
       questions: []
@@ -83,6 +107,7 @@ describe('QuestionsController', () => {
   });
 
   it('should return not empty list', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
       questions: [{}] as any
@@ -93,6 +118,7 @@ describe('QuestionsController', () => {
   });
 
   it('should return not empty list filter by email', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
     jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
       count: 1,
       questions: [{}] as any
@@ -102,6 +128,63 @@ describe('QuestionsController', () => {
     });
     expect(response.meta).toBeDefined();
     expect(response.data.length).toBe(1);
+  });
+
+  it('should return empty child list', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getQuestion').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+      count: 0,
+      questions: []
+    }));
+    const response = await controller.getChildren(faker.datatype.uuid(), faker.datatype.uuid(), {});
+    expect(response.meta).toBeDefined();
+    expect(response.data.length).toBe(0);
+  });
+
+  it('should return not empty child list', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getQuestion').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+      count: 1,
+      questions: [
+        {
+          form: {},
+          parent: {}
+        }
+      ] as any
+    }));
+    const response = await controller.getChildren(faker.datatype.uuid(), faker.datatype.uuid(), {});
+    expect(response.meta).toBeDefined();
+    expect(response.data.length).toBe(1);
+  });
+
+  it('should return not empty child list filter by email', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getQuestion').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+      count: 1,
+      questions: [
+        {
+          form: {},
+          parent: {}
+        }
+      ] as any
+    }));
+    const response = await controller.getChildren(faker.datatype.uuid(), faker.datatype.uuid(), {
+      content: faker.random.word()
+    });
+    expect(response.meta).toBeDefined();
+    expect(response.data.length).toBe(1);
+  });
+
+  it('should throw badrequest to child all list', async () => {
+    jest.spyOn(formsService, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.getChildren(faker.datatype.uuid(), faker.datatype.uuid(), {});
+    await expect(promise).rejects.toThrowError();
   });
 
   it('should throw badrequest', async () => {
@@ -161,6 +244,30 @@ describe('QuestionsController', () => {
 
     expect(response.question).not.toBeUndefined();
     expect(response.answers).not.toBeUndefined();
+  });
+
+  it('should call create to new child and throw error', async () => {
+    jest.spyOn(service, 'create').mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const promise = controller.createChild(faker.datatype.uuid(), faker.datatype.uuid(), {} as any);
+    await expect(promise).rejects.toThrowError();
+  });
+
+  it.only('should create new child record', async () => {
+    jest.spyOn(service, 'create').mockImplementationOnce(async () => ({ answers: [] } as any));
+    const response = await controller.createChild(faker.datatype.uuid(), faker.datatype.uuid(), {
+      answers: {}
+    } as any);
+    expect(response).toEqual({
+      answers: [],
+      question: {
+        content: undefined,
+        id: undefined,
+        type: undefined,
+        updatedAt: undefined
+      }
+    });
   });
 
   it('should call update and throw error', async () => {

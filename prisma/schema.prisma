@@ -88,9 +88,9 @@ model Form {
   authorDraft Json        @map("author_draft")
   status      FormStatus? @default(DRAFT)
 
-  surveys        Survey[]
-  formConsumers FormConsumer[]
+  questions Question[]
   questionAnswers QuestionAnswer[]
+  formConsumers FormConsumer[]
 
   @@map("forms")
 }
@@ -107,27 +107,6 @@ model FormConsumer {
   @@map("form_consumers")
 }
 
-model Survey {
-  id        String    @id @default(uuid())
-  name      String?   @db.VarChar(191)
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-  deleted   DateTime?
-
-  formId String @map("form_id")
-  form   Form   @relation(fields: [formId], references: [id])
-
-  children Survey[] @relation("children")
-
-  parentId String? @map("parent_id")
-  parent   Survey? @relation("children", fields: [parentId], references: [id])
-
-  questions Question[]
-
-  @@index([name])
-  @@map("surveys")
-}
-
 model Question {
   id        String    @id @default(uuid())
   content   String?   @db.VarChar(191)
@@ -135,10 +114,15 @@ model Question {
   updatedAt DateTime? @updatedAt @map("updated_at")
   deleted   DateTime?
 
-  type QuestionType? @default(OBJECTIVE)
+  formId String @map("form_id")
+  form   Form   @relation(fields: [formId], references: [id])
 
-  surveyId String @map("survey_id")
-  survey   Survey @relation(fields: [surveyId], references: [id])
+  children Question[] @relation("children")
+
+  parentId String? @map("parent_id")
+  parent   Question? @relation("children", fields: [parentId], references: [id])
+
+  type QuestionType? @default(OBJECTIVE)
 
   answers Answer[]
   questionAnswers QuestionAnswer[]

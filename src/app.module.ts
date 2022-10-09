@@ -7,7 +7,6 @@ import { CacheService } from '~/config';
 import { FormsModule } from '~/forms/forms.module';
 import { QuestionsModule } from '~/questions/questions.module';
 import { RootModule } from '~/root/root.module';
-import { SurveysModule } from '~/surveys/surveys.module';
 import { UsersModule } from '~/users/users.module';
 
 @Module({
@@ -20,7 +19,6 @@ import { UsersModule } from '~/users/users.module';
     UsersModule,
     CompaniesModule,
     FormsModule,
-    SurveysModule,
     QuestionsModule,
     AnswersModule,
     AuthModule

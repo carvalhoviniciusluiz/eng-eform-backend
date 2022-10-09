@@ -14,10 +14,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Question as QuestionModel } from '@prisma/client';
+import { Prisma, Question as QuestionModel } from '@prisma/client';
 import { AppLogger } from '~/app.logger';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
+import { FormsService } from '~/forms/forms.service';
 import {
   QuestionPaginateDTO,
   QuestionPaginateResponseDto,
@@ -35,9 +36,13 @@ type Answer = {
 @ApiBearerAuth()
 @Roles('admin', 'master')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Controller('surveys/:surveyId/questions')
+@Controller('forms/:formId/questions')
 export class QuestionsController {
-  constructor(private readonly questionService: QuestionsService, private readonly logger: AppLogger) {
+  constructor(
+    private readonly formService: FormsService,
+    private readonly questionService: QuestionsService,
+    private readonly logger: AppLogger
+  ) {
     this.logger.setContext(QuestionsController.name);
   }
 
@@ -53,23 +58,26 @@ export class QuestionsController {
   @UseInterceptors(CacheInterceptor)
   @Get()
   async getAll(
-    @Param('surveyId') surveyId: string,
+    @Param('formId') formId: string,
     @Query() params: QuestionPaginateDTO
   ): Promise<QuestionPaginateResponseDto> {
     const { page: skip = 0, limit: take = 10, orderBy = { content: 'asc' }, content } = params;
     const hasContent = !!content;
-    const options = hasContent
+    const parentId = null as any;
+    const options: Prisma.QuestionFindManyArgs = hasContent
       ? {
           where: {
             content: {
               startsWith: content
             },
-            surveyId
+            formId,
+            parentId
           }
         }
       : {
           where: {
-            surveyId
+            formId,
+            parentId
           },
           skip,
           take,
@@ -77,8 +85,67 @@ export class QuestionsController {
         };
 
     try {
+      const form = await this.formService.getForm({
+        id: formId
+      });
       const { questions, count } = await this.questionService.getAll(options);
-      return new QuestionPaginateResponseDto(questions, take, skip, count);
+
+      return new QuestionPaginateResponseDto({
+        form,
+        parent: null,
+        rows: questions,
+        count: take,
+        page: skip,
+        pageSize: count
+      });
+    } catch (error) {
+      this.reportLoggerAndThrowException(error);
+    }
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @Get('/:questionId/questions')
+  async getChildren(
+    @Param('formId') formId: string,
+    @Param('questionId') questionId: string,
+    @Query() params: QuestionPaginateDTO
+  ): Promise<QuestionPaginateResponseDto> {
+    const { page: skip = 0, limit: take = 10, orderBy = { content: 'asc' }, content } = params;
+    const hasContent = !!content;
+    const parentId = questionId;
+    const options: Prisma.QuestionFindManyArgs = hasContent
+      ? {
+          where: {
+            content: {
+              startsWith: content
+            },
+            formId,
+            parentId
+          }
+        }
+      : {
+          where: {
+            formId,
+            parentId
+          },
+          skip,
+          take,
+          orderBy
+        };
+
+    try {
+      const form = await this.formService.getForm({ id: formId });
+      const parent = await this.questionService.getQuestion({ id: questionId });
+      const { questions, count } = await this.questionService.getAll(options);
+
+      return new QuestionPaginateResponseDto({
+        form,
+        parent,
+        rows: questions,
+        count: take,
+        page: skip,
+        pageSize: count
+      });
     } catch (error) {
       this.reportLoggerAndThrowException(error);
     }
@@ -99,23 +166,58 @@ export class QuestionsController {
 
   @Post()
   async createQuestion(
-    @Param('surveyId') surveyId: string,
+    @Param('formId') formId: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionResponseDto> {
     const { content, answers } = questionData;
-    try {
-      const params = {
-        survey: {
-          connect: {
-            id: surveyId
-          }
-        },
-        content,
-        type: answers.type,
-        answers: {
-          create: answers.data
+    const params: Prisma.QuestionCreateInput = {
+      form: {
+        connect: {
+          id: formId
         }
-      };
+      },
+      content,
+      type: answers.type,
+      answers: {
+        create: answers.data
+      }
+    };
+
+    try {
+      const question = await this.questionService.create(params);
+
+      return new QuestionResponseDto(question);
+    } catch (error) {
+      this.reportLoggerAndThrowException(error);
+    }
+  }
+
+  @Post('/:questionId/questions')
+  async createChild(
+    @Param('formId') formId: string,
+    @Param('questionId') questionId: string,
+    @Body() questionData: QuestionRequestDTO
+  ): Promise<QuestionResponseDto> {
+    const { content, answers } = questionData;
+    const params: Prisma.QuestionCreateInput = {
+      form: {
+        connect: {
+          id: formId
+        }
+      },
+      parent: {
+        connect: {
+          id: questionId
+        }
+      },
+      content,
+      type: answers.type,
+      answers: {
+        create: answers.data
+      }
+    };
+
+    try {
       const question = await this.questionService.create(params);
 
       return new QuestionResponseDto(question);
@@ -126,7 +228,6 @@ export class QuestionsController {
 
   @Patch('/:id')
   async updateQuestion(
-    // @Param('surveyId') surveyId: string,
     @Param('id') id: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionResponseDto> {
@@ -134,6 +235,7 @@ export class QuestionsController {
       content,
       answers: { data: answers, type }
     } = questionData;
+
     try {
       const upsert = answers?.map((answer: Answer) => ({
         where: {
@@ -150,11 +252,6 @@ export class QuestionsController {
         where: {
           id
         },
-        // survey: {
-        //   connect: {
-        //     id: surveyId
-        //   }
-        // },
         data: {
           content,
           type,

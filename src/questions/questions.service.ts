@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Question as QuestionModel } from '@prisma/client';
 import { PrismaService } from '~/common/service';
+import { QuestionDataResponse } from '~/questions/types';
 
 @Injectable()
 export class QuestionsService {
@@ -19,19 +20,33 @@ export class QuestionsService {
     });
   }
 
-  async getAll(params: {
-    skip?: number;
-    take?: number;
-    where?: Prisma.QuestionWhereInput;
-    orderBy?: Prisma.QuestionOrderByWithRelationInput;
-  }): Promise<{ count: number; questions: QuestionModel[] }> {
+  async getAll(params: Prisma.QuestionFindManyArgs): Promise<{ count: number; questions: QuestionDataResponse[] }> {
     const { skip, take, where, orderBy } = params;
     const count = await this.prisma.question.count();
     const questions = await this.prisma.question.findMany({
       skip,
       take,
       where,
-      orderBy
+      orderBy,
+      select: {
+        id: true,
+        content: true,
+        updatedAt: true,
+        form: {
+          select: {
+            id: true,
+            name: true,
+            updatedAt: true
+          }
+        },
+        parent: {
+          select: {
+            id: true,
+            content: true,
+            updatedAt: true
+          }
+        }
+      }
     });
 
     return {

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FormStatus } from '@prisma/client';
 import { Expose } from 'class-transformer';
-import { SurveyResponseDTO } from '~/root/dtos/survey-response.dto';
+import { QuestionResponseDTO } from '~/root/dtos';
 
 export class FormResponseDTO {
   @Expose()
@@ -36,7 +36,7 @@ export class FormResponseDTO {
   })
   status: FormStatus;
 
-  surveys: SurveyResponseDTO[];
+  questions: QuestionResponseDTO[];
 
   parseAnswers(answers: any[]): any {
     return answers?.map((answer: any) => ({
@@ -47,23 +47,16 @@ export class FormResponseDTO {
   }
 
   parseQuestions(questions: any[]): any {
-    return questions?.map((question: any) => ({
-      id: question.id,
-      content: question.content,
-      type: question.type,
-      updatedAt: question.updatedAt,
-      answers: !!question?.answers?.length ? this.parseAnswers(question.answers) : undefined
-    }));
-  }
-
-  parseSurvey(surveys: any[]): any {
-    return surveys?.map((survey: any) => ({
-      id: survey.id,
-      name: survey.name,
-      updatedAt: survey.updatedAt,
-      surveys: !!survey?.children?.length ? this.parseSurvey(survey.children) : undefined,
-      questions: !!survey?.questions?.length ? this.parseQuestions(survey.questions) : undefined
-    }));
+    return questions?.map((question: any) => {
+      return {
+        id: question.id,
+        content: question.content,
+        type: question.type,
+        updatedAt: question.updatedAt,
+        answers: !!question?.answers?.length ? this.parseAnswers(question.answers) : undefined,
+        children: !!question?.children?.length ? this.parseQuestions(question.children) : undefined
+      };
+    });
   }
 
   constructor(form: any) {
@@ -71,7 +64,6 @@ export class FormResponseDTO {
     this.name = form.name;
     this.updatedAt = form.updatedAt;
     this.status = form.status;
-
-    this.surveys = this.parseSurvey(form.surveys);
+    this.questions = this.parseQuestions(form.questions);
   }
 }

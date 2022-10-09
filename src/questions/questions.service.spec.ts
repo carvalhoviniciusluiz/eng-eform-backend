@@ -8,7 +8,7 @@ import { CacheService } from '~/config';
 import { QuestionsService } from '~/questions/questions.service';
 
 const QuestionMock = {
-  survey: {}
+  form: {}
 };
 
 describe('QuestionsService', () => {
@@ -34,8 +34,18 @@ describe('QuestionsService', () => {
             fail: jest.fn()
           }
         },
-        QuestionsService,
-        PrismaService
+        {
+          provide: PrismaService,
+          useValue: {
+            question: {
+              findUnique: jest.fn(),
+              create: jest.fn(),
+              delete: jest.fn(),
+              count: jest.fn()
+            }
+          }
+        },
+        QuestionsService
       ]
     }).compile();
     service = module.get<QuestionsService>(QuestionsService);
@@ -44,6 +54,7 @@ describe('QuestionsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 
   it('should get a record', async () => {

@@ -390,14 +390,6 @@ yarn start:dev
 - `#PATCH /v1/forms/{id}` - Rota autenticada, atualiza um form pelo id.
 - `#DELETE /v1/forms/{id}` - Rota autenticada, remove um form pelo id.
 
-#### Surveys
-
-- `#GET /v1/surveys` - Rota autenticada, devolve uma lista de enquetes paginados.
-- `#POST /v1/surveys` - Rota autenticada, registra novas enquetes.
-- `#GET /v1/surveys/{id}` - Rota autenticada, devolve uma enquete pelo id.
-- `#PATCH /v1/surveys/{id}` - Rota autenticada, atualiza uma enquente pelo id.
-- `#DELETE /v1/surveys/{id}` - Rota autenticada, remove uma enquete pelo id.
-
 #### Questions
 
 - `#GET /v1/questions` - Rota autenticada, devolve uma lista de perguntas paginados.

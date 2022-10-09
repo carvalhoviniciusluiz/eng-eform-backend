@@ -33,8 +33,8 @@ export class QuestionPaginateDTO {
   @ApiPropertyOptional({
     type: String,
     description: 'Value for order values',
-    example: 'name.asc',
-    default: 'name.asc'
+    example: 'content.asc',
+    default: 'content.asc'
   })
   orderBy?: object;
 

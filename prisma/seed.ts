@@ -5,7 +5,6 @@ import {
   generateFormConsumerList,
   generateFormsList,
   generateQuestionList,
-  generateSuerveyList,
   generateUserList
 } from './data';
 const prisma = new PrismaClient();
@@ -33,14 +32,8 @@ const main = async () => {
     data: generateFormConsumerList(formList, userList)
   });
 
-  await prisma.survey.createMany({
-    data: generateSuerveyList(formList)
-  });
-
-  const surveyList = await prisma.survey.findMany();
-
   await prisma.question.createMany({
-    data: generateQuestionList(surveyList)
+    data: generateQuestionList(formList)
   });
 
   const questionList = await prisma.question.findMany();

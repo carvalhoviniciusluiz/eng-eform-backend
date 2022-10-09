@@ -94,22 +94,22 @@ describe('RootController', () => {
     expect(response).toEqual({});
   });
 
-  it('should return one form with surveys', async () => {
+  it('should return one form with questions', async () => {
     jest.spyOn(service, 'getForm').mockImplementationOnce(
       async () =>
         ({
-          surveys: [{}]
+          questions: [{}]
         } as any)
     );
     const response = await controller.getForm(faker.datatype.uuid());
-    expect(response.surveys).not.toBeUndefined();
+    expect(response.questions).not.toBeUndefined();
   });
 
-  it('should return one form with surveys and children', async () => {
+  it('should return one form with questions and children', async () => {
     jest.spyOn(service, 'getForm').mockImplementationOnce(
       async () =>
         ({
-          surveys: [
+          questions: [
             {
               children: [{}]
             }
@@ -117,31 +117,31 @@ describe('RootController', () => {
         } as any)
     );
     const response = await controller.getForm(faker.datatype.uuid());
-    expect(response.surveys).not.toBeUndefined();
+    expect(response.questions).not.toBeUndefined();
   });
 
-  it('should return one form with surveys and questions', async () => {
+  it('should return one form with questions and children', async () => {
     jest.spyOn(service, 'getForm').mockImplementationOnce(
       async () =>
         ({
-          surveys: [
+          questions: [
             {
-              questions: [{}]
+              children: [{}]
             }
           ]
         } as any)
     );
     const response = await controller.getForm(faker.datatype.uuid());
-    expect(response.surveys).not.toBeUndefined();
+    expect(response.questions).not.toBeUndefined();
   });
 
-  it('should return one form with surveys and questions and answers', async () => {
+  it('should return one form with questions and children and answers', async () => {
     jest.spyOn(service, 'getForm').mockImplementationOnce(
       async () =>
         ({
-          surveys: [
+          questions: [
             {
-              questions: [
+              children: [
                 {
                   answers: [{}]
                 }
@@ -151,6 +151,6 @@ describe('RootController', () => {
         } as any)
     );
     const response = await controller.getForm(faker.datatype.uuid());
-    expect(response.surveys).not.toBeUndefined();
+    expect(response.questions).not.toBeUndefined();
   });
 });
