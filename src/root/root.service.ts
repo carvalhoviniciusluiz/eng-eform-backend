@@ -16,7 +16,8 @@ export class RootService {
       include: {
         questions: {
           where: {
-            parentId: null
+            parentId: null,
+            deleted: null
           },
           orderBy: { createdAt: 'asc' },
           include: {

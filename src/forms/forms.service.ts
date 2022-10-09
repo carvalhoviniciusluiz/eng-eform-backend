@@ -16,7 +16,8 @@ export class FormsService {
       include: {
         questions: {
           where: {
-            parentId: null
+            parentId: null,
+            deleted: null
           },
           orderBy: { createdAt: 'asc' }
         }
