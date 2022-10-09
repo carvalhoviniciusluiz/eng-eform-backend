@@ -87,9 +87,22 @@ describe('FormsController', () => {
   });
 
   it('should return one record', async () => {
-    jest.spyOn(service, 'getForm').mockImplementationOnce(async () => ({} as any));
+    jest.spyOn(service, 'getForm').mockImplementationOnce(
+      async () =>
+        ({
+          questions: []
+        } as any)
+    );
     const response = await controller.getForm(faker.datatype.uuid());
-    expect(response).toEqual({});
+    expect(response).toEqual({
+      form: {
+        id: undefined,
+        name: undefined,
+        status: undefined,
+        updatedAt: undefined
+      },
+      questions: []
+    });
   });
 
   it('should create and throw error', async () => {

@@ -3,7 +3,7 @@ import { Form as FormModel, Question as QuestionModel } from '@prisma/client';
 
 type Params = {
   form: FormModel;
-  rows: QuestionModel[];
+  questions: QuestionModel[];
 };
 
 export class FormWithQuestionsResponseDto {
@@ -16,7 +16,7 @@ export class FormWithQuestionsResponseDto {
       }
     ]
   })
-  data: any;
+  questions: any;
 
   @ApiProperty({
     example: {
@@ -28,7 +28,7 @@ export class FormWithQuestionsResponseDto {
   form: any;
 
   constructor(params: Params) {
-    const { form, rows } = params;
+    const { form, questions } = params;
 
     this.form = {
       id: form.id,
@@ -37,7 +37,7 @@ export class FormWithQuestionsResponseDto {
       updatedAt: form.updatedAt
     };
 
-    this.data = rows.map(question => ({
+    this.questions = questions.map(question => ({
       id: question.id,
       content: question.content,
       updatedAt: question.updatedAt

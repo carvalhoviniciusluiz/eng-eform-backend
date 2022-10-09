@@ -14,16 +14,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Form as FormModel, Prisma, Question as QuestionModel, User as UserModel } from '@prisma/client';
+import { Form as FormModel, Prisma, User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import { FormPaginateDTO, FormPaginateResponseDto, FormRequestDTO, FormWithQuestionsResponseDto } from '~/forms/dtos';
 import { FormsService } from '~/forms/forms.service';
-
-type FormResponse = {
-  data: QuestionModel[];
-  form: FormModel;
-};
 
 @ApiTags('Forms')
 @ApiBearerAuth()
@@ -71,16 +66,13 @@ export class FormsController {
   }
 
   @Get('/:id')
-  async getForm(@Param('id') id: string): Promise<FormResponse> {
+  async getForm(@Param('id') id: string): Promise<any> {
     try {
       const { questions, ...form } = await this.formService.getForm({
         id
       });
 
-      return new FormWithQuestionsResponseDto({
-        form,
-        rows: questions
-      });
+      return new FormWithQuestionsResponseDto({ form, questions });
     } catch (error) {
       throw new BadRequestException();
     }

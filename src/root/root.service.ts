@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Form as FormModel, Prisma } from '@prisma/client';
+import { Form as FormModel, Prisma, Question as QuestionModel } from '@prisma/client';
 import { PrismaService } from '~/common/service';
+
+type FormResponse = FormModel & {
+  questions: QuestionModel[];
+};
 
 @Injectable()
 export class RootService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput): Promise<FormModel | null> {
+  async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput): Promise<FormResponse | null> {
     return this.prisma.form.findUnique({
       where: formWhereUniqueInput,
       include: {
