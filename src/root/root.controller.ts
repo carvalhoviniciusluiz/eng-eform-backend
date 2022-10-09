@@ -11,7 +11,8 @@ import {
   VERSION_NEUTRAL
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { FormPaginateDTO, FormPaginateResponseDto, FormWithQuestionsResponseDto } from '~/forms/dtos';
+import { FormPaginateDTO, FormPaginateResponseDto } from '~/forms/dtos';
+import { FormResponseDTO } from '~/root/dtos';
 import { RootService } from '~/root/root.service';
 
 @ApiTags('Root')
@@ -49,13 +50,13 @@ export class RootController {
   }
 
   @Get('/:id')
-  async getForm(@Param('id') id: string): Promise<any> {
+  async getForm(@Param('id') id: string): Promise<FormResponseDTO> {
     try {
       const { questions, ...form } = await this.rootService.getForm({
         id
       });
 
-      return new FormWithQuestionsResponseDto({ form, questions });
+      return new FormResponseDTO({ form, questions });
     } catch (error) {
       throw new BadRequestException();
     }
