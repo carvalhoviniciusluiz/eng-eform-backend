@@ -46,11 +46,12 @@ export class QuestionsController {
     this.logger.setContext(QuestionsController.name);
   }
 
-  reportLoggerAndThrowException(error: any) {
+  reportLoggerAndThrowException(error: any, meta?: any) {
     this.logger.fail({
       code: error.code,
       message: error?.meta?.cause ?? error?.message,
-      error: error.stack
+      error: error.stack,
+      meta
     });
     throw new BadRequestException();
   }
@@ -160,7 +161,9 @@ export class QuestionsController {
 
       return new QuestionResponseDto(question);
     } catch (error) {
-      this.reportLoggerAndThrowException(error);
+      this.reportLoggerAndThrowException(error, {
+        id
+      });
     }
   }
 
@@ -192,7 +195,7 @@ export class QuestionsController {
 
       return new QuestionResponseDto(question);
     } catch (error) {
-      this.reportLoggerAndThrowException(error);
+      this.reportLoggerAndThrowException(error, params);
     }
   }
 
@@ -226,7 +229,7 @@ export class QuestionsController {
 
       return new QuestionResponseDto(question);
     } catch (error) {
-      this.reportLoggerAndThrowException(error);
+      this.reportLoggerAndThrowException(error, params);
     }
   }
 
@@ -235,13 +238,19 @@ export class QuestionsController {
     @Param('id') id: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionResponseDto> {
-    const {
-      content,
-      answers: { data: answers, type }
-    } = questionData;
+    const { content, answers } = questionData;
+    const params: any = {
+      where: {
+        id
+      },
+      data: {
+        content
+      }
+    };
+    const hasType = !!answers?.type;
 
-    try {
-      const upsert = answers?.map((answer: Answer) => ({
+    if (hasType) {
+      const upsert = answers?.data.map((answer: Answer) => ({
         where: {
           id: answer.id ?? ''
         },
@@ -252,23 +261,19 @@ export class QuestionsController {
           content: answer.content
         }
       }));
-      const params = {
-        where: {
-          id
-        },
-        data: {
-          content,
-          type,
-          answers: {
-            upsert
-          }
-        }
+
+      params.data.type = answers.type;
+      params.data.answers = {
+        upsert
       };
+    }
+
+    try {
       const question = await this.questionService.update(params);
 
       return new QuestionResponseDto(question);
     } catch (error) {
-      this.reportLoggerAndThrowException(error);
+      this.reportLoggerAndThrowException(error, params);
     }
   }
 
@@ -277,7 +282,7 @@ export class QuestionsController {
     try {
       return await this.questionService.delete({ id });
     } catch (error) {
-      this.reportLoggerAndThrowException(error);
+      this.reportLoggerAndThrowException(error, { id });
     }
   }
 }
