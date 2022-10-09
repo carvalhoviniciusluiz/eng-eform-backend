@@ -52,11 +52,11 @@ export class RootController {
   @Get('/:id')
   async getForm(@Param('id') id: string): Promise<FormResponseDTO> {
     try {
-      const { questions, ...form } = await this.rootService.getForm({
+      const form = await this.rootService.getForm({
         id
       });
 
-      return new FormResponseDTO({ form, questions });
+      return new FormResponseDTO(form);
     } catch (error) {
       throw new BadRequestException();
     }
