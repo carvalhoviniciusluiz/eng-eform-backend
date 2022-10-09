@@ -176,12 +176,16 @@ export class QuestionsController {
           id: formId
         }
       },
-      content,
-      type: answers.type,
-      answers: {
-        create: answers.data
-      }
+      content
     };
+    const hasType = !!answers?.type;
+
+    if (hasType) {
+      params.type = answers.type;
+      params.answers = {
+        create: answers.data
+      };
+    }
 
     try {
       const question = await this.questionService.create(params);
