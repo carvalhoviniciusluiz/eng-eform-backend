@@ -15,6 +15,15 @@ export class QuestionsService {
           where: {
             deleted: null
           }
+        },
+        children: {
+          include: {
+            answers: {
+              where: {
+                deleted: null
+              }
+            }
+          }
         }
       }
     });
