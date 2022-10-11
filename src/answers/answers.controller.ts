@@ -108,7 +108,11 @@ export class AnswersController {
   }
 
   @Delete('/:id')
-  async deleteAnswer(@Param('id') id: string): Promise<AnswerModel> {
-    return this.answerService.delete({ id });
+  async deleteAnswer(@Param('id') id: string): Promise<void> {
+    try {
+      await this.answerService.delete({ id });
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 }
