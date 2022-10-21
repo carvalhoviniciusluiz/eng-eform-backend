@@ -2,6 +2,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+import { AppLogger } from '~/app.logger';
 import { PrismaService } from '~/common/service';
 import { CacheService } from '~/config';
 import { UsersService } from '~/users/users.service';
@@ -22,8 +23,26 @@ describe('UsersService', () => {
           provide: APP_INTERCEPTOR,
           useClass: CacheInterceptor
         },
-        UsersService,
-        PrismaService
+        {
+          provide: PrismaService,
+          useValue: {
+            user: {
+              create: jest.fn(),
+              update: jest.fn(),
+              findMany: jest.fn(),
+              count: jest.fn(),
+              delete: jest.fn()
+            }
+          }
+        },
+        {
+          provide: AppLogger,
+          useValue: {
+            setContext: jest.fn(),
+            fail: jest.fn()
+          }
+        },
+        UsersService
       ]
     }).compile();
     service = module.get<UsersService>(UsersService);

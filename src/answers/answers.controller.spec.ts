@@ -34,77 +34,88 @@ describe('AnswersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 
-  it('should return empty list', async () => {
-    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
-      count: 0,
-      answers: []
-    }));
-    const response = await controller.getAll('id', {});
-    expect(response.meta).toBeDefined();
-    expect(response.data.length).toBe(0);
-  });
-
-  it('should return not empty list', async () => {
-    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
-      count: 1,
-      answers: [{}] as any
-    }));
-    const response = await controller.getAll('id', {});
-    expect(response.meta).toBeDefined();
-    expect(response.data.length).toBe(1);
-  });
-
-  it('should return not empty list filter by email', async () => {
-    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
-      count: 1,
-      answers: [{}] as any
-    }));
-    const response = await controller.getAll('id', {
-      content: faker.random.word()
+  describe('getAll', () => {
+    it('should return empty list', async () => {
+      jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+        count: 0,
+        answers: []
+      }));
+      const response = await controller.getAll('id', {});
+      expect(response.meta).toBeDefined();
+      expect(response.data.length).toBe(0);
     });
-    expect(response.meta).toBeDefined();
-    expect(response.data.length).toBe(1);
-  });
 
-  it('should throw badrequest', async () => {
-    jest.spyOn(service, 'getAll').mockImplementationOnce(async () => {
-      throw new Error();
+    it('should return not empty list', async () => {
+      jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+        count: 1,
+        answers: [{}] as any
+      }));
+      const response = await controller.getAll('id', {});
+      expect(response.meta).toBeDefined();
+      expect(response.data.length).toBe(1);
     });
-    const promise = controller.getAll('id', {});
-    await expect(promise).rejects.toThrowError();
-  });
 
-  it('should return one record', async () => {
-    jest.spyOn(service, 'getAnswer').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.getAnswer(faker.datatype.uuid());
-    expect(response).toEqual({});
-  });
-
-  it('should create and throw error', async () => {
-    jest.spyOn(service, 'create').mockImplementationOnce(async () => {
-      throw new Error();
+    it('should return not empty list filter by email', async () => {
+      jest.spyOn(service, 'getAll').mockImplementationOnce(async () => ({
+        count: 1,
+        answers: [{}] as any
+      }));
+      const response = await controller.getAll('id', {
+        content: faker.random.word()
+      });
+      expect(response.meta).toBeDefined();
+      expect(response.data.length).toBe(1);
     });
-    const promise = controller.createAnswer('id', {} as any);
-    await expect(promise).rejects.toThrowError();
+
+    it('should throw badrequest', async () => {
+      jest.spyOn(service, 'getAll').mockImplementationOnce(async () => {
+        throw new Error();
+      });
+      const promise = controller.getAll('id', {});
+      await expect(promise).rejects.toThrowError();
+    });
   });
 
-  it('should create new record', async () => {
-    jest.spyOn(service, 'create').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.createAnswer('id', {} as any);
-    expect(response).toEqual({});
+  describe('getAnswer', () => {
+    it('should return one record', async () => {
+      jest.spyOn(service, 'getAnswer').mockImplementationOnce(async () => ({} as any));
+      const response = await controller.getAnswer(faker.datatype.uuid());
+      expect(response).toEqual({});
+    });
   });
 
-  it('should update record', async () => {
-    jest.spyOn(service, 'update').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.updateAnswer('id', faker.datatype.uuid(), {} as any);
-    expect(response).toEqual({});
+  describe('create', () => {
+    it('should create and throw error', async () => {
+      jest.spyOn(service, 'create').mockImplementationOnce(async () => {
+        throw new Error();
+      });
+      const promise = controller.createAnswer('id', {} as any);
+      await expect(promise).rejects.toThrowError();
+    });
+
+    it('should create new record', async () => {
+      jest.spyOn(service, 'create').mockImplementationOnce(async () => ({} as any));
+      const response = await controller.createAnswer('id', {} as any);
+      expect(response).toEqual({});
+    });
   });
 
-  it('should delete record', async () => {
-    jest.spyOn(service, 'delete').mockImplementationOnce(async () => ({} as any));
-    const response = await controller.deleteAnswer(faker.datatype.uuid());
-    expect(response).toEqual({});
+  describe('update', () => {
+    it('should update record', async () => {
+      jest.spyOn(service, 'update').mockImplementationOnce(async () => ({} as any));
+      const response = await controller.updateAnswer('id', faker.datatype.uuid(), {} as any);
+      expect(response).toEqual({});
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete record', async () => {
+      jest.spyOn(service, 'delete').mockImplementationOnce(async () => ({} as any));
+      const response = await controller.deleteAnswer(faker.datatype.uuid());
+      expect(response).toBeUndefined();
+    });
   });
 });

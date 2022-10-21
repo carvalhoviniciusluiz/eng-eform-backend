@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   CacheInterceptor,
   Controller,
@@ -16,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Prisma, Question as QuestionModel } from '@prisma/client';
 import { AppLogger } from '~/app.logger';
+import { BaseController } from '~/common/controllers/base.controller';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import { FormsService } from '~/forms/forms.service';
@@ -37,23 +37,13 @@ type Answer = {
 @Roles('admin', 'master')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('forms/:formId/questions')
-export class QuestionsController {
+export class QuestionsController extends BaseController {
   constructor(
     private readonly formService: FormsService,
     private readonly questionService: QuestionsService,
-    private readonly logger: AppLogger
+    readonly logger: AppLogger
   ) {
-    this.logger.setContext(QuestionsController.name);
-  }
-
-  reportLoggerAndThrowException(error: any, meta?: any) {
-    this.logger.fail({
-      code: error.code,
-      message: error?.meta?.cause ?? error?.message,
-      error: error.stack,
-      meta
-    });
-    throw new BadRequestException();
+    super(logger, QuestionsController.name);
   }
 
   @UseInterceptors(CacheInterceptor)
