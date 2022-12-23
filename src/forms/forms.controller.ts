@@ -29,6 +29,16 @@ export class FormsController {
   constructor(private readonly formService: FormsService) {}
 
   @UseInterceptors(CacheInterceptor)
+  @Get('/:id/stats')
+  async getStats(@Param('id') id: string) {
+    try {
+      return await this.formService.getStats(id);
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
+
+  @UseInterceptors(CacheInterceptor)
   @Get()
   async getAll(@Query() params: FormPaginateDTO, @GetUser() user: UserModel): Promise<FormPaginateResponseDto> {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;

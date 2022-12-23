@@ -10,6 +10,24 @@ type FormResponse = FormModel & {
 export class FormsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getStats(formId: string) {
+    const questionResults = await this.prisma.$queryRawUnsafe(
+      `
+SELECT Questions.id, Questions.content as question, COUNT(Question_Answers.id)::INT as count, Answers.content as answer, date_trunc('day', Question_Answers.updated_at) as date
+FROM Forms
+LEFT JOIN Questions ON Questions.form_id = Forms.id
+LEFT JOIN Answers ON Questions.id = Answers.question_id
+LEFT JOIN Question_Answers ON Question_Answers.question_id = Questions.id and Question_Answers.answer_id = Answers.id
+WHERE Forms.id = $1
+GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updated_at)`,
+      formId
+    );
+
+    return {
+      data: questionResults
+    };
+  }
+
   async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput): Promise<FormResponse | null> {
     return this.prisma.form.findUnique({
       where: formWhereUniqueInput,
