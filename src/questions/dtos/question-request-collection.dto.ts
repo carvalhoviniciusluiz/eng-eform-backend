@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { QuestionType } from '@prisma/client';
 import { Expose } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsEnum } from 'class-validator';
+import { ArrayMinSize, IsArray } from 'class-validator';
 import { AnswerRequestDTO } from '~/answers/dtos';
 
 export class AnswerRequestCollectionDTO {
   @Expose()
-  @IsEnum(QuestionType)
+  // @IsEnum(QuestionType, { groups: ['all'] })
   @ApiProperty({
     type: QuestionType,
     description: 'Answers type',
