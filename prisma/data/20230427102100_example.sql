@@ -130,7 +130,8 @@ VALUES
 -- InsertQuestions
 
 INSERT INTO "public"."questions" ("id","content","created_at","updated_at","form_id","parent_id","type")
-VALUES('c354b28b-37cd-4f39-8b0a-50d9c1483a92','Ocorreu outras vezes','2023-03-28 11:46:19.175 UTC','2023-03-28 11:46:19.175 UTC','019da226-2d07-4a02-aa0e-bfa403026a2c','d7eeeefe-a59f-42f1-9b59-17e44e615a14','OBJECTIVE');
+VALUES
+('c354b28b-37cd-4f39-8b0a-50d9c1483a92','Ocorreu outras vezes','2023-03-28 11:46:19.175 UTC','2023-03-28 11:46:19.175 UTC','019da226-2d07-4a02-aa0e-bfa403026a2c','d7eeeefe-a59f-42f1-9b59-17e44e615a14','OBJECTIVE');
 
 INSERT INTO "public"."answers" ("id","content","created_at","updated_at","question_id")
 VALUES
