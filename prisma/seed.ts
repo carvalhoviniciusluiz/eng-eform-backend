@@ -6,7 +6,7 @@ import {
   generateFormsList,
   generateQuestionList,
   generateUserList
-} from './data';
+} from './fixtures';
 const prisma = new PrismaClient();
 
 const main = async () => {
