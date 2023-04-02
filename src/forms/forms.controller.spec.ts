@@ -93,7 +93,7 @@ describe('FormsController', () => {
           questions: []
         } as any)
     );
-    const response = await controller.getForm(faker.datatype.uuid());
+    const response = await controller.getForm(faker.datatype.uuid(), { questionsShow: true });
     expect(response).toEqual({
       form: {
         id: undefined,

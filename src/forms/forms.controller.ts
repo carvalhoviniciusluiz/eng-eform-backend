@@ -17,7 +17,13 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Form as FormModel, Prisma, User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
-import { FormPaginateDTO, FormPaginateResponseDto, FormRequestDTO, FormWithQuestionsResponseDto } from '~/forms/dtos';
+import {
+  FormPaginateDTO,
+  FormPaginateResponseDto,
+  FormQueryDTO,
+  FormRequestDTO,
+  FormWithQuestionsResponseDto
+} from '~/forms/dtos';
 import { FormsService } from '~/forms/forms.service';
 
 @ApiTags('Forms')
@@ -44,18 +50,15 @@ export class FormsController {
     const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
     const { companyId } = user;
     const hasName = !!name;
-
     const where = {
       companyId
     } as Prisma.FormWhereInput;
-
     if (hasName) {
       where.name = {
         startsWith: name,
         mode: 'insensitive'
       };
     }
-
     const options = hasName
       ? {
           where
@@ -66,7 +69,6 @@ export class FormsController {
           take,
           orderBy
         };
-
     try {
       const { forms, count } = await this.formService.getAll(options);
       return new FormPaginateResponseDto(forms, take, skip, count);
@@ -76,12 +78,9 @@ export class FormsController {
   }
 
   @Get('/:id')
-  async getForm(@Param('id') id: string): Promise<any> {
+  async getForm(@Param('id') id: string, @Query() params: FormQueryDTO): Promise<any> {
     try {
-      const { questions, ...form } = await this.formService.getForm({
-        id
-      });
-
+      const { questions, ...form } = await this.formService.getForm({ id }, params.questionsShow);
       return new FormWithQuestionsResponseDto({ form, questions });
     } catch (error) {
       throw new BadRequestException();

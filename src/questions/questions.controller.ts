@@ -74,13 +74,9 @@ export class QuestionsController extends BaseController {
           take,
           orderBy
         };
-
     try {
-      const form = await this.formService.getForm({
-        id: formId
-      });
+      const form = await this.formService.getForm({ id: formId }, true);
       const { questions, count } = await this.questionService.getAll(options);
-
       return new QuestionPaginateResponseDto({
         form,
         parent: null,
@@ -123,12 +119,11 @@ export class QuestionsController extends BaseController {
           take,
           orderBy
         };
-
     try {
-      const form = await this.formService.getForm({ id: formId });
+      const questionsShow = true;
+      const form = await this.formService.getForm({ id: formId }, questionsShow);
       const parent = await this.questionService.getQuestion({ id: questionId });
       const { questions, count } = await this.questionService.getAll(options);
-
       return new QuestionPaginateResponseDto({
         form,
         parent,
@@ -148,7 +143,6 @@ export class QuestionsController extends BaseController {
       const question = await this.questionService.getQuestion({
         id
       });
-
       return new QuestionResponseDto(question);
     } catch (error) {
       this.reportLoggerAndThrowException(error, {
@@ -172,17 +166,14 @@ export class QuestionsController extends BaseController {
       content
     };
     const hasType = !!answers?.type;
-
     if (hasType) {
       params.type = answers.type;
       params.answers = {
         create: answers.data
       };
     }
-
     try {
       const question = await this.questionService.create(params);
-
       return new QuestionResponseDto(question);
     } catch (error) {
       this.reportLoggerAndThrowException(error, params);
@@ -213,10 +204,8 @@ export class QuestionsController extends BaseController {
         create: answers.data
       }
     };
-
     try {
       const question = await this.questionService.create(params);
-
       return new QuestionResponseDto(question);
     } catch (error) {
       this.reportLoggerAndThrowException(error, params);
@@ -238,7 +227,6 @@ export class QuestionsController extends BaseController {
       }
     };
     const hasType = !!answers?.type;
-
     if (hasType) {
       const upsert = answers?.data.map((answer: Answer) => ({
         where: {
@@ -251,16 +239,13 @@ export class QuestionsController extends BaseController {
           content: answer.content
         }
       }));
-
       params.data.type = answers.type;
       params.data.answers = {
         upsert
       };
     }
-
     try {
       const question = await this.questionService.update(params);
-
       return new QuestionResponseDto(question);
     } catch (error) {
       this.reportLoggerAndThrowException(error, params);

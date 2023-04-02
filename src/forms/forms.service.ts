@@ -28,10 +28,16 @@ GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updat
     };
   }
 
-  async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput): Promise<FormResponse | null> {
-    return this.prisma.form.findUnique({
-      where: formWhereUniqueInput,
-      include: {
+  async getForm(
+    formWhereUniqueInput: Prisma.FormWhereUniqueInput,
+    questionsShow: boolean
+  ): Promise<FormResponse | null> {
+    const options: Prisma.FormFindUniqueArgs = {
+      where: formWhereUniqueInput
+    };
+    const questionsShowForce = questionsShow === undefined;
+    if (questionsShow || questionsShowForce) {
+      options.include = {
         questions: {
           where: {
             parentId: null,
@@ -39,8 +45,9 @@ GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updat
           },
           orderBy: { createdAt: 'asc' }
         }
-      }
-    });
+      };
+    }
+    return this.prisma.form.findUnique(options) as any;
   }
 
   async getAll(params: {

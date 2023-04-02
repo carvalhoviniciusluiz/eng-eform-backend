@@ -37,7 +37,7 @@ export class FormWithQuestionsResponseDto {
       updatedAt: form.updatedAt
     };
 
-    this.questions = questions.map(question => ({
+    this.questions = questions?.map(question => ({
       id: question.id,
       content: question.content,
       updatedAt: question.updatedAt

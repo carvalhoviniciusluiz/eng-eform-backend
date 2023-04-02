@@ -43,9 +43,12 @@ describe('FormsService', () => {
 
   it('should get a record', async () => {
     prisma.form.findUnique = jest.fn().mockReturnValueOnce({});
-    const response = await service.getForm({
-      id: faker.datatype.uuid()
-    });
+    const response = await service.getForm(
+      {
+        id: faker.datatype.uuid()
+      },
+      true
+    );
     expect(response).toEqual({});
   });
 
