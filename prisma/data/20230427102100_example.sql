@@ -55,6 +55,9 @@ VALUES
 
 -- InsertUsers
 
+-- master@master.com
+-- sepm@sepm.com
+-- Ch@nge123
 INSERT INTO "public"."users" ("id","email","role","password_hashed","company_id","created_at","updated_at")
 VALUES
 ('977e22e0-4c36-4fbc-b394-3456c16492e0', 'master@master.com','MASTER','$2a$10$WC4znjUbRFWfc1uOXorKxecXmZv8bgtQ2EG.Jf4yk8ROdrgluCe8O',null,'2023-03-27 12:47:53.671 UTC','2023-03-27 12:47:53.671 UTC'),
