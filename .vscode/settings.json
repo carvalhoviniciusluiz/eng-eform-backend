@@ -8,8 +8,8 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "js/ts.implicitProjectConfig.experimentalDecorators": true,
