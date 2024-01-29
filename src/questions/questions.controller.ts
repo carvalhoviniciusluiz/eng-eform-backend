@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Prisma, Question as QuestionModel, QuestionType } from '@prisma/client';
+import { Prisma, Question as QuestionModel } from '@prisma/client';
 import { AppLogger } from '~/app.logger';
 import { BaseController } from '~/common/controllers/base.controller';
 import { Roles } from '~/common/decorators';
@@ -156,13 +156,14 @@ export class QuestionsController extends BaseController {
     @Param('formId') formId: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionResponseDto> {
-    const { content, answers } = questionData;
+    const { content, answers, answerType } = questionData;
     const params: Prisma.QuestionCreateInput = {
       form: {
         connect: {
           id: formId
         }
       },
+      type: answerType,
       content
     };
     const hasType = !!answers?.type;
@@ -186,7 +187,7 @@ export class QuestionsController extends BaseController {
     @Param('questionId') questionId: string,
     @Body() questionData: QuestionRequestDTO
   ): Promise<QuestionResponseDto> {
-    const { content, answers } = questionData;
+    const { content, answers, answerType } = questionData;
     const params: Prisma.QuestionCreateInput = {
       form: {
         connect: {
@@ -199,7 +200,7 @@ export class QuestionsController extends BaseController {
         }
       },
       content,
-      type: QuestionType.PLAIN_TEXT
+      type: answerType
     };
     if (answers) {
       params.answers = {
