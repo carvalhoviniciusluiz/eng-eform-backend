@@ -23,6 +23,9 @@ export class RootService {
           include: {
             answers: true,
             children: {
+              where: {
+                deleted: null
+              },
               include: {
                 answers: true
               }

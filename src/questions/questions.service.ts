@@ -17,6 +17,9 @@ export class QuestionsService {
           }
         },
         children: {
+          where: {
+            deleted: null
+          },
           include: {
             answers: false
           }
