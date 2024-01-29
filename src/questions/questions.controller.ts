@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Prisma, Question as QuestionModel } from '@prisma/client';
+import { Prisma, Question as QuestionModel, QuestionType } from '@prisma/client';
 import { AppLogger } from '~/app.logger';
 import { BaseController } from '~/common/controllers/base.controller';
 import { Roles } from '~/common/decorators';
@@ -199,11 +199,14 @@ export class QuestionsController extends BaseController {
         }
       },
       content,
-      type: answers.type,
-      answers: {
-        create: answers.data
-      }
+      type: QuestionType.PLAIN_TEXT
     };
+    if (answers) {
+      params.answers = {
+        create: answers.data
+      };
+      params.type = answers.type;
+    }
     try {
       const question = await this.questionService.create(params);
       return new QuestionResponseDto(question);

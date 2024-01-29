@@ -47,21 +47,30 @@ export class RootService {
       where,
       orderBy
     });
-
     return {
       count,
       forms
     };
   }
 
+  private isObject(obj: any) {
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
+  }
+
   createQuestionAnswerList(formId: string, data: { [key: string]: string | string[] }[]) {
     const questions = Object.keys(data);
     return questions.reduce((acc, questionId) => {
-      const answerIdOrArray = data[questionId as any];
-      const isArray = Array.isArray(answerIdOrArray);
-
-      if (isArray) {
-        for (const value of answerIdOrArray) {
+      const answerData = data[questionId as any];
+      const isObject = this.isObject(answerData);
+      const isArray = Array.isArray(answerData);
+      if (isObject) {
+        acc.push({
+          formId,
+          questionId,
+          response: answerData.response
+        });
+      } else if (isArray) {
+        for (const value of answerData) {
           acc.push({
             formId,
             questionId,
@@ -72,17 +81,15 @@ export class RootService {
         acc.push({
           formId,
           questionId,
-          answerId: answerIdOrArray
+          answerId: answerData
         });
       }
-
       return acc;
     }, []);
   }
 
   async saveQuestionAnswers({ formId, data }: { formId: string; data: { [key: string]: string | string[] }[] }) {
     const newData = this.createQuestionAnswerList(formId, data);
-
     await this.prisma.questionAnswer.createMany({
       data: newData
     });

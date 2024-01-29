@@ -24,7 +24,7 @@ datasource db {
 
 model PersonAddress {
   id             String    @id                  @default(uuid())
-  number         String    @db.VarChar(200)
+  number         String    @db.VarChar(191)
   zipCode        String    @db.VarChar(50)      @map("zip_code")
   publicPlace    String    @map("public_place") @db.VarChar(100)
   neighborhood   String    @db.VarChar(191)
@@ -50,7 +50,7 @@ enum DocumentType {
 model PersonDocument {
   id             String       @id                     @default(uuid())
   documentType   DocumentType @map("document_type")
-  documentNumber String       @map("document_number") @db.VarChar(200)
+  documentNumber String       @map("document_number") @db.VarChar(191)
   shippingDate   DateTime?    @map("shipping_date")
   personId       String       @map("person_id")
   person         Person       @relation(fields: [personId], references: [id])
@@ -64,7 +64,7 @@ model PersonDocument {
 model PersonContact {
   id             String    @id                  @default(uuid())
   contactType    String    @map("contact_type") @db.VarChar(20)
-  contact        String    @db.VarChar(200)
+  contact        String    @db.VarChar(191)
   personId       String    @map("person_id")
   person         Person    @relation(fields: [personId], references: [id])
   createdAt      DateTime? @default(now())      @map("created_at")
@@ -74,17 +74,18 @@ model PersonContact {
 }
 
 model Person {
-  id             String           @id                @default(uuid())
-  name           String           @db.VarChar(191)
-  socialName     String?          @db.VarChar(191)   @map("social_name")
-  birthDate      DateTime?        @map("birth_date")
-  adresses       PersonAddress[]
-  documents      PersonDocument[]
-  contacts       PersonContact[]
-  // generalInformation Form[]
-  createdAt      DateTime?        @default(now())    @map("created_at")
-  updatedAt      DateTime?        @updatedAt         @map("updated_at")
-  deleted        DateTime?
+  id                String           @id                @default(uuid())
+  name              String           @db.VarChar(191)
+  socialName        String?          @db.VarChar(191)   @map("social_name")
+  birthDate         DateTime?        @map("birth_date")
+  adresses          PersonAddress[]
+  documents         PersonDocument[]
+  contacts          PersonContact[]
+  // generalInfoFormId String           @map("form_id")
+  // generalInfoForm   Form             @relation(fields: [generalInfoFormId], references: [id])
+  createdAt         DateTime?        @default(now())    @map("created_at")
+  updatedAt         DateTime?        @updatedAt         @map("updated_at")
+  deleted           DateTime?
   @@index([name, socialName])
   @@map("people")
 }
@@ -104,6 +105,7 @@ enum FormStatus {
 enum QuestionType {
   OBJECTIVE
   MULTIPLE
+  PLAIN_TEXT
 }
 
 model User {
@@ -150,6 +152,7 @@ model Form {
   questions       Question[]
   questionAnswers QuestionAnswer[]
   formConsumers   FormConsumer[]
+  // people          Person[]
   @@map("forms")
 }
 
@@ -201,7 +204,8 @@ model QuestionAnswer {
   form       Form      @relation(fields: [formId], references: [id])
   questionId String    @map("question_id")
   question   Question  @relation(fields: [questionId], references: [id])
-  answerId   String    @map("answer_id")
-  answer     Answer    @relation(fields: [answerId], references: [id])
+  answerId   String?   @map("answer_id")
+  answer     Answer?   @relation(fields: [answerId], references: [id])
+  response   String?   @db.Text()
   @@map("question_answers")
 }

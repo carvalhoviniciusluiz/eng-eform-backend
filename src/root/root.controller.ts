@@ -40,7 +40,6 @@ export class RootController {
           take,
           orderBy
         };
-
     try {
       const { forms, count } = await this.rootService.getAll(options);
       return new FormPaginateResponseDto(forms, take, skip, count);
@@ -55,7 +54,6 @@ export class RootController {
       const form = await this.rootService.getForm({
         id
       });
-
       return new FormResponseDTO(form);
     } catch (error) {
       throw new BadRequestException();
