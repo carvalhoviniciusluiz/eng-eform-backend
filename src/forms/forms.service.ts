@@ -19,7 +19,8 @@ LEFT JOIN Questions ON Questions.form_id = Forms.id
 LEFT JOIN Answers ON Questions.id = Answers.question_id
 LEFT JOIN Question_Answers ON Question_Answers.question_id = Questions.id and Question_Answers.answer_id = Answers.id
 WHERE Forms.id = $1
-GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updated_at)`,
+GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updated_at)
+ORDER BY Questions.content ASC, Answers.content ASC;`,
       formId
     );
 
