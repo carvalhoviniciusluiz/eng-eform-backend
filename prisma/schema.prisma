@@ -36,6 +36,7 @@ model PersonAddress {
   createdAt      DateTime? @default(now())      @map("created_at")
   updatedAt      DateTime? @updatedAt           @map("updated_at")
   deleted        DateTime?
+  @@index([personId])
   @@map("address_people")
 }
 
@@ -57,7 +58,7 @@ model PersonDocument {
   createdAt      DateTime?    @default(now())         @map("created_at")
   updatedAt      DateTime?    @updatedAt              @map("updated_at")
   deleted        DateTime?
-  @@index([documentType, documentNumber])
+  @@index([documentType, documentNumber, personId])
   @@map("document_people")
 }
 
@@ -70,6 +71,7 @@ model PersonContact {
   createdAt      DateTime? @default(now())      @map("created_at")
   updatedAt      DateTime? @updatedAt           @map("updated_at")
   deleted        DateTime?
+  @@index([personId])
   @@map("contact_people")
 }
 
@@ -120,7 +122,7 @@ model User {
   createdAt        DateTime? @default(now())         @map("created_at")
   updatedAt        DateTime? @updatedAt              @map("updated_at")
   deleted          DateTime?
-  @@index([email])
+  @@index([email, companyId])
   @@map("users")
 }
 
@@ -128,11 +130,11 @@ model Company {
   id        String    @id              @default(uuid())
   name      String?   @db.VarChar(191)
   initials  String    @db.VarChar(100)
+  users     User[]
+  forms     Form[]
   createdAt DateTime? @default(now())  @map("created_at")
   updatedAt DateTime? @updatedAt       @map("updated_at")
   deleted   DateTime?
-  users     User[]
-  forms     Form[]
   @@index([initials])
   @@map("companies")
 }
@@ -140,9 +142,6 @@ model Company {
 model Form {
   id              String      @id              @default(uuid())
   name            String?     @db.VarChar(191)
-  createdAt       DateTime?   @default(now())  @map("created_at")
-  updatedAt       DateTime?   @updatedAt       @map("updated_at")
-  deleted         DateTime?
   companyId       String      @map("company_id")
   company         Company     @relation(fields: [companyId], references: [id])
   authorId        String      @map("author_id")
@@ -153,6 +152,10 @@ model Form {
   questionAnswers QuestionAnswer[]
   formConsumers   FormConsumer[]
   // people          Person[]
+  createdAt       DateTime?   @default(now())  @map("created_at")
+  updatedAt       DateTime?   @updatedAt       @map("updated_at")
+  deleted         DateTime?
+  @@index([companyId, authorId])
   @@map("forms")
 }
 
@@ -163,15 +166,16 @@ model FormConsumer {
   formId     String    @map("form_id")
   form       Form      @relation(fields: [formId], references: [id])
   assignedAt DateTime? @map("assigned_at")
+  createdAt DateTime?  @default(now())  @map("created_at")
+  updatedAt DateTime?  @updatedAt       @map("updated_at")
+  deleted   DateTime?
+  @@index([userId, formId])
   @@map("form_consumers")
 }
 
 model Question {
   id        String        @id              @default(uuid())
   content   String?       @db.VarChar(191)
-  createdAt DateTime?     @default(now())  @map("created_at")
-  updatedAt DateTime?     @updatedAt       @map("updated_at")
-  deleted   DateTime?
   formId    String        @map("form_id")
   form      Form          @relation(fields: [formId], references: [id])
   children  Question[]    @relation("children")
@@ -180,26 +184,30 @@ model Question {
   type      QuestionType? @default(OBJECTIVE)
   answers   Answer[]
   questionAnswers QuestionAnswer[]
+  createdAt DateTime?     @default(now())  @map("created_at")
+  updatedAt DateTime?     @updatedAt       @map("updated_at")
+  deleted   DateTime?
+  @@index([formId, parentId])
   @@map("questions")
 }
 
 model Answer {
   id              String    @id              @default(uuid())
   content         String    @db.VarChar(191)
-  createdAt       DateTime? @default(now())  @map("created_at")
-  updatedAt       DateTime? @updatedAt       @map("updated_at")
-  deleted         DateTime?
+  hasContent      Boolean?  @db.Boolean()    @default(false) @map("has_content")
+  isDefault       Boolean?  @db.Boolean()    @default(false) @map("is_default")
   questionId      String    @map("question_id")
   question        Question  @relation(fields: [questionId], references: [id])
   questionAnswers QuestionAnswer[]
+  createdAt       DateTime? @default(now())  @map("created_at")
+  updatedAt       DateTime? @updatedAt       @map("updated_at")
+  deleted         DateTime?
+  @@index([questionId])
   @@map("answers")
 }
 
 model QuestionAnswer {
   id         String    @id             @default(uuid())
-  createdAt  DateTime? @default(now()) @map("created_at")
-  updatedAt  DateTime? @updatedAt      @map("updated_at")
-  deleted    DateTime?
   formId     String    @map("form_id")
   form       Form      @relation(fields: [formId], references: [id])
   questionId String    @map("question_id")
@@ -207,5 +215,9 @@ model QuestionAnswer {
   answerId   String?   @map("answer_id")
   answer     Answer?   @relation(fields: [answerId], references: [id])
   response   String?   @db.Text()
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt      @map("updated_at")
+  deleted    DateTime?
+  @@index([formId, questionId, answerId])
   @@map("question_answers")
 }
