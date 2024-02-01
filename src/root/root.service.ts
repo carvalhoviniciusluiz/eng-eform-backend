@@ -67,11 +67,12 @@ export class RootService {
       const isObject = this.isObject(answerData);
       const isArray = Array.isArray(answerData);
       if (isObject) {
-        acc.push({
-          formId,
-          questionId,
-          response: answerData.response
-        });
+        const [answerId] = Object.keys(answerData);
+        const [response] = Object.values(answerData);
+        const opt = answerId.includes('response')
+          ? { formId, questionId, response }
+          : { formId, questionId, response, answerId };
+        acc.push(opt);
       } else if (isArray) {
         for (const value of answerData) {
           acc.push({
