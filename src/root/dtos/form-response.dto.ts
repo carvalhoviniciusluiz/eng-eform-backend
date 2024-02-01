@@ -25,6 +25,8 @@ export class FormResponseDTO {
     return answers?.map((answer: any) => ({
       id: answer.id,
       content: answer.content,
+      hasContent: answer.hasContent,
+      isDefault: answer.isDefault,
       updatedAt: answer.updatedAt
     }));
   }

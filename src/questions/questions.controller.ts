@@ -30,6 +30,8 @@ import { QuestionsService } from '~/questions/questions.service';
 type Answer = {
   id?: string;
   content: string;
+  hasContent: boolean;
+  isDefault: boolean;
 };
 
 @ApiTags('Questions')
@@ -237,10 +239,14 @@ export class QuestionsController extends BaseController {
           id: answer.id ?? ''
         },
         create: {
-          content: answer.content
+          content: answer.content,
+          hasContent: answer.hasContent,
+          isDefault: answer.isDefault
         },
         update: {
-          content: answer.content
+          content: answer.content,
+          hasContent: answer.hasContent,
+          isDefault: answer.isDefault
         }
       }));
       params.data.type = answers.type;

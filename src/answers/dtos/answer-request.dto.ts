@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { MaxLength } from 'class-validator';
+import { Expose, Transform } from 'class-transformer';
+import { IsBoolean, IsOptional, MaxLength } from 'class-validator';
+import { transformToBoolean } from '~/common/utils';
 
 export class AnswerRequestDTO {
   @Expose()
@@ -19,4 +20,24 @@ export class AnswerRequestDTO {
     example: 'Apple Inc.'
   })
   content: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(transformToBoolean)
+  @ApiPropertyOptional({
+    type: String,
+    description: 'For includes content.',
+    example: true
+  })
+  hasContent: true;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(transformToBoolean)
+  @ApiPropertyOptional({
+    type: String,
+    description: 'If is answer default.',
+    example: true
+  })
+  isDefault: false;
 }
