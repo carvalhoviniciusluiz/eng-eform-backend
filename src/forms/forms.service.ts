@@ -23,7 +23,6 @@ GROUP BY Questions.id, Answers.content, date_trunc('day', Question_Answers.updat
 ORDER BY Questions.content ASC, Answers.content ASC;`,
       formId
     );
-
     return {
       data: questionResults
     };
@@ -62,10 +61,13 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     const forms = await this.prisma.form.findMany({
       skip,
       take,
-      where,
-      orderBy
+      orderBy,
+      include: {
+        companies: {
+          where
+        }
+      }
     });
-
     return {
       count,
       forms

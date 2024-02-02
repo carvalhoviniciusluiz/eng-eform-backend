@@ -1,14 +1,13 @@
-import { Form as FormModel, User as UserModel } from '@prisma/client';
+import { Company as CompanyModel, Form as FormModel } from '@prisma/client';
 
 const getIndex = (index: number) => Math.floor(Math.random() * index);
 
-export const generateFormConsumerList = (forms: FormModel[], users: UserModel[], count = 50) => {
+export const generateFormConsumerList = (forms: FormModel[], companies: CompanyModel[], count = 50) => {
   return [...Array(count).keys()].map(() => {
     const form = forms[getIndex(forms.length - 1)];
-    const user = users[getIndex(users.length - 1)];
-
+    const company = companies[getIndex(companies.length - 1)];
     return {
-      userId: user?.id,
+      companyId: company?.id,
       formId: form?.id
     };
   });

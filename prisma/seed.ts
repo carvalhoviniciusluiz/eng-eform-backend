@@ -29,7 +29,7 @@ const main = async () => {
   const formList = await prisma.form.findMany();
 
   await prisma.formConsumer.createMany({
-    data: generateFormConsumerList(formList, userList)
+    data: generateFormConsumerList(formList, companyList)
   });
 
   await prisma.question.createMany({

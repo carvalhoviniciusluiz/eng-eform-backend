@@ -65,10 +65,16 @@ VALUES
 
 -- InsertForms
 
-INSERT INTO "public"."forms" ("id","name","created_at","updated_at","company_id","author_id","author_draft","status")
+INSERT INTO "public"."forms" ("id","name","created_at","updated_at","author_id","author_draft","status", "order", "segment")
 VALUES
-('0bf3c2d3-0250-4b97-9be6-f3fb71dd6d46','FICHA UNIFICADA DOS CENTROS','2023-03-27 13:45:04.238 UTC','2023-03-27 13:45:04.238 UTC','b973f87a-a7d0-4e14-b295-97326f5476a1','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED'),
-('019da226-2d07-4a02-aa0e-bfa403026a2c','FICHA DE REACOLHIMENTO','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','b973f87a-a7d0-4e14-b295-97326f5476a1','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED');
+('0bf3c2d3-0250-4b97-9be6-f3fb71dd6d46','FICHA UNIFICADA DOS CENTROS','2023-03-27 13:45:04.238 UTC','2023-03-27 13:45:04.238 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 2, 'CAD_PERSON'),
+('019da226-2d07-4a02-aa0e-bfa403026a2c','FICHA DE REACOLHIMENTO','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 1, 'CAD_PERSON');
+
+-- InsertFormConsumers
+
+INSERT INTO "public"."form_consumers" ("id", "form_id", "company_id") VALUES
+('270e6bfa-9c38-4223-af1a-e7ba077e31d1', '019da226-2d07-4a02-aa0e-bfa403026a2c', 'b973f87a-a7d0-4e14-b295-97326f5476a1'),
+('fc963210-eadf-45bb-9294-9c02dfacc733', '0bf3c2d3-0250-4b97-9be6-f3fb71dd6d46', 'b973f87a-a7d0-4e14-b295-97326f5476a1');
 
 -- InsertQuestions
 

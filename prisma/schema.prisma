@@ -83,8 +83,6 @@ model Person {
   adresses          PersonAddress[]
   documents         PersonDocument[]
   contacts          PersonContact[]
-  // generalInfoFormId String           @map("form_id")
-  // generalInfoForm   Form             @relation(fields: [generalInfoFormId], references: [id])
   createdAt         DateTime?        @default(now())    @map("created_at")
   updatedAt         DateTime?        @updatedAt         @map("updated_at")
   deleted           DateTime?
@@ -96,6 +94,11 @@ enum Role {
   USER
   ADMIN
   MASTER
+}
+
+enum FormSegment {
+  INDEPENDENT
+  CAD_PERSON
 }
 
 enum FormStatus {
@@ -117,8 +120,7 @@ model User {
   passwordHashed   String?   @map("password_hashed") @db.VarChar(191)
   companyId        String?   @map("company_id")
   company          Company?  @relation(fields: [companyId], references: [id])
-  forms            Form[]
-  publicationForms FormConsumer[]
+  ownerForms       Form[]
   createdAt        DateTime? @default(now())         @map("created_at")
   updatedAt        DateTime? @updatedAt              @map("updated_at")
   deleted          DateTime?
@@ -131,7 +133,7 @@ model Company {
   name      String?   @db.VarChar(191)
   initials  String    @db.VarChar(100)
   users     User[]
-  forms     Form[]
+  forms     FormConsumer[]
   createdAt DateTime? @default(now())  @map("created_at")
   updatedAt DateTime? @updatedAt       @map("updated_at")
   deleted   DateTime?
@@ -140,37 +142,34 @@ model Company {
 }
 
 model Form {
-  id              String      @id              @default(uuid())
-  name            String?     @db.VarChar(191)
-  companyId       String      @map("company_id")
-  company         Company     @relation(fields: [companyId], references: [id])
-  authorId        String      @map("author_id")
-  author          User        @relation(fields: [authorId], references: [id])
-  authorDraft     Json        @map("author_draft")
-  status          FormStatus? @default(DRAFT)
+  id              String       @id              @default(uuid())
+  name            String?      @db.VarChar(191)
+  authorId        String       @map("author_id")
+  author          User         @relation(fields: [authorId], references: [id])
+  authorDraft     Json         @map("author_draft")
+  segment         FormSegment? @default(INDEPENDENT)
+  status          FormStatus?  @default(DRAFT)
   questions       Question[]
   questionAnswers QuestionAnswer[]
-  formConsumers   FormConsumer[]
-  order           Int         @default(0)
-  // people          Person[]
-  createdAt       DateTime?   @default(now())  @map("created_at")
-  updatedAt       DateTime?   @updatedAt       @map("updated_at")
+  companies       FormConsumer[]
+  order           Int          @default(0)
+  createdAt       DateTime?    @default(now())  @map("created_at")
+  updatedAt       DateTime?    @updatedAt       @map("updated_at")
   deleted         DateTime?
-  @@index([companyId, authorId])
+  @@index([authorId])
   @@map("forms")
 }
 
 model FormConsumer {
   id         String    @id @default(uuid())
-  userId     String    @map("user_id")
-  user       User      @relation(fields: [userId], references: [id])
   formId     String    @map("form_id")
   form       Form      @relation(fields: [formId], references: [id])
-  assignedAt DateTime? @map("assigned_at")
+  companyId  String    @map("company_id")
+  company    Company   @relation(fields: [companyId], references: [id])
   createdAt DateTime?  @default(now())  @map("created_at")
   updatedAt DateTime?  @updatedAt       @map("updated_at")
   deleted   DateTime?
-  @@index([userId, formId])
+  @@index([formId, companyId])
   @@map("form_consumers")
 }
 

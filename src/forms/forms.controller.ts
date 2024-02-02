@@ -47,7 +47,7 @@ export class FormsController {
   @UseInterceptors(CacheInterceptor)
   @Get()
   async getAll(@Query() params: FormPaginateDTO, @GetUser() user: UserModel): Promise<FormPaginateResponseDto> {
-    const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
+    const { page: skip = 0, limit: take = 10, orderBy = { order: 'asc', name: 'asc' }, name } = params;
     const { companyId } = user;
     const hasName = !!name;
     const where = {
@@ -91,7 +91,7 @@ export class FormsController {
   async createForm(@Body() formData: FormRequestDTO, @GetUser() user: UserModel): Promise<FormModel> {
     const { name } = formData;
     try {
-      const newUser = await this.formService.create({
+      const newForm = await this.formService.create({
         name,
         author: {
           connect: {
@@ -103,14 +103,13 @@ export class FormsController {
           email: user.email,
           updatedAt: user.updatedAt
         }),
-        company: {
-          connect: {
-            id: user.companyId
+        companies: {
+          create: {
+            companyId: user.companyId
           }
         }
       });
-
-      return newUser;
+      return newForm;
     } catch (error) {
       const hasCompanyId = !!user.companyId;
       let message;

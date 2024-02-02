@@ -1,9 +1,14 @@
 
 -- InsertForms
 
-INSERT INTO "public"."forms" ("id","name","created_at","updated_at","company_id","author_id","author_draft","status")
+INSERT INTO "public"."forms" ("id","name","created_at","updated_at","author_id","author_draft","status", "order", "segment")
 VALUES
-('f594187f-504c-4266-b313-6d1fb19bb197','INFORMAÇÕES GERAIS','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','b973f87a-a7d0-4e14-b295-97326f5476a1','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED');
+('f594187f-504c-4266-b313-6d1fb19bb197','INFORMAÇÕES GERAIS','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 0, 'CAD_PERSON');
+
+-- InsertFormConsumers
+
+INSERT INTO "public"."form_consumers" ("id", "form_id", "company_id")
+VALUES ('b3fdccb0-3a97-4979-80e9-31765bc35de2', 'f594187f-504c-4266-b313-6d1fb19bb197', 'b973f87a-a7d0-4e14-b295-97326f5476a1');
 
 -- InsertQuestions
 
@@ -12,12 +17,12 @@ VALUES ('c40ef3a5-0335-4bb0-aff7-9e592157520e','Raça / Cor','2024-01-30 16:12:2
 
 INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
 VALUES
-('696388eb-0261-49da-9b90-847039470386','Amarela',false,false,'2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','c40ef3a5-0335-4bb0-aff7-9e592157520e'),
-('44029daa-cefc-44da-8313-9a5eac4ab21b','Branca',false,false,'2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','c40ef3a5-0335-4bb0-aff7-9e592157520e'),
-('97de9c06-8572-4e61-88da-e71b1484ba01','Parda',false,false,'2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','c40ef3a5-0335-4bb0-aff7-9e592157520e'),
-('27042532-b73d-42e9-ac0c-e75954453ddf','Preta',false,false,'2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','c40ef3a5-0335-4bb0-aff7-9e592157520e'),
-('8283e4c0-f824-4471-9eeb-0cd152cbcf10','Indígena',false,false,'2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','c40ef3a5-0335-4bb0-aff7-9e592157520e'),
-("5fdbcec1-8711-4f59-b461-772458a90139","Outros",true,false,"c40ef3a5-0335-4bb0-aff7-9e592157520e","2024-02-01 18:45:40.393 UTC","2024-02-01 18:45:40.393 UTC");
+('696388eb-0261-49da-9b90-847039470386','Amarela',false,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('44029daa-cefc-44da-8313-9a5eac4ab21b','Branca',false,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('97de9c06-8572-4e61-88da-e71b1484ba01','Parda',false,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('27042532-b73d-42e9-ac0c-e75954453ddf','Preta',false,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('8283e4c0-f824-4471-9eeb-0cd152cbcf10','Indígena',false,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('5fdbcec1-8711-4f59-b461-772458a90139','Outros',true,false,'c40ef3a5-0335-4bb0-aff7-9e592157520e','2024-02-01 18:45:40.393 UTC','2024-02-01 18:45:40.393 UTC');
 
 -- InsertQuestions
 
