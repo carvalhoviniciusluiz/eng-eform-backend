@@ -151,6 +151,7 @@ model Form {
   questions       Question[]
   questionAnswers QuestionAnswer[]
   formConsumers   FormConsumer[]
+  order           Int         @default(0)
   // people          Person[]
   createdAt       DateTime?   @default(now())  @map("created_at")
   updatedAt       DateTime?   @updatedAt       @map("updated_at")

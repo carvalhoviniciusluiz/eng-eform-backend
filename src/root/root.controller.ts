@@ -25,7 +25,7 @@ export class RootController {
   @UseInterceptors(CacheInterceptor)
   @Get()
   async getAll(@Query() params: FormPaginateDTO): Promise<FormPaginateResponseDto> {
-    const { page: skip = 0, limit: take = 10, orderBy = { name: 'asc' }, name } = params;
+    const { page: skip = 0, limit: take = 10, orderBy = { order: 'ASC', name: 'asc' }, name } = params;
     const hasName = !!name;
     const options = hasName
       ? {
