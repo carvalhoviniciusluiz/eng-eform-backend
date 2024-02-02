@@ -83,6 +83,7 @@ model Person {
   adresses          PersonAddress[]
   documents         PersonDocument[]
   contacts          PersonContact[]
+  forms             PersonForm[]
   createdAt         DateTime?        @default(now())    @map("created_at")
   updatedAt         DateTime?        @updatedAt         @map("updated_at")
   deleted           DateTime?
@@ -152,6 +153,7 @@ model Form {
   questions       Question[]
   questionAnswers QuestionAnswer[]
   companies       FormConsumer[]
+  people          PersonForm[]
   order           Int          @default(0)
   createdAt       DateTime?    @default(now())  @map("created_at")
   updatedAt       DateTime?    @updatedAt       @map("updated_at")
@@ -161,16 +163,29 @@ model Form {
 }
 
 model FormConsumer {
-  id         String    @id @default(uuid())
-  formId     String    @map("form_id")
-  form       Form      @relation(fields: [formId], references: [id])
-  companyId  String    @map("company_id")
-  company    Company   @relation(fields: [companyId], references: [id])
-  createdAt DateTime?  @default(now())  @map("created_at")
-  updatedAt DateTime?  @updatedAt       @map("updated_at")
+  id        String    @id @default(uuid())
+  formId    String    @map("form_id")
+  form      Form      @relation(fields: [formId], references: [id])
+  companyId String    @map("company_id")
+  company   Company   @relation(fields: [companyId], references: [id])
+  createdAt DateTime? @default(now())  @map("created_at")
+  updatedAt DateTime? @updatedAt       @map("updated_at")
   deleted   DateTime?
   @@index([formId, companyId])
   @@map("form_consumers")
+}
+
+model PersonForm {
+  id        String   @id @default(uuid())
+  formId    String   @map("form_id")
+  form      Form     @relation(fields: [formId], references: [id])
+  personId  String   @map("person_id")
+  person    Person   @relation(fields: [personId], references: [id])
+  createdAt DateTime? @default(now())  @map("created_at")
+  updatedAt DateTime? @updatedAt       @map("updated_at")
+  deleted   DateTime?
+  @@index([formId, personId])
+  @@map("person_forms")
 }
 
 model Question {
