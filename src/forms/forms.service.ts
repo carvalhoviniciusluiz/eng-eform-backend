@@ -51,20 +51,22 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
   }
 
   async getAll(params: {
+    companyId: string;
     skip?: number;
     take?: number;
-    where?: Prisma.FormWhereInput;
     orderBy?: Prisma.FormOrderByWithRelationInput;
   }): Promise<{ count: number; forms: FormModel[] }> {
-    const { skip, take, where, orderBy } = params;
+    const { skip, take, companyId, orderBy } = params;
     const count = await this.prisma.form.count();
     const forms = await this.prisma.form.findMany({
       skip,
       take,
       orderBy,
-      include: {
+      where: {
         companies: {
-          where
+          some: {
+            companyId
+          }
         }
       }
     });

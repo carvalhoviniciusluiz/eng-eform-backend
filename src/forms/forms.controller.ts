@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Form as FormModel, Prisma, User as UserModel } from '@prisma/client';
+import { Form as FormModel, User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import {
@@ -47,30 +47,14 @@ export class FormsController {
   @UseInterceptors(CacheInterceptor)
   @Get()
   async getAll(@Query() params: FormPaginateDTO, @GetUser() user: UserModel): Promise<FormPaginateResponseDto> {
-    const { page: skip = 0, limit: take = 10, orderBy = { order: 'asc', name: 'asc' }, name } = params;
-    const { companyId } = user;
-    const hasName = !!name;
-    const where = {
-      companyId
-    } as Prisma.FormWhereInput;
-    if (hasName) {
-      where.name = {
-        startsWith: name,
-        mode: 'insensitive'
-      };
-    }
-    const options = hasName
-      ? {
-          where
-        }
-      : {
-          where,
-          skip,
-          take,
-          orderBy
-        };
+    const { page: skip = 0, limit: take = 10, orderBy = { order: 'ASC' } } = params;
     try {
-      const { forms, count } = await this.formService.getAll(options);
+      const { forms, count } = await this.formService.getAll({
+        companyId: user.companyId,
+        skip,
+        take,
+        orderBy
+      });
       return new FormPaginateResponseDto(forms, take, skip, count);
     } catch (error) {
       throw new BadRequestException();
