@@ -55,7 +55,9 @@ describe('FormsService', () => {
   it('should return empty list', async () => {
     prisma.form.count = jest.fn().mockReturnValueOnce(0);
     prisma.form.findMany = jest.fn().mockReturnValueOnce([]);
-    const response = await service.getAll({});
+    const response = await service.getAll({
+      companyId: 'companyId'
+    });
     expect(response.count).toBe(0);
     expect(response.forms.length).toBe(0);
   });
@@ -63,7 +65,9 @@ describe('FormsService', () => {
   it('should return not empty list', async () => {
     prisma.form.count = jest.fn().mockReturnValueOnce(1);
     prisma.form.findMany = jest.fn().mockReturnValueOnce([{}]);
-    const response = await service.getAll({});
+    const response = await service.getAll({
+      companyId: 'companyId'
+    });
     expect(response.count).toBe(1);
     expect(response.forms.length).toBe(1);
   });

@@ -29,7 +29,7 @@ export class AnswerRequestDTO {
     description: 'For includes content.',
     example: true
   })
-  hasContent: true;
+  hasContent: boolean;
 
   @IsOptional()
   @IsBoolean()
@@ -39,5 +39,5 @@ export class AnswerRequestDTO {
     description: 'If is answer default.',
     example: true
   })
-  isDefault: false;
+  isDefault: boolean;
 }

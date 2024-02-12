@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Form as FormModel, Prisma, Question as QuestionModel } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '~/common/service';
-
-type FormResponse = FormModel & {
-  questions: QuestionModel[];
-};
 
 @Injectable()
 export class FormsService {
@@ -28,10 +24,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     };
   }
 
-  async getForm(
-    formWhereUniqueInput: Prisma.FormWhereUniqueInput,
-    questionsShow: boolean
-  ): Promise<FormResponse | null> {
+  async getForm(formWhereUniqueInput: Prisma.FormWhereUniqueInput, questionsShow: boolean) {
     const options: Prisma.FormFindUniqueArgs = {
       where: formWhereUniqueInput
     };
@@ -50,12 +43,47 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     return this.prisma.form.findUnique(options) as any;
   }
 
+  async getFullForm(companyId: string) {
+    return this.prisma.form.findMany({
+      include: {
+        questions: {
+          where: {
+            parentId: null,
+            deleted: null
+          },
+          orderBy: { createdAt: 'asc' },
+          include: {
+            answers: true,
+            children: {
+              where: {
+                deleted: null
+              },
+              include: {
+                answers: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        order: 'asc'
+      },
+      where: {
+        companies: {
+          some: {
+            companyId
+          }
+        }
+      }
+    });
+  }
+
   async getAll(params: {
     companyId: string;
     skip?: number;
     take?: number;
     orderBy?: Prisma.FormOrderByWithRelationInput;
-  }): Promise<{ count: number; forms: FormModel[] }> {
+  }) {
     const { skip, take, companyId, orderBy } = params;
     const count = await this.prisma.form.count();
     const forms = await this.prisma.form.findMany({
@@ -76,13 +104,13 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     };
   }
 
-  async create(data: Prisma.FormCreateInput): Promise<FormModel> {
+  async create(data: Prisma.FormCreateInput) {
     return this.prisma.form.create({
       data
     });
   }
 
-  async update(params: { where: Prisma.FormWhereUniqueInput; data: Prisma.FormUpdateInput }): Promise<FormModel> {
+  async update(params: { where: Prisma.FormWhereUniqueInput; data: Prisma.FormUpdateInput }) {
     const { where, data } = params;
     return this.prisma.form.update({
       data,
@@ -90,7 +118,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     });
   }
 
-  async delete(where: Prisma.FormWhereUniqueInput): Promise<FormModel> {
+  async delete(where: Prisma.FormWhereUniqueInput) {
     return this.prisma.form.delete({
       where
     });

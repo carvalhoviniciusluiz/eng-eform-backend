@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Form as FormModel, User as UserModel } from '@prisma/client';
+import { User as UserModel } from '@prisma/client';
 import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import {
@@ -61,8 +61,19 @@ export class FormsController {
     }
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @Get('/full')
+  async getFullForm(@GetUser() user: UserModel) {
+    try {
+      const forms = await this.formService.getFullForm(user.companyId);
+      return forms;
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
+
   @Get('/:id')
-  async getForm(@Param('id') id: string, @Query() params: FormQueryDTO): Promise<any> {
+  async getForm(@Param('id') id: string, @Query() params: FormQueryDTO) {
     try {
       const { questions, ...form } = await this.formService.getForm({ id }, params.questionsShow);
       return new FormWithQuestionsResponseDto({ form, questions });
@@ -72,7 +83,7 @@ export class FormsController {
   }
 
   @Post()
-  async createForm(@Body() formData: FormRequestDTO, @GetUser() user: UserModel): Promise<FormModel> {
+  async createForm(@Body() formData: FormRequestDTO, @GetUser() user: UserModel) {
     const { name } = formData;
     try {
       const newForm = await this.formService.create({
@@ -105,11 +116,7 @@ export class FormsController {
   }
 
   @Patch('/:id')
-  async updateForm(
-    @Param('id') id: string,
-    @Body() formData: FormRequestDTO,
-    @GetUser() user: UserModel
-  ): Promise<FormModel> {
+  async updateForm(@Param('id') id: string, @Body() formData: FormRequestDTO, @GetUser() user: UserModel) {
     const { name } = formData;
     return this.formService.update({
       where: {
@@ -132,7 +139,7 @@ export class FormsController {
   }
 
   @Delete('/:id')
-  async deleteForm(@Param('id') id: string): Promise<FormModel> {
+  async deleteForm(@Param('id') id: string) {
     return this.formService.delete({ id });
   }
 }

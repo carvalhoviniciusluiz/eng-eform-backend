@@ -62,14 +62,20 @@ model PersonDocument {
   @@map("document_people")
 }
 
+enum ContactType {
+  EMAIL
+  CELL_PHONE
+  HOME_PHONE
+}
+
 model PersonContact {
-  id             String    @id                  @default(uuid())
-  contactType    String    @map("contact_type") @db.VarChar(20)
-  contact        String    @db.VarChar(191)
-  personId       String    @map("person_id")
-  person         Person    @relation(fields: [personId], references: [id])
-  createdAt      DateTime? @default(now())      @map("created_at")
-  updatedAt      DateTime? @updatedAt           @map("updated_at")
+  id             String      @id                  @default(uuid())
+  contactType    ContactType @map("contact_type")
+  contact        String      @db.VarChar(191)
+  personId       String      @map("person_id")
+  person         Person      @relation(fields: [personId], references: [id])
+  createdAt      DateTime?   @default(now())      @map("created_at")
+  updatedAt      DateTime?   @updatedAt           @map("updated_at")
   deleted        DateTime?
   @@index([personId])
   @@map("contact_people")
@@ -98,7 +104,7 @@ enum Role {
 }
 
 enum FormSegment {
-  INDEPENDENT
+  PUBLIC
   CAD_PERSON
 }
 
@@ -148,7 +154,7 @@ model Form {
   authorId        String       @map("author_id")
   author          User         @relation(fields: [authorId], references: [id])
   authorDraft     Json         @map("author_draft")
-  segment         FormSegment? @default(INDEPENDENT)
+  segment         FormSegment? @default(PUBLIC)
   status          FormStatus?  @default(DRAFT)
   questions       Question[]
   questionAnswers QuestionAnswer[]

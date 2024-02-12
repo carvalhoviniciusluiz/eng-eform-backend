@@ -24,14 +24,19 @@ jest.mock('class-transformer', () => {
 
 const questionMock: QuestionRequestDTO = {
   content: 'content+1',
+  answerType: QuestionType.OBJECTIVE,
   answers: {
     type: QuestionType.OBJECTIVE,
     data: [
       {
-        content: 'content+1'
+        content: 'content+1',
+        hasContent: false,
+        isDefault: false
       },
       {
-        content: 'content+2'
+        content: 'content+2',
+        hasContent: false,
+        isDefault: false
       }
     ]
   }
