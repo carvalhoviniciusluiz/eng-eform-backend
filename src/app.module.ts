@@ -4,6 +4,7 @@ import { AnswersModule } from '~/answers/answers.module';
 import { AuthModule } from '~/auth/auth.module';
 import { CompaniesModule } from '~/companies/companies.module';
 import { CacheService } from '~/config';
+import { FormInputsModule } from '~/form-inputs/form-inputs.module';
 import { FormsModule } from '~/forms/forms.module';
 import { QuestionsModule } from '~/questions/questions.module';
 import { RootModule } from '~/root/root.module';
@@ -19,6 +20,7 @@ import { UsersModule } from '~/users/users.module';
     UsersModule,
     CompaniesModule,
     FormsModule,
+    FormInputsModule,
     QuestionsModule,
     AnswersModule,
     AuthModule

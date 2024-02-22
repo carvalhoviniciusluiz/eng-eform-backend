@@ -23,19 +23,19 @@ datasource db {
 }
 
 model PersonAddress {
-  id             String    @id                  @default(uuid())
-  number         String    @db.VarChar(191)
-  zipCode        String    @db.VarChar(50)      @map("zip_code")
-  publicPlace    String    @map("public_place") @db.VarChar(100)
-  neighborhood   String    @db.VarChar(191)
-  neighborhoodComplement   String               @map("neighborhood_complement")
-  city           String    @db.VarChar(191)
-  county         String    @db.VarChar(191)
-  personId       String    @map("person_id")
-  person         Person    @relation(fields: [personId], references: [id])
-  createdAt      DateTime? @default(now())      @map("created_at")
-  updatedAt      DateTime? @updatedAt           @map("updated_at")
-  deleted        DateTime?
+  id                       String     @id                  @default(uuid())
+  number                   String?    @db.VarChar(191)
+  zipCode                  String?    @db.VarChar(50)      @map("zip_code")
+  publicPlace              String?    @map("public_place") @db.VarChar(100)
+  neighborhood             String?    @db.VarChar(191)
+  neighborhoodComplement   String?    @map("neighborhood_complement")
+  county                   String?    @db.VarChar(191)
+  city                     String?    @db.VarChar(191)
+  personId                 String    @map("person_id")
+  person                   Person    @relation(fields: [personId], references: [id])
+  createdAt                DateTime? @default(now())      @map("created_at")
+  updatedAt                DateTime? @updatedAt           @map("updated_at")
+  deleted                  DateTime?
   @@index([personId])
   @@map("address_people")
 }
@@ -82,16 +82,16 @@ model PersonContact {
 }
 
 model Person {
-  id                String           @id                @default(uuid())
-  name              String           @db.VarChar(191)
-  socialName        String?          @db.VarChar(191)   @map("social_name")
-  birthDate         DateTime?        @map("birth_date")
+  id                String                 @id                @default(uuid())
+  name              String                 @db.VarChar(191)
+  socialName        String?                @db.VarChar(191)   @map("social_name")
+  birthDate         DateTime?              @map("birth_date")
   adresses          PersonAddress[]
   documents         PersonDocument[]
   contacts          PersonContact[]
-  forms             PersonForm[]
-  createdAt         DateTime?        @default(now())    @map("created_at")
-  updatedAt         DateTime?        @updatedAt         @map("updated_at")
+  questionAnswer    PersonQuestionAnswer[]
+  createdAt         DateTime?              @default(now())    @map("created_at")
+  updatedAt         DateTime?              @updatedAt         @map("updated_at")
   deleted           DateTime?
   @@index([name, socialName])
   @@map("people")
@@ -136,33 +136,32 @@ model User {
 }
 
 model Company {
-  id        String    @id              @default(uuid())
-  name      String?   @db.VarChar(191)
-  initials  String    @db.VarChar(100)
+  id        String         @id              @default(uuid())
+  name      String?        @db.VarChar(191)
+  initials  String         @db.VarChar(100)
   users     User[]
   forms     FormConsumer[]
-  createdAt DateTime? @default(now())  @map("created_at")
-  updatedAt DateTime? @updatedAt       @map("updated_at")
+  createdAt DateTime?      @default(now())  @map("created_at")
+  updatedAt DateTime?      @updatedAt       @map("updated_at")
   deleted   DateTime?
   @@index([initials])
   @@map("companies")
 }
 
 model Form {
-  id              String       @id              @default(uuid())
-  name            String?      @db.VarChar(191)
-  authorId        String       @map("author_id")
-  author          User         @relation(fields: [authorId], references: [id])
-  authorDraft     Json         @map("author_draft")
-  segment         FormSegment? @default(PUBLIC)
-  status          FormStatus?  @default(DRAFT)
+  id              String           @id              @default(uuid())
+  name            String?          @db.VarChar(191)
+  authorId        String           @map("author_id")
+  author          User             @relation(fields: [authorId], references: [id])
+  authorDraft     Json             @map("author_draft")
+  segment         FormSegment?     @default(PUBLIC)
+  status          FormStatus?      @default(DRAFT)
   questions       Question[]
   questionAnswers QuestionAnswer[]
   companies       FormConsumer[]
-  people          PersonForm[]
-  order           Int          @default(0)
-  createdAt       DateTime?    @default(now())  @map("created_at")
-  updatedAt       DateTime?    @updatedAt       @map("updated_at")
+  order           Int              @default(0)
+  createdAt       DateTime?        @default(now())  @map("created_at")
+  updatedAt       DateTime?        @updatedAt       @map("updated_at")
   deleted         DateTime?
   @@index([authorId])
   @@map("forms")
@@ -181,63 +180,64 @@ model FormConsumer {
   @@map("form_consumers")
 }
 
-model PersonForm {
-  id        String   @id @default(uuid())
-  formId    String   @map("form_id")
-  form      Form     @relation(fields: [formId], references: [id])
-  personId  String   @map("person_id")
-  person    Person   @relation(fields: [personId], references: [id])
-  createdAt DateTime? @default(now())  @map("created_at")
-  updatedAt DateTime? @updatedAt       @map("updated_at")
-  deleted   DateTime?
-  @@index([formId, personId])
-  @@map("person_forms")
+model PersonQuestionAnswer {
+  id                  String         @id @default(uuid())
+  personId            String         @map("person_id")
+  person              Person         @relation(fields: [personId], references: [id])
+  questionAnswerId    String         @map("question_answer_id")
+  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
+  createdAt           DateTime?      @default(now())  @map("created_at")
+  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  deleted             DateTime?
+  @@index([personId, questionAnswerId])
+  @@map("person_question_answers")
 }
 
 model Question {
-  id        String        @id              @default(uuid())
-  content   String?       @db.VarChar(191)
-  formId    String        @map("form_id")
-  form      Form          @relation(fields: [formId], references: [id])
-  children  Question[]    @relation("children")
-  parentId  String?       @map("parent_id")
-  parent    Question?     @relation("children", fields: [parentId], references: [id])
-  type      QuestionType? @default(OBJECTIVE)
-  answers   Answer[]
+  id              String           @id              @default(uuid())
+  content         String?          @db.VarChar(191)
+  formId          String           @map("form_id")
+  form            Form             @relation(fields: [formId], references: [id])
+  children        Question[]       @relation("children")
+  parentId        String?          @map("parent_id")
+  parent          Question?        @relation("children", fields: [parentId], references: [id])
+  type            QuestionType?    @default(OBJECTIVE)
+  answers         Answer[]
   questionAnswers QuestionAnswer[]
-  createdAt DateTime?     @default(now())  @map("created_at")
-  updatedAt DateTime?     @updatedAt       @map("updated_at")
-  deleted   DateTime?
+  createdAt       DateTime?        @default(now())  @map("created_at")
+  updatedAt       DateTime?        @updatedAt       @map("updated_at")
+  deleted         DateTime?
   @@index([formId, parentId])
   @@map("questions")
 }
 
 model Answer {
-  id              String    @id              @default(uuid())
-  content         String    @db.VarChar(191)
-  hasContent      Boolean?  @db.Boolean()    @default(false) @map("has_content")
-  isDefault       Boolean?  @db.Boolean()    @default(false) @map("is_default")
-  questionId      String    @map("question_id")
-  question        Question  @relation(fields: [questionId], references: [id])
+  id              String           @id              @default(uuid())
+  content         String           @db.VarChar(191)
+  hasContent      Boolean?         @db.Boolean()    @default(false) @map("has_content")
+  isDefault       Boolean?         @db.Boolean()    @default(false) @map("is_default")
+  questionId      String           @map("question_id")
+  question        Question         @relation(fields: [questionId], references: [id])
   questionAnswers QuestionAnswer[]
-  createdAt       DateTime? @default(now())  @map("created_at")
-  updatedAt       DateTime? @updatedAt       @map("updated_at")
+  createdAt       DateTime?        @default(now())  @map("created_at")
+  updatedAt       DateTime?        @updatedAt       @map("updated_at")
   deleted         DateTime?
   @@index([questionId])
   @@map("answers")
 }
 
 model QuestionAnswer {
-  id         String    @id             @default(uuid())
-  formId     String    @map("form_id")
-  form       Form      @relation(fields: [formId], references: [id])
-  questionId String    @map("question_id")
-  question   Question  @relation(fields: [questionId], references: [id])
-  answerId   String?   @map("answer_id")
-  answer     Answer?   @relation(fields: [answerId], references: [id])
-  response   String?   @db.Text()
-  createdAt  DateTime? @default(now()) @map("created_at")
-  updatedAt  DateTime? @updatedAt      @map("updated_at")
+  id         String                 @id             @default(uuid())
+  formId     String                 @map("form_id")
+  form       Form                   @relation(fields: [formId], references: [id])
+  questionId String                 @map("question_id")
+  question   Question               @relation(fields: [questionId], references: [id])
+  answerId   String?                @map("answer_id")
+  answer     Answer?                @relation(fields: [answerId], references: [id])
+  response   String?                @db.Text()
+  people     PersonQuestionAnswer[]
+  createdAt  DateTime?              @default(now()) @map("created_at")
+  updatedAt  DateTime?              @updatedAt      @map("updated_at")
   deleted    DateTime?
   @@index([formId, questionId, answerId])
   @@map("question_answers")
