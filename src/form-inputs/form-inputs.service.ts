@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ContactType, DocumentType } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 import { PrismaService } from '~/common/service';
+import { DataBaseError, UnexpectedError, ValueError } from '~/form-inputs/error';
 
 interface Questions {
   [questionId: string]: string | string[] | { response: string } | Questions;
@@ -193,20 +194,36 @@ export class FormInputsService {
   async createFormInput(inputData: InputProps) {
     const { aggressor, mainForms, victim } = inputData;
     if (!aggressor || !mainForms || !victim) {
-      throw new Error('Insufficient data');
+      throw new UnexpectedError('Insufficient data');
+    }
+    const victimFound = await this.prisma.person.findFirst({
+      where: {
+        name: victim.person.name
+      }
+    });
+    if (victimFound) {
+      throw new ValueError(`${victim.person.name} already exists`);
+    }
+    const aggressorFound = await this.prisma.person.findFirst({
+      where: {
+        name: aggressor.person.name
+      }
+    });
+    if (aggressorFound) {
+      throw new ValueError(`${aggressor.person.name} already exists`);
     }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
     try {
       await this.prisma.$transaction(async prisma => {
         const options = {
           personInputId: randomUUID(),
-          formId: 'f594187f-504c-4266-b313-6d1fb19bb197',
+          formId: 'f594187f-504c-4266-b313-6d1fb19bb197', // TODO: default
           prisma
         };
         await prisma.personInput.createMany({
           data: {
-            id: options.personInputId,
-            number: nanoid(16)
+            id: options.personInputId
+            // number: nanoid(16)
           }
         });
         await this.persistpeopleAndAnswers({
@@ -235,7 +252,7 @@ export class FormInputsService {
         });
       });
     } catch (error) {
-      throw new Error(error);
+      throw new DataBaseError(error);
     }
   }
 }

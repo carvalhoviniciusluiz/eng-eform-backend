@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
+import { ValueError } from '~/form-inputs/error';
 import { FormInputsService } from '~/form-inputs/form-inputs.service';
 
 @ApiTags('FormInputs')
@@ -16,8 +17,15 @@ export class FormInputsController {
   @Post()
   async createFormInput(@Body() inputData: any): Promise<any> {
     try {
-      return this.formInputsService.createFormInput(inputData);
+      const output = await this.formInputsService.createFormInput(inputData);
+      return output;
     } catch (error) {
+      console.log({ error });
+
+      const isValueError = error instanceof ValueError;
+      if (isValueError) {
+        throw new BadRequestException(error.message);
+      }
       throw new BadRequestException();
     }
   }
