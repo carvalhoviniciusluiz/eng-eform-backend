@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ContactType, DocumentType } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { nanoid } from 'nanoid';
 import { PrismaService } from '~/common/service';
 
 interface Questions {
@@ -38,7 +39,7 @@ interface Document {
   id: string;
 }
 
-interface PersonInput {
+interface PersonInputProps {
   person: Person;
   questions: Questions;
   adresses: Address[];
@@ -53,8 +54,8 @@ interface MainForm {
 }
 
 type InputProps = {
-  victim: PersonInput;
-  aggressor: PersonInput;
+  victim: PersonInputProps;
+  aggressor: PersonInputProps;
   mainForms: MainForm;
 };
 
@@ -125,12 +126,19 @@ export class FormInputsService {
     return this.fixIds(ids);
   }
 
-  async persistpeopleAndAnswers(
-    input: PersonInput,
-    prisma: Omit<PrismaService, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>
-  ) {
+  async persistpeopleAndAnswers({
+    input,
+    personInputId,
+    formId,
+    prisma
+  }: {
+    input: PersonInputProps;
+    personInputId: string;
+    formId: string;
+    prisma: any;
+  }) {
     const birthDateValue = input.person?.birthDate.split('/').reverse().join('-');
-    const birthDate = new Date(birthDateValue);
+    const birthDate = !!birthDateValue ? new Date(birthDateValue) : null;
     const { id: personId } = await prisma.person.create({
       data: {
         id: input.person.id,
@@ -168,7 +176,7 @@ export class FormInputsService {
         personId
       }))
     });
-    const formId = 'f594187f-504c-4266-b313-6d1fb19bb197';
+
     const questionAnswers = this.createQuestionAnswer(formId, input.questions);
     await prisma.questionAnswer.createMany({
       data: questionAnswers
@@ -176,6 +184,7 @@ export class FormInputsService {
     await prisma.personQuestionAnswer.createMany({
       data: questionAnswers.map(questionAnswer => ({
         personId,
+        personInputId,
         questionAnswerId: questionAnswer.id
       }))
     });
@@ -189,14 +198,41 @@ export class FormInputsService {
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
     try {
       await this.prisma.$transaction(async prisma => {
-        await this.persistpeopleAndAnswers(victim, prisma);
-        await this.persistpeopleAndAnswers(aggressor, prisma);
+        const options = {
+          personInputId: randomUUID(),
+          formId: 'f594187f-504c-4266-b313-6d1fb19bb197',
+          prisma
+        };
+        await prisma.personInput.createMany({
+          data: {
+            id: options.personInputId,
+            number: nanoid(16)
+          }
+        });
+        await this.persistpeopleAndAnswers({
+          ...options,
+          input: victim
+        });
+        await this.persistpeopleAndAnswers({
+          ...options,
+          input: aggressor
+        });
+        const questionAnswerIds = [];
         for (const [formId, questions] of Object.entries(mainForms)) {
           const questionAnswers = this.createQuestionAnswer(formId, questions);
           await prisma.questionAnswer.createMany({
             data: questionAnswers
           });
+          questionAnswerIds.push(questionAnswers);
         }
+        const personInputQuestionAnswers = questionAnswerIds.flat().map(questionAnswer => ({
+          id: randomUUID(),
+          personInputId: options.personInputId,
+          questionAnswerId: questionAnswer.id
+        }));
+        await prisma.personInputQuestionAnswer.createMany({
+          data: personInputQuestionAnswers
+        });
       });
     } catch (error) {
       throw new Error(error);

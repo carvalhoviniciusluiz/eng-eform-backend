@@ -180,8 +180,34 @@ model FormConsumer {
   @@map("form_consumers")
 }
 
+model PersonInput {
+  id                        String     @id @default(uuid())
+  number                    String
+  personInputQuestionAnswer PersonInputQuestionAnswer[]
+  personQuestionAnswers     PersonQuestionAnswer[]
+  createdAt                 DateTime?  @default(now())  @map("created_at")
+  updatedAt                 DateTime?  @updatedAt       @map("updated_at")
+  deleted                   DateTime?
+  @@map("person_inputs")
+}
+
+model PersonInputQuestionAnswer {
+  id                  String         @id @default(uuid())
+  personInputId       String         @map("person_input_id")
+  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
+  questionAnswerId    String         @map("question_answer_id")
+  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
+  createdAt           DateTime?      @default(now())  @map("created_at")
+  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  deleted             DateTime?
+  @@index([personInputId, questionAnswerId])
+  @@map("person_input_question_answers")
+}
+
 model PersonQuestionAnswer {
   id                  String         @id @default(uuid())
+  personInputId       String         @map("person_input_id")
+  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
   personId            String         @map("person_id")
   person              Person         @relation(fields: [personId], references: [id])
   questionAnswerId    String         @map("question_answer_id")
@@ -236,6 +262,7 @@ model QuestionAnswer {
   answer     Answer?                @relation(fields: [answerId], references: [id])
   response   String?                @db.Text()
   people     PersonQuestionAnswer[]
+  inputs     PersonInputQuestionAnswer[]
   createdAt  DateTime?              @default(now()) @map("created_at")
   updatedAt  DateTime?              @updatedAt      @map("updated_at")
   deleted    DateTime?
