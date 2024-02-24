@@ -22,7 +22,7 @@ export class FormInputsController {
     } catch (error) {
       const isValueError = error instanceof ValueError;
       if (isValueError) {
-        throw new BadRequestException(`001_NAME_ALREADY_EXISTS :: ${error.message}`, {
+        throw new BadRequestException(`NAME_ALREADY_EXISTS::${error.message}`, {
           cause: new Error(),
           description: error.message
         });

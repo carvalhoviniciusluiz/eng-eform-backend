@@ -192,7 +192,7 @@ export class FormInputsService {
       }
     });
     if (victimFound) {
-      throw new ValueError(`${victim.person.name} already exists`);
+      throw new ValueError(`VICTIM::${victimFound.id}`);
     }
     const aggressorFound = await this.prisma.person.findFirst({
       where: {
@@ -200,7 +200,7 @@ export class FormInputsService {
       }
     });
     if (aggressorFound) {
-      throw new ValueError(`${aggressor.person.name} already exists`);
+      throw new ValueError(`AGGRESSOR::${aggressorFound.id}`);
     }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
     try {
