@@ -5,18 +5,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// uncomment in case of development..
-//
-// generator erd {
-//   provider = "prisma-erd-generator"
-//   output   = "erd.png"
-// }
-//
-// generator dbml {
-//   provider = "prisma-dbml-generator"
-//   output   = "dbml"
-// }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -31,10 +19,10 @@ model PersonAddress {
   neighborhoodComplement   String?    @map("neighborhood_complement")
   county                   String?    @db.VarChar(191)
   city                     String?    @db.VarChar(191)
-  personId                 String    @map("person_id")
-  person                   Person    @relation(fields: [personId], references: [id])
-  createdAt                DateTime? @default(now())      @map("created_at")
-  updatedAt                DateTime? @updatedAt           @map("updated_at")
+  personId                 String     @map("person_id")
+  person                   Person     @relation(fields: [personId], references: [id])
+  createdAt                DateTime?  @default(now())      @map("created_at")
+  updatedAt                DateTime?  @updatedAt           @map("updated_at")
   deleted                  DateTime?
   @@index([personId])
   @@map("address_people")
@@ -90,6 +78,7 @@ model Person {
   documents         PersonDocument[]
   contacts          PersonContact[]
   questionAnswer    PersonQuestionAnswer[]
+  details           PersonInputDetail[]
   createdAt         DateTime?              @default(now())    @map("created_at")
   updatedAt         DateTime?              @updatedAt         @map("updated_at")
   deleted           DateTime?
@@ -97,27 +86,42 @@ model Person {
   @@map("people")
 }
 
+model PersonInput {
+  id                        String     @id @default(uuid())
+  // number                    Int        @default(autoincrement())
+  number                    String     @db.VarChar(12)
+  personInputQuestionAnswer PersonInputQuestionAnswer[]
+  details                   PersonInputDetail[]
+  createdAt                 DateTime?  @default(now())  @map("created_at")
+  updatedAt                 DateTime?  @updatedAt       @map("updated_at")
+  deleted                   DateTime?
+  @@index([number])
+  @@map("person_inputs")
+}
+
+enum PersonType {
+  VICTIM
+  AGGRESSOR
+}
+
+model PersonInputDetail {
+  id                  String         @id @default(uuid())
+  personInputId       String         @map("person_input_id")
+  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
+  personId            String         @map("person_id")
+  person              Person         @relation(fields: [personId], references: [id])
+  personType          PersonType     @map("person_type")
+  createdAt           DateTime?      @default(now())  @map("created_at")
+  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  deleted             DateTime?
+  @@index([personInputId, personId])
+  @@map("person_input_details")
+}
+
 enum Role {
   USER
   ADMIN
   MASTER
-}
-
-enum FormSegment {
-  PUBLIC
-  CAD_PERSON
-}
-
-enum FormStatus {
-  PUBLISHED
-  DRAFT
-  REMOVED
-}
-
-enum QuestionType {
-  OBJECTIVE
-  MULTIPLE
-  PLAIN_TEXT
 }
 
 model User {
@@ -148,21 +152,33 @@ model Company {
   @@map("companies")
 }
 
+enum FormSegment {
+  PUBLIC
+  CAD_PERSON
+}
+
+enum FormStatus {
+  PUBLISHED
+  DRAFT
+  REMOVED
+}
+
 model Form {
-  id              String           @id              @default(uuid())
-  name            String?          @db.VarChar(191)
-  authorId        String           @map("author_id")
-  author          User             @relation(fields: [authorId], references: [id])
-  authorDraft     Json             @map("author_draft")
-  segment         FormSegment?     @default(PUBLIC)
-  status          FormStatus?      @default(DRAFT)
-  questions       Question[]
-  questionAnswers QuestionAnswer[]
-  companies       FormConsumer[]
-  order           Int              @default(0)
-  createdAt       DateTime?        @default(now())  @map("created_at")
-  updatedAt       DateTime?        @updatedAt       @map("updated_at")
-  deleted         DateTime?
+  id                         String           @id              @default(uuid())
+  name                       String?          @db.VarChar(191)
+  authorId                   String           @map("author_id")
+  author                     User             @relation(fields: [authorId], references: [id])
+  authorDraft                Json             @map("author_draft")
+  segment                    FormSegment?     @default(PUBLIC)
+  status                     FormStatus?      @default(DRAFT)
+  questions                  Question[]
+  questionAnswers            QuestionAnswer[]
+  companies                  FormConsumer[]
+  personInputQuestionAnswers PersonInputQuestionAnswer[]
+  order                       Int              @default(0)
+  createdAt                   DateTime?        @default(now())  @map("created_at")
+  updatedAt                   DateTime?        @updatedAt       @map("updated_at")
+  deleted                     DateTime?
   @@index([authorId])
   @@map("forms")
 }
@@ -180,44 +196,10 @@ model FormConsumer {
   @@map("form_consumers")
 }
 
-model PersonInput {
-  id                        String     @id @default(uuid())
-  number                    Int        @default(autoincrement())
-  personInputQuestionAnswer PersonInputQuestionAnswer[]
-  personQuestionAnswers     PersonQuestionAnswer[]
-  createdAt                 DateTime?  @default(now())  @map("created_at")
-  updatedAt                 DateTime?  @updatedAt       @map("updated_at")
-  deleted                   DateTime?
-  @@index([number])
-  @@map("person_inputs")
-}
-
-model PersonInputQuestionAnswer {
-  id                  String         @id @default(uuid())
-  personInputId       String         @map("person_input_id")
-  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
-  questionAnswerId    String         @map("question_answer_id")
-  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
-  createdAt           DateTime?      @default(now())  @map("created_at")
-  updatedAt           DateTime?      @updatedAt       @map("updated_at")
-  deleted             DateTime?
-  @@index([personInputId, questionAnswerId])
-  @@map("person_input_question_answers")
-}
-
-model PersonQuestionAnswer {
-  id                  String         @id @default(uuid())
-  personInputId       String         @map("person_input_id")
-  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
-  personId            String         @map("person_id")
-  person              Person         @relation(fields: [personId], references: [id])
-  questionAnswerId    String         @map("question_answer_id")
-  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
-  createdAt           DateTime?      @default(now())  @map("created_at")
-  updatedAt           DateTime?      @updatedAt       @map("updated_at")
-  deleted             DateTime?
-  @@index([personId, questionAnswerId])
-  @@map("person_question_answers")
+enum QuestionType {
+  OBJECTIVE
+  MULTIPLE
+  PLAIN_TEXT
 }
 
 model Question {
@@ -269,4 +251,32 @@ model QuestionAnswer {
   deleted    DateTime?
   @@index([formId, questionId, answerId])
   @@map("question_answers")
+}
+
+model PersonQuestionAnswer {
+  id                  String         @id @default(uuid())
+  personId            String         @map("person_id")
+  person              Person         @relation(fields: [personId], references: [id])
+  questionAnswerId    String         @map("question_answer_id")
+  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
+  createdAt           DateTime?      @default(now())  @map("created_at")
+  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  deleted             DateTime?
+  @@index([personId, questionAnswerId])
+  @@map("person_question_answers")
+}
+
+model PersonInputQuestionAnswer {
+  id                  String         @id @default(uuid())
+  personInputId       String         @map("person_input_id")
+  personInput         PersonInput    @relation(fields: [personInputId], references: [id])
+  formId              String         @map("form_id")
+  form                Form           @relation(fields: [formId], references: [id])
+  questionAnswerId    String         @map("question_answer_id")
+  questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
+  createdAt           DateTime?      @default(now())  @map("created_at")
+  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  deleted             DateTime?
+  @@index([personInputId, formId, questionAnswerId])
+  @@map("person_input_question_answers")
 }

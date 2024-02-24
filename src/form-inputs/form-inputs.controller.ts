@@ -20,11 +20,12 @@ export class FormInputsController {
       const output = await this.formInputsService.createFormInput(inputData);
       return output;
     } catch (error) {
-      console.log({ error });
-
       const isValueError = error instanceof ValueError;
       if (isValueError) {
-        throw new BadRequestException(error.message);
+        throw new BadRequestException(`001_NAME_ALREADY_EXISTS :: ${error.message}`, {
+          cause: new Error(),
+          description: error.message
+        });
       }
       throw new BadRequestException();
     }
