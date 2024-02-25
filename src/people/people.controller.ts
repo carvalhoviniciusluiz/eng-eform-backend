@@ -16,48 +16,61 @@ export class PeopleController {
   @Get()
   async getPerson(@Query() params: any) {
     try {
-      const output = await this.peopleService.getPerson(params);
-      return {
-        id: output.id,
-        name: output.name,
-        socialName: output.socialName,
-        birthDate: output.birthDate,
-        adresses: output.adresses.map((address: any) => ({
-          id: address.id,
-          number: address.number,
-          zipCode: address.zipCode,
-          publicPlace: address.publicPlace,
-          neighborhood: address.neighborhood,
-          neighborhoodComplement: address.neighborhoodComplement,
-          county: address.county,
-          city: address.city
-        })),
-        documents: output.documents.map(document => ({
-          id: document.id,
-          documentType: document.documentType,
-          documentNumber: document.documentNumber,
-          shippingDate: document.shippingDate
-        })),
-        contacts: output.contacts.map(contact => ({
-          id: contact.id,
-          contactType: contact.contactType,
-          contact: contact.contact
-        })),
-        personalData: output.personalData.map(data => ({
-          questionAnswer: {
-            id: data.questionAnswer.id,
-            response: data.questionAnswer.response,
-            question: {
-              id: data.questionAnswer.question.id,
-              content: data.questionAnswer.question.content
-            },
-            answer: {
-              id: data.questionAnswer.answer?.id,
-              content: data.questionAnswer.answer?.content
+      const response = await this.peopleService.getPerson(params);
+
+      console.log(JSON.stringify(response, null, 4));
+
+      const output = response.map(res => {
+        return {
+          person: {
+            id: res.id,
+            name: res.name,
+            socialName: res.socialName,
+            birthDate: res.birthDate
+          },
+          adresses: res.adresses.map((address: any) => ({
+            id: address.id,
+            number: address.number,
+            zipCode: address.zipCode,
+            publicPlace: address.publicPlace,
+            neighborhood: address.neighborhood,
+            neighborhoodComplement: address.neighborhoodComplement,
+            county: address.county,
+            city: address.city
+          })),
+          documents: res.documents.map(document => ({
+            id: document.id,
+            documentType: document.documentType,
+            documentNumber: document.documentNumber,
+            shippingDate: document.shippingDate
+          })),
+          contacts: res.contacts.map(contact => ({
+            id: contact.id,
+            contactType: contact.contactType,
+            contact: contact.contact
+          })),
+          questions: res.personalData.map(data => {
+            const hasResponse = !!data.questionAnswer.response;
+            const hasAnswer = !!data.questionAnswer.answer;
+            let content: any = {};
+            if (hasAnswer && hasResponse) {
+              content[data.questionAnswer.answer.id] = data.questionAnswer.response;
+            } else if (hasAnswer && !hasResponse) {
+              content = data.questionAnswer.answer.id;
+            } else if (hasResponse) {
+              content['response'] = data.questionAnswer.response;
             }
-          }
-        }))
-      };
+            return {
+              [data.questionAnswer.question.id]: content,
+              metadata: {
+                personQuestionAnswerId: data.id,
+                questionAnswerId: data.questionAnswer.id
+              }
+            };
+          })
+        };
+      });
+      return output;
     } catch (error) {
       throw new BadRequestException();
     }

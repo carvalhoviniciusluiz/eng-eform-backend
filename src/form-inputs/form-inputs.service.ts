@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ContactType, DocumentType, Person as PersonModel, PersonType, PrismaClient } from '@prisma/client';
-import { ITXClientDenyList } from '@prisma/client/runtime';
+import { ContactType, DocumentType, PersonType } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '~/common/service';
-import { DataBaseError, UnexpectedError, ValueError } from '~/form-inputs/error';
+import { DataBaseError, UnexpectedError } from '~/form-inputs/error';
 
 interface Questions {
   [questionId: string]: string | string[] | { response: string } | Questions;
@@ -15,6 +14,7 @@ interface Person {
   birthDate: string;
 }
 interface Address {
+  id: string;
   neighborhood: string;
   neighborhoodComplement: string;
   zipCode: string;
@@ -23,17 +23,17 @@ interface Address {
   county: string;
   number: string;
   publicPlace: string;
-  id: string;
 }
 interface Contact {
+  id: string;
   contactType: string;
   contact: string;
-  id: string;
 }
 interface Document {
+  id: string;
   documentType: string;
   documentNumber: string;
-  id: string;
+  shippingDate: string;
 }
 interface PersonInputProps {
   person: Person;
@@ -120,60 +120,83 @@ export class FormInputsService {
     return this.fixIds(ids);
   }
 
-  async savePersonAndPersonalQuestions({
-    input,
-    formId,
-    prisma
-  }: {
-    input: PersonInputProps;
-    formId: string;
-    prisma: Omit<PrismaClient, ITXClientDenyList>;
-  }): Promise<PersonModel> {
-    const birthDateValue = input.person?.birthDate.split('/').reverse().join('-');
-    const birthDate = !!birthDateValue ? new Date(birthDateValue) : null;
-    const personPersisted = await prisma.person.create({
-      data: {
-        id: input.person.id,
-        name: input.person.name,
-        socialName: input.person.socialName,
-        birthDate
-      }
+  private isDateValid(date: string) {
+    return !isNaN(new Date(date) as any);
+  }
+
+  private parseDate(value: string) {
+    const dateValue = value.split('/').reverse().join('-');
+    const date = this.isDateValid(dateValue) ? new Date(dateValue) : null;
+    return date;
+  }
+
+  async persistForPerson(formId: string, input: PersonInputProps) {
+    const personData = {
+      id: input.person.id,
+      name: input.person.name,
+      socialName: input.person.socialName,
+      birthDate: this.parseDate(input.person.birthDate)
+    };
+    const personPersisted = await this.prisma.person.upsert({
+      where: { id: input.person.id },
+      update: personData,
+      create: personData
     });
-    await prisma.personAddress.createMany({
-      data: input.adresses.map(address => ({
-        id: address.id,
-        city: address.city,
-        county: address.county,
-        neighborhood: address.neighborhood,
-        neighborhoodComplement: address.neighborhoodComplement,
-        number: address?.number ?? null,
-        publicPlace: address.publicPlace,
-        zipCode: address.zipCode,
+    input.adresses.forEach(async ads => {
+      const data = {
+        id: ads.id,
+        city: ads.city,
+        county: ads.county,
+        neighborhood: ads.neighborhood,
+        neighborhoodComplement: ads.neighborhoodComplement,
+        number: ads?.number ?? null,
+        publicPlace: ads.publicPlace,
+        zipCode: ads.zipCode,
         personId: personPersisted.id
-      }))
+      };
+      await this.prisma.personAddress.upsert({
+        where: { id: ads.id },
+        update: data,
+        create: data
+      });
     });
-    await prisma.personContact.createMany({
-      data: input.contacts.map(contact => ({
+    input.contacts.forEach(async contact => {
+      const contactData = {
         id: contact.id,
         contact: contact.contact,
         contactType: contact.contactType as ContactType,
         personId: personPersisted.id
-      }))
+      };
+      await this.prisma.personContact.upsert({
+        where: { id: contact.id },
+        update: contactData,
+        create: contactData
+      });
     });
-    await prisma.personDocument.createMany({
-      data: input.documents.map(document => ({
+    input.documents.forEach(async document => {
+      const documentData = {
         id: document.id,
         documentNumber: document.documentNumber,
         documentType: document.documentType as DocumentType,
+        shippingDate: this.parseDate(document.shippingDate),
         personId: personPersisted.id
-      }))
+      };
+      await this.prisma.personDocument.upsert({
+        where: { id: document.id },
+        update: documentData,
+        create: documentData
+      });
     });
+
+    // condicao diferente se for edite
+
     const questionAnswers = this.rearrangeQuestionsForm(formId, input.questions);
-    await prisma.questionAnswer.createMany({
+    await this.prisma.questionAnswer.createMany({
       data: questionAnswers
     });
-    await prisma.personQuestionAnswer.createMany({
+    await this.prisma.personQuestionAnswer.createMany({
       data: questionAnswers.map(questionAnswer => ({
+        id: randomUUID(),
         personId: personPersisted.id,
         questionAnswerId: questionAnswer.id
       }))
@@ -186,76 +209,66 @@ export class FormInputsService {
     if (!aggressor || !mainForms || !victim) {
       throw new UnexpectedError('Insufficient data');
     }
-    const victimFound = await this.prisma.person.findFirst({
-      where: {
-        name: victim.person.name
-      }
-    });
-    if (victimFound) {
-      throw new ValueError(`VICTIM::${victimFound.id}`);
-    }
-    const aggressorFound = await this.prisma.person.findFirst({
-      where: {
-        name: aggressor.person.name
-      }
-    });
-    if (aggressorFound) {
-      throw new ValueError(`AGGRESSOR::${aggressorFound.id}`);
-    }
+    // const victimFound = await this.prisma.person.findFirst({
+    //   where: {
+    //     name: victim.person.name
+    //   }
+    // });
+    // if (victimFound) {
+    //   throw new ValueError(`VICTIM::${victimFound.id}`);
+    // }
+    // const aggressorFound = await this.prisma.person.findFirst({
+    //   where: {
+    //     name: aggressor.person.name
+    //   }
+    // });
+    // if (aggressorFound) {
+    //   throw new ValueError(`AGGRESSOR::${aggressorFound.id}`);
+    // }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
     try {
-      await this.prisma.$transaction(async prisma => {
-        const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
-        const firstPerson = await this.savePersonAndPersonalQuestions({
-          formId: personalDataFormId,
-          input: victim,
-          prisma
-        });
-        const secondPerson = await this.savePersonAndPersonalQuestions({
-          formId: personalDataFormId,
-          input: aggressor,
-          prisma
-        });
-        const personInputCount = await prisma.personInput.count();
-        const personInput = await prisma.personInput.create({
-          data: {
-            id: randomUUID(),
-            number: `${personInputCount + 1}`.toString().padStart(12, '0')
-          }
-        });
-        await prisma.personInputDetail.createMany({
-          data: [
-            {
-              id: randomUUID(),
-              personType: PersonType.VICTIM,
-              personId: firstPerson.id,
-              personInputId: personInput.id
-            },
-            {
-              id: randomUUID(),
-              personType: PersonType.AGGRESSOR,
-              personId: secondPerson.id,
-              personInputId: personInput.id
-            }
-          ]
-        });
-        const questionAnswerList = [];
-        for (const [formId, questions] of Object.entries(mainForms)) {
-          const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
-          await prisma.questionAnswer.createMany({
-            data: questionAnswers
-          });
-          questionAnswerList.push(questionAnswers);
-        }
-        const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+      const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
+      const firstPerson = await this.persistForPerson(personalDataFormId, victim);
+      const secondPerson = await this.persistForPerson(personalDataFormId, aggressor);
+      const personInputCount = await this.prisma.personInput.count();
+      const personInput = await this.prisma.personInput.create({
+        data: {
           id: randomUUID(),
-          formId: questionAnswer.formId,
-          questionAnswerId: questionAnswer.id,
-          personInputId: personInput.id
-        }));
-        await prisma.personInputQuestionAnswer.createMany({
-          data: personInputQuestionAnswers
+          number: `${personInputCount + 1}`.toString().padStart(12, '0')
+        }
+      });
+      await this.prisma.personInputDetail.createMany({
+        data: [
+          {
+            id: randomUUID(),
+            personType: PersonType.VICTIM,
+            personId: firstPerson.id,
+            personInputId: personInput.id
+          },
+          {
+            id: randomUUID(),
+            personType: PersonType.AGGRESSOR,
+            personId: secondPerson.id,
+            personInputId: personInput.id
+          }
+        ]
+      });
+      const questionAnswerList = [];
+      for (const [formId, questions] of Object.entries(mainForms)) {
+        const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
+        await this.prisma.questionAnswer.createMany({
+          data: questionAnswers
         });
+        questionAnswerList.push(questionAnswers);
+      }
+      const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+        id: randomUUID(),
+        formId: questionAnswer.formId,
+        questionAnswerId: questionAnswer.id,
+        personInputId: personInput.id
+      }));
+      await this.prisma.personInputQuestionAnswer.createMany({
+        data: personInputQuestionAnswers
       });
     } catch (error) {
       throw new DataBaseError(error);

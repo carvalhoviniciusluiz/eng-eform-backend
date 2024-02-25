@@ -7,10 +7,10 @@ export class PeopleService {
 
   async getPerson(params: any) {
     const { name } = params;
-    const person = this.prisma.person.findFirstOrThrow({
-      where: {
-        name
-      },
+    if (!name) {
+      throw new Error(`Name param not found`);
+    }
+    const people = this.prisma.person.findMany({
       include: {
         adresses: true,
         contacts: true,
@@ -25,8 +25,13 @@ export class PeopleService {
             }
           }
         }
+      },
+      where: {
+        name: {
+          contains: name
+        }
       }
     });
-    return person;
+    return people;
   }
 }
