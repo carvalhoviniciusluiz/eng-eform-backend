@@ -77,7 +77,7 @@ model Person {
   adresses          PersonAddress[]
   documents         PersonDocument[]
   contacts          PersonContact[]
-  questionAnswer    PersonQuestionAnswer[]
+  personalData      PersonQuestionAnswer[]
   details           PersonInputDetail[]
   createdAt         DateTime?              @default(now())    @map("created_at")
   updatedAt         DateTime?              @updatedAt         @map("updated_at")
