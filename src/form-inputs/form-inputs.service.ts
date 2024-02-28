@@ -87,7 +87,7 @@ export class FormInputsService {
     }
     if (protocolNumber) {
       where.OR.push({
-        id: protocolNumber
+        number: protocolNumber
       });
     }
     const personInputs = await this.prisma.personInput.findMany({
