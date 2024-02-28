@@ -57,6 +57,16 @@ interface InputProps {
 export class FormInputsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getPersonInputsIdAndNumber() {
+    const personInputs = await this.prisma.personInput.findMany({
+      select: {
+        id: true,
+        number: true
+      }
+    });
+    return personInputs;
+  }
+
   private isObject(obj: any) {
     return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
   }

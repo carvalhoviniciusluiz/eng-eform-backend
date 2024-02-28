@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '~/common/decorators';
@@ -14,12 +14,14 @@ export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
 
   @Get()
-  async getPerson(@Query() params: any) {
+  async getPeople(@Query() params: any) {
+    return this.peopleService.getPeople(params);
+  }
+
+  @Get('/:name')
+  async getPerson(@Param(':name') name: string) {
     try {
-      const response = await this.peopleService.getPerson(params);
-
-      console.log(JSON.stringify(response, null, 4));
-
+      const response = await this.peopleService.getPerson(name);
       const output = response.map(res => {
         return {
           person: {
