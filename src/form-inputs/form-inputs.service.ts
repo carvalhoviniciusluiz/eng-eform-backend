@@ -62,30 +62,36 @@ export class FormInputsService {
     if (!victimId && !aggressorId && !protocolNumber) {
       throw new NotFoundError('Param not found');
     }
-    const personInputs = await this.prisma.personInput.findMany({
-      where: {
-        OR: [
-          {
-            details: {
-              some: {
-                personId: victimId,
-                personType: 'VICTIM'
-              }
-            }
-          },
-          {
-            details: {
-              some: {
-                personId: aggressorId,
-                personType: 'AGGRESSOR'
-              }
-            }
-          },
-          {
-            id: protocolNumber
+    const where: any = {
+      OR: []
+    };
+    if (victimId) {
+      where.OR.push({
+        details: {
+          some: {
+            personId: victimId,
+            personType: 'VICTIM'
           }
-        ]
-      },
+        }
+      });
+    }
+    if (aggressorId) {
+      where.OR.push({
+        details: {
+          some: {
+            personId: aggressorId,
+            personType: 'AGGRESSOR'
+          }
+        }
+      });
+    }
+    if (protocolNumber) {
+      where.OR.push({
+        id: protocolNumber
+      });
+    }
+    const personInputs = await this.prisma.personInput.findMany({
+      where,
       include: {
         details: {
           select: {
@@ -100,7 +106,12 @@ export class FormInputsService {
         }
       }
     });
-    return personInputs;
+    return personInputs.map(personInput => ({
+      id: personInput.id,
+      number: personInput.number,
+      createdAt: personInput.createdAt,
+      details: personInput.details
+    }));
   }
 
   async getPersonInputsIdAndNumber() {

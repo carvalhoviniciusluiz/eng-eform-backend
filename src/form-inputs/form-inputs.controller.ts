@@ -17,11 +17,7 @@ export class FormInputsController {
   @Get()
   async getPersonInputsByVictimAndAggressorAndProtocol(@Query() params: any) {
     const output = await this.formInputsService.getPersonInputsByVictimAndAggressorAndProtocol(params);
-    return output.map(item => ({
-      id: item.id,
-      number: item.number,
-      details: item.details
-    }));
+    return output;
   }
 
   @Get('/protocols')
