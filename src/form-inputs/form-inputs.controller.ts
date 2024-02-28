@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '~/common/decorators';
@@ -13,6 +13,16 @@ import { FormInputsService } from '~/form-inputs/form-inputs.service';
 @Controller('form-inputs')
 export class FormInputsController {
   constructor(private readonly formInputsService: FormInputsService) {}
+
+  @Get()
+  async getPersonInputsByVictimAndAggressorAndProtocol(@Query() params: any) {
+    const output = await this.formInputsService.getPersonInputsByVictimAndAggressorAndProtocol(params);
+    return output.map(item => ({
+      id: item.id,
+      number: item.number,
+      details: item.details
+    }));
+  }
 
   @Get('/protocols')
   async getPersonInputsIdAndNumber() {

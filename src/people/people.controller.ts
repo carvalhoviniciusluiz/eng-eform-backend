@@ -15,7 +15,11 @@ export class PeopleController {
 
   @Get()
   async getPeople(@Query() params: any) {
-    return this.peopleService.getPeople(params);
+    const output = await this.peopleService.getPeople(params);
+    return output.map(({ person }) => ({
+      id: person.id,
+      name: person.name
+    }));
   }
 
   @Get('/:name')

@@ -22,7 +22,7 @@ export class PeopleService {
         }
       }
     });
-    return people.map(({ person }) => ({ id: person.id, name: person.name }));
+    return people;
   }
 
   async getPerson(name: string) {

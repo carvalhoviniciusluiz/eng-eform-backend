@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ContactType, DocumentType, PersonType } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '~/common/service';
-import { DataBaseError, UnexpectedError } from '~/form-inputs/error';
+import { DataBaseError, NotFoundError, UnexpectedError } from '~/form-inputs/error';
 
 interface Questions {
   [questionId: string]: string | string[] | { response: string } | Questions;
@@ -56,6 +56,52 @@ interface InputProps {
 @Injectable()
 export class FormInputsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getPersonInputsByVictimAndAggressorAndProtocol(params: any) {
+    const { victimId, aggressorId, protocolNumber } = params;
+    if (!victimId && !aggressorId && !protocolNumber) {
+      throw new NotFoundError('Param not found');
+    }
+    const personInputs = await this.prisma.personInput.findMany({
+      where: {
+        OR: [
+          {
+            details: {
+              some: {
+                personId: victimId,
+                personType: 'VICTIM'
+              }
+            }
+          },
+          {
+            details: {
+              some: {
+                personId: aggressorId,
+                personType: 'AGGRESSOR'
+              }
+            }
+          },
+          {
+            id: protocolNumber
+          }
+        ]
+      },
+      include: {
+        details: {
+          select: {
+            personType: true,
+            person: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+    return personInputs;
+  }
 
   async getPersonInputsIdAndNumber() {
     const personInputs = await this.prisma.personInput.findMany({
