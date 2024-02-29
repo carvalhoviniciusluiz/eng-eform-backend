@@ -84,10 +84,11 @@ export class FormsController {
 
   @Post()
   async createForm(@Body() formData: FormRequestDTO, @GetUser() user: UserModel) {
-    const { name } = formData;
+    const { name, segment } = formData;
     try {
       const newForm = await this.formService.create({
         name,
+        segment,
         author: {
           connect: {
             id: user.id
