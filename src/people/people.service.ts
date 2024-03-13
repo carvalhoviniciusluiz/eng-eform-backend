@@ -33,17 +33,17 @@ export class PeopleService {
       include: {
         adresses: true,
         contacts: true,
-        documents: true,
-        personalData: {
-          include: {
-            questionAnswer: {
-              include: {
-                question: true,
-                answer: true
-              }
-            }
-          }
-        }
+        documents: true
+        // personalData: {
+        //   include: {
+        //     questionAnswer: {
+        //       include: {
+        //         question: true,
+        //         answer: true
+        //       }
+        //     }
+        //   }
+        // }
       },
       where: {
         name: {
@@ -79,26 +79,26 @@ export class PeopleService {
           id: contact.id,
           contactType: contact.contactType,
           contact: contact.contact
-        })),
-        questions: res.personalData.map(data => {
-          const hasResponse = !!data.questionAnswer.response;
-          const hasAnswer = !!data.questionAnswer.answer;
-          let content: any = {};
-          if (hasAnswer && hasResponse) {
-            content[data.questionAnswer.answer.id] = data.questionAnswer.response;
-          } else if (hasAnswer && !hasResponse) {
-            content = data.questionAnswer.answer.id;
-          } else if (hasResponse) {
-            content['response'] = data.questionAnswer.response;
-          }
-          return {
-            [data.questionAnswer.question.id]: content,
-            metadata: {
-              personQuestionAnswerId: data.id,
-              questionAnswerId: data.questionAnswer.id
-            }
-          };
-        })
+        }))
+        // questions: res.personalData.map(data => {
+        //   const hasResponse = !!data.questionAnswer.response;
+        //   const hasAnswer = !!data.questionAnswer.answer;
+        //   let content: any = {};
+        //   if (hasAnswer && hasResponse) {
+        //     content[data.questionAnswer.answer.id] = data.questionAnswer.response;
+        //   } else if (hasAnswer && !hasResponse) {
+        //     content = data.questionAnswer.answer.id;
+        //   } else if (hasResponse) {
+        //     content['response'] = data.questionAnswer.response;
+        //   }
+        //   return {
+        //     [data.questionAnswer.question.id]: content,
+        //     metadata: {
+        //       personQuestionAnswerId: data.id,
+        //       questionAnswerId: data.questionAnswer.id
+        //     }
+        //   };
+        // })
       };
     });
     return output;
