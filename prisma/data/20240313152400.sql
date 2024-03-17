@@ -642,7 +642,17 @@ VALUES ('2367b912-939a-4724-98cc-08ba2297f744','COMPOSIÇÃO FAMILIAR','2024-01-
 -- InsertSubQuestions
 
 INSERT INTO "public"."questions" ("id","content","parent_id","created_at","updated_at","form_id","type")
-VALUES ('9e333d8e-cc8b-4340-a965-2008f8f7257b','Total da renda familiar','2367b912-939a-4724-98cc-08ba2297f744','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','PLAIN_TEXT');
+VALUES ('9e333d8e-cc8b-4340-a965-2008f8f7257b','Total da renda familiar','2367b912-939a-4724-98cc-08ba2297f744','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE');
+
+INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
+VALUES
+('6f521520-e319-4e7c-875e-431e28d96c80','Menos de 1 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('e8d94b35-aba5-4018-b5e8-aee6003ee842','1 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('2f8b1b32-c925-47e7-b814-5c7a711f4110','Até 2 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('eacbc485-969f-4105-8700-01c2cadf3ba1','Até 3 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('37662af2-468c-4787-8028-61d8c092df11','Até 4 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('acdc1bfa-7991-4a35-95b9-a049a339ee05','Até  5 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('0914daa7-5489-4dec-ab43-6eef35c0a82d','Acima de 5 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC');
 
 -- InsertSubQuestions
 
