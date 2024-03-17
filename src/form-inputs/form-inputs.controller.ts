@@ -1,7 +1,8 @@
 import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from '~/common/decorators';
+import { User as UserModel } from '@prisma/client';
+import { GetUser, Roles } from '~/common/decorators';
 import { RolesGuard } from '~/common/guards';
 import { ValueError } from '~/form-inputs/error';
 import { FormInputsService } from '~/form-inputs/form-inputs.service';
@@ -26,13 +27,11 @@ export class FormInputsController {
   }
 
   @Post()
-  async createFormInput(@Body() inputData: any): Promise<any> {
+  async createFormInput(@Body() inputData: any, @GetUser() user: UserModel): Promise<any> {
     try {
-      const output = await this.formInputsService.createFormInput(inputData);
+      const output = await this.formInputsService.createFormInput(inputData, user);
       return output;
     } catch (error) {
-      console.log(error);
-
       const isValueError = error instanceof ValueError;
       if (isValueError) {
         throw new BadRequestException(`NAME_ALREADY_EXISTS::${error.message}`, {

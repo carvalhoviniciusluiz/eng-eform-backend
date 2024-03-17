@@ -4,58 +4,58 @@
 
 -- InsertCompanies
 
-INSERT INTO "public"."companies" ("id","name","initials","created_at","updated_at")
+INSERT INTO "public"."companies" ("id","name","initials","created_at","updated_at","code")
 VALUES
-('b973f87a-a7d0-4e14-b295-97326f5476a1','Secretaria Extraordinária de Políticas para as Mulheres','SEPM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado de Trabalho e Empreendedorismo','SETE','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado de Educação','SEED','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado de Inclusão e Mobilização Social','SIMS','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado de Saúde','SESA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Hospital de Emergência', 'Pronto Socorro','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Hospital da Mulher Mães Luzia','HMML','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Hospital das Clínicas Alberto Lima','HCAL','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Coordenadoria de DST','AIDS e Hepatites Virais','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Referência em Práticas Integrativas e Complementares do Amapá','CRPIC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Reabilitação do Amapá','CREAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado da Justiça e Segurança Pública','SEJUSP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Delegacia Geral da Polícia Civil','DGPC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Delegacias Especializadas de Crimes contra a Mulher Vítima de Violência Doméstica e Familiar','DCCM’s','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Referência e Atendimento à Mulher','CRAM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Atendimento à Mulher e à Família','CAMUF','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Referência em Atendimento à Mulher','CRAM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Polícia Militar do Estado do Amapá','PMAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Polícia Técnico Científica do Amapá','POLITEC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Instituto de Administração Penitenciária Feminina','IAPEN','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro Integrado Operações de Defesa Social','CIODES','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Corpo de Bombeiros Militar do Estado do Amapá','CBMAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Agencia de Desenvolvimento Econômico do Amapá','AGENCIA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado do Desenvolvimento das Cidades','SDC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Atenção Psicossocial','CAPS','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Atenção Psicossocial para Álcool e Outras Drogas','CAPS AD','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Defensoria Pública Geral do Estado do Amapá','DPE','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria Extraordinária de Políticas Públicas para os Afrodescendentes','SEAFRO','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria Extraordinária Povos Indígenas','SEPI','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria Extraordinária de Políticas para a Juventude','SEJUV','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Promotoria de Defesa da Mulher','Promotoria de Defesa da Mulher','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Agência de Defesa e Inspeção Agropecuária do Amapá','Agência de Defesa e Inspeção Agropecuária do Amapá','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Agência de Fomento do Amapá','AFAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Centro de Gestão da Tecnologia da informação','PRODAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Escola de Administração Pública','EAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Fundação da Criança e do Adolescente do Estado do Amapá','FCRIA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Instituto de Desenvolvimento Rural do Estado do Amapá','Rurap','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Instituto de Terras do Estado do Amapá','Amapá Terras','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Laboratório Central de Saúde Pública','LACEM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Rádio Difusora de Macapá','Difusora','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado da Ciência e Tecnologia','CTEC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado da Comunicação','SECOM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado da Cultura','SECULT','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado de Transporte','SETRAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado do Desenvolvimento Rural','SDR','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado do Desporto e Lazer','SEDEL','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria de Estado do Turismo','SECULT','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Secretaria Extraordinária de Representação do Governo do Estado do Amapá em Brasília','Secretaria Extraordinária de Representação do Governo do Estado do Amapá em Brasília','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Sistema Integrado do Atendimento ao Cidadão','SIAC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC'),
-(gen_random_uuid(),'Universidade do Estado do Amapá','UEAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC');
+('b973f87a-a7d0-4e14-b295-97326f5476a1','Secretaria Extraordinária de Políticas para as Mulheres','SEPM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',573),
+(gen_random_uuid(),'Secretaria de Estado de Trabalho e Empreendedorismo','SETE','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',932),
+(gen_random_uuid(),'Secretaria de Estado de Educação','SEED','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',165),
+(gen_random_uuid(),'Secretaria de Estado de Inclusão e Mobilização Social','SIMS','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',247),
+(gen_random_uuid(),'Secretaria de Estado de Saúde','SESA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',810),
+(gen_random_uuid(),'Hospital de Emergência', 'Pronto Socorro','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',386),
+(gen_random_uuid(),'Hospital da Mulher Mães Luzia','HMML','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',521),
+(gen_random_uuid(),'Hospital das Clínicas Alberto Lima','HCAL','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',749),
+(gen_random_uuid(),'Coordenadoria de DST','AIDS e Hepatites Virais','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',639),
+(gen_random_uuid(),'Centro de Referência em Práticas Integrativas e Complementares do Amapá','CRPIC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',104),
+(gen_random_uuid(),'Centro de Reabilitação do Amapá','CREAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',893),
+(gen_random_uuid(),'Secretaria de Estado da Justiça e Segurança Pública','SEJUSP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',432),
+(gen_random_uuid(),'Delegacia Geral da Polícia Civil','DGPC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',618),
+(gen_random_uuid(),'Delegacias Especializadas de Crimes contra a Mulher Vítima de Violência Doméstica e Familiar','DCCM’s','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',327),
+(gen_random_uuid(),'Centro de Referência e Atendimento à Mulher','CRAM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',576),
+(gen_random_uuid(),'Centro de Atendimento à Mulher e à Família','CAMUF','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',215),
+(gen_random_uuid(),'Centro de Referência em Atendimento à Mulher','CRAM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',930),
+(gen_random_uuid(),'Polícia Militar do Estado do Amapá','PMAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',483),
+(gen_random_uuid(),'Polícia Técnico Científica do Amapá','POLITEC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',762),
+(gen_random_uuid(),'Instituto de Administração Penitenciária Feminina','IAPEN','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',129),
+(gen_random_uuid(),'Centro Integrado Operações de Defesa Social','CIODES','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',875),
+(gen_random_uuid(),'Corpo de Bombeiros Militar do Estado do Amapá','CBMAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',368),
+(gen_random_uuid(),'Agencia de Desenvolvimento Econômico do Amapá','AGENCIA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',594),
+(gen_random_uuid(),'Secretaria de Estado do Desenvolvimento das Cidades','SDC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',417),
+(gen_random_uuid(),'Centro de Atenção Psicossocial','CAPS','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',687),
+(gen_random_uuid(),'Centro de Atenção Psicossocial para Álcool e Outras Drogas','CAPS AD','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',205),
+(gen_random_uuid(),'Defensoria Pública Geral do Estado do Amapá','DPE','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',981),
+(gen_random_uuid(),'Secretaria Extraordinária de Políticas Públicas para os Afrodescendentes','SEAFRO','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',503),
+(gen_random_uuid(),'Secretaria Extraordinária Povos Indígenas','SEPI','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',178),
+(gen_random_uuid(),'Secretaria Extraordinária de Políticas para a Juventude','SEJUV','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',849),
+(gen_random_uuid(),'Promotoria de Defesa da Mulher','Promotoria de Defesa da Mulher','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',396),
+(gen_random_uuid(),'Agência de Defesa e Inspeção Agropecuária do Amapá','Agência de Defesa e Inspeção Agropecuária do Amapá','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',705),
+(gen_random_uuid(),'Agência de Fomento do Amapá','AFAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',251),
+(gen_random_uuid(),'Centro de Gestão da Tecnologia da informação','PRODAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',941),
+(gen_random_uuid(),'Escola de Administração Pública','EAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',609),
+(gen_random_uuid(),'Fundação da Criança e do Adolescente do Estado do Amapá','FCRIA','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',734),
+(gen_random_uuid(),'Instituto de Desenvolvimento Rural do Estado do Amapá','Rurap','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',168),
+(gen_random_uuid(),'Instituto de Terras do Estado do Amapá','Amapá Terras','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',828),
+(gen_random_uuid(),'Laboratório Central de Saúde Pública','LACEM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',456),
+(gen_random_uuid(),'Rádio Difusora de Macapá','Difusora','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',598),
+(gen_random_uuid(),'Secretaria de Estado da Ciência e Tecnologia','CTEC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',863),
+(gen_random_uuid(),'Secretaria de Estado da Comunicação','SECOM','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',172),
+(gen_random_uuid(),'Secretaria de Estado da Cultura','SECULT','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',325),
+(gen_random_uuid(),'Secretaria de Estado de Transporte','SETRAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',596),
+(gen_random_uuid(),'Secretaria de Estado do Desenvolvimento Rural','SDR','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',710),
+(gen_random_uuid(),'Secretaria de Estado do Desporto e Lazer','SEDEL','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',349),
+(gen_random_uuid(),'Secretaria de Estado do Turismo','SECULT','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',927),
+(gen_random_uuid(),'Secretaria Extraordinária de Representação do Governo do Estado do Amapá em Brasília','Secretaria Extraordinária de Representação do Governo do Estado do Amapá em Brasília','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',823),
+(gen_random_uuid(),'Sistema Integrado do Atendimento ao Cidadão','SIAC','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',577),
+(gen_random_uuid(),'Universidade do Estado do Amapá','UEAP','2023-03-27 12:50:41.497 UTC','2023-03-27 12:50:41.497 UTC',607);
 
 -- InsertUsers
 
@@ -260,14 +260,6 @@ VALUES
 ('b994a4ca-ece7-481b-9fee-ec92861bf621','Pansexual',false,false,'6504a191-1786-4068-a2f6-9ed973757e9d','2024-02-01 18:45:40.393 UTC','2024-02-01 18:45:40.393 UTC'),
 ('c0216c03-9f3f-40b8-858a-39fe6a25ab7c','Demissexual',false,false,'6504a191-1786-4068-a2f6-9ed973757e9d','2024-02-01 18:45:40.393 UTC','2024-02-01 18:45:40.393 UTC'),
 ('e82b7294-7a4c-4e6a-b3d8-d59160880d9d','Ignorado',false,false,'6504a191-1786-4068-a2f6-9ed973757e9d','2024-02-01 18:45:40.393 UTC','2024-02-01 18:45:40.393 UTC');
-
--- **********
--- **********
--- **********
--- **********
--- **********
--- **********
--- **********
 
 -- InsertSubQuestions
 
@@ -652,7 +644,8 @@ VALUES
 ('eacbc485-969f-4105-8700-01c2cadf3ba1','Até 3 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
 ('37662af2-468c-4787-8028-61d8c092df11','Até 4 salário mínimo',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
 ('acdc1bfa-7991-4a35-95b9-a049a339ee05','Até  5 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('0914daa7-5489-4dec-ab43-6eef35c0a82d','Acima de 5 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC');
+('0914daa7-5489-4dec-ab43-6eef35c0a82d','Acima de 5 salários mínimos',true,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
+('312eb765-85cb-4ee2-ab86-f64692b6567a','Ignorado',false,false,'9e333d8e-cc8b-4340-a965-2008f8f7257b','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC');
 
 -- InsertSubQuestions
 

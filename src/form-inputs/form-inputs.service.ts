@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ContactType, DocumentType, PersonType } from '@prisma/client';
+import { ContactType, DocumentType, PersonType, User as UserModel } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '~/common/service';
 import { DataBaseError, NotFoundError, UnexpectedError } from '~/form-inputs/error';
@@ -271,7 +271,19 @@ export class FormInputsService {
     return personPersisted;
   }
 
-  async createFormInput(inputData: InputProps) {
+  private getYearMonthDay() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+    return {
+      year,
+      month,
+      day
+    };
+  }
+
+  async createFormInput(inputData: InputProps, user: UserModel) {
     const { aggressor, mainForms, victim } = inputData;
     if (!aggressor || !mainForms || !victim) {
       throw new UnexpectedError('Insufficient data');
@@ -293,6 +305,9 @@ export class FormInputsService {
     //   throw new ValueError(`AGGRESSOR::${aggressorFound.id}`);
     // }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
+
+    const { company } = user as any;
+    const { day, month, year } = this.getYearMonthDay();
     try {
       const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
       const firstPerson = await this.persistForPerson(personalDataFormId, victim);
@@ -301,7 +316,8 @@ export class FormInputsService {
       const personInput = await this.prisma.personInput.create({
         data: {
           id: randomUUID(),
-          number: `${personInputCount + 1}`.toString().padStart(12, '0')
+          number:
+            `${year}${month}${day}` + company.code.toString() + `${personInputCount + 1}`.toString().padStart(8, '0')
         }
       });
       await this.prisma.personInputDetail.createMany({

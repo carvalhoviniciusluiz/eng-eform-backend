@@ -88,7 +88,7 @@ model Person {
 
 model PersonInput {
   id                        String     @id @default(uuid()) @db.VarChar(36)
-  number                    String     @db.VarChar(12)
+  number                    String     @db.VarChar(22)
   personInputQuestionAnswer PersonInputQuestionAnswer[]
   details                   PersonInputDetail[]
   createdAt                 DateTime?  @default(now())  @map("created_at")
@@ -142,6 +142,7 @@ model Company {
   id        String         @id              @default(uuid()) @db.VarChar(36)
   name      String?        @db.VarChar(191)
   initials  String         @db.VarChar(100)
+  code      Int            @unique
   users     User[]
   forms     FormConsumer[]
   createdAt DateTime?      @default(now())  @map("created_at")

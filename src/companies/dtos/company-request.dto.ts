@@ -21,4 +21,12 @@ export class CompanyRequestDTO {
     example: 'apple'
   })
   initials: string;
+
+  @Expose()
+  @ApiProperty({
+    type: String,
+    description: 'Value for code',
+    example: '1234'
+  })
+  code: number;
 }
