@@ -174,7 +174,7 @@ model Form {
   questionAnswers            QuestionAnswer[]
   companies                  FormConsumer[]
   personInputQuestionAnswers PersonInputQuestionAnswer[]
-  order                       Int              @default(0)
+  order                       Int              @default(999)
   createdAt                   DateTime?        @default(now())  @map("created_at")
   updatedAt                   DateTime?        @updatedAt       @map("updated_at")
   deleted                     DateTime?
@@ -227,6 +227,7 @@ model Answer {
   hasContent      Boolean?         @db.Boolean()       @default(false) @map("has_content")
   isDefault       Boolean?         @db.Boolean()       @default(false) @map("is_default")
   questionId      String           @db.VarChar(36) @map("question_id")
+  order           Int              @default(999)
   question        Question         @relation(fields: [questionId], references: [id])
   questionAnswers QuestionAnswer[]
   createdAt       DateTime?        @default(now())     @map("created_at")
