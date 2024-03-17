@@ -11,15 +11,15 @@ datasource db {
 }
 
 model PersonAddress {
-  id                       String     @id                  @default(uuid())
+  id                       String     @id                  @default(uuid()) @db.VarChar(36)
   number                   String?    @db.VarChar(191)
   zipCode                  String?    @db.VarChar(50)      @map("zip_code")
-  publicPlace              String?    @map("public_place") @db.VarChar(100)
+  publicPlace              String?    @db.VarChar(100)     @map("public_place")
   neighborhood             String?    @db.VarChar(191)
   neighborhoodComplement   String?    @map("neighborhood_complement")
   county                   String?    @db.VarChar(191)
   city                     String?    @db.VarChar(191)
-  personId                 String     @map("person_id")
+  personId                 String     @db.VarChar(36)      @map("person_id")
   person                   Person     @relation(fields: [personId], references: [id])
   createdAt                DateTime?  @default(now())      @map("created_at")
   updatedAt                DateTime?  @updatedAt           @map("updated_at")
@@ -37,11 +37,11 @@ enum DocumentType {
 }
 
 model PersonDocument {
-  id             String       @id                     @default(uuid())
+  id             String       @id                     @default(uuid()) @db.VarChar(36)
   documentType   DocumentType @map("document_type")
-  documentNumber String       @map("document_number") @db.VarChar(191)
+  documentNumber String       @db.VarChar(191)        @map("document_number")
   shippingDate   DateTime?    @map("shipping_date")
-  personId       String       @map("person_id")
+  personId       String       @db.VarChar(36)         @map("person_id")
   person         Person       @relation(fields: [personId], references: [id])
   createdAt      DateTime?    @default(now())         @map("created_at")
   updatedAt      DateTime?    @updatedAt              @map("updated_at")
@@ -57,10 +57,10 @@ enum ContactType {
 }
 
 model PersonContact {
-  id             String      @id                  @default(uuid())
+  id             String      @id                  @default(uuid()) @db.VarChar(36)
   contactType    ContactType @map("contact_type")
   contact        String      @db.VarChar(191)
-  personId       String      @map("person_id")
+  personId       String      @db.VarChar(36)      @map("person_id")
   person         Person      @relation(fields: [personId], references: [id])
   createdAt      DateTime?   @default(now())      @map("created_at")
   updatedAt      DateTime?   @updatedAt           @map("updated_at")
@@ -70,7 +70,7 @@ model PersonContact {
 }
 
 model Person {
-  id                String                 @id                @default(uuid())
+  id                String                 @id                @default(uuid()) @db.VarChar(36)
   name              String                 @db.VarChar(191)
   socialName        String?                @db.VarChar(191)   @map("social_name")
   birthDate         DateTime?              @map("birth_date")
@@ -87,8 +87,7 @@ model Person {
 }
 
 model PersonInput {
-  id                        String     @id @default(uuid())
-  // number                    Int        @default(autoincrement())
+  id                        String     @id @default(uuid()) @db.VarChar(36)
   number                    String     @db.VarChar(12)
   personInputQuestionAnswer PersonInputQuestionAnswer[]
   details                   PersonInputDetail[]
@@ -105,14 +104,14 @@ enum PersonType {
 }
 
 model PersonInputDetail {
-  id                  String         @id @default(uuid())
-  personInputId       String         @map("person_input_id")
+  id                  String         @id @default(uuid())    @db.VarChar(36)
+  personInputId       String         @db.VarChar(36)         @map("person_input_id")
   personInput         PersonInput    @relation(fields: [personInputId], references: [id])
-  personId            String         @map("person_id")
+  personId            String         @db.VarChar(36)         @map("person_id")
   person              Person         @relation(fields: [personId], references: [id])
   personType          PersonType     @map("person_type")
-  createdAt           DateTime?      @default(now())  @map("created_at")
-  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  createdAt           DateTime?      @default(now())         @map("created_at")
+  updatedAt           DateTime?      @updatedAt              @map("updated_at")
   deleted             DateTime?
   @@index([personInputId, personId])
   @@map("person_input_details")
@@ -125,11 +124,11 @@ enum Role {
 }
 
 model User {
-  id               String    @id                     @default(uuid())
+  id               String    @id                     @default(uuid()) @db.VarChar(36)
   email            String    @unique                 @db.VarChar(191)
   role             Role      @default(USER)
   passwordHashed   String?   @map("password_hashed") @db.VarChar(191)
-  companyId        String?   @map("company_id")
+  companyId        String?   @db.VarChar(36)         @map("company_id")
   company          Company?  @relation(fields: [companyId], references: [id])
   ownerForms       Form[]
   createdAt        DateTime? @default(now())         @map("created_at")
@@ -140,7 +139,7 @@ model User {
 }
 
 model Company {
-  id        String         @id              @default(uuid())
+  id        String         @id              @default(uuid()) @db.VarChar(36)
   name      String?        @db.VarChar(191)
   initials  String         @db.VarChar(100)
   users     User[]
@@ -164,9 +163,9 @@ enum FormStatus {
 }
 
 model Form {
-  id                         String           @id              @default(uuid())
+  id                         String           @id               @default(uuid()) @db.VarChar(36)
   name                       String?          @db.VarChar(191)
-  authorId                   String           @map("author_id")
+  authorId                   String           @db.VarChar(36)   @map("author_id")
   author                     User             @relation(fields: [authorId], references: [id])
   authorDraft                Json             @map("author_draft")
   segment                    FormSegment?     @default(PUBLIC)
@@ -184,33 +183,35 @@ model Form {
 }
 
 model FormConsumer {
-  id        String    @id @default(uuid())
-  formId    String    @map("form_id")
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  formId    String    @db.VarChar(36)      @map("form_id")
   form      Form      @relation(fields: [formId], references: [id])
-  companyId String    @map("company_id")
+  companyId String    @db.VarChar(36)      @map("company_id")
   company   Company   @relation(fields: [companyId], references: [id])
-  createdAt DateTime? @default(now())  @map("created_at")
-  updatedAt DateTime? @updatedAt       @map("updated_at")
+  createdAt DateTime? @default(now())      @map("created_at")
+  updatedAt DateTime? @updatedAt           @map("updated_at")
   deleted   DateTime?
   @@index([formId, companyId])
   @@map("form_consumers")
 }
 
 enum QuestionType {
+  NONE
   OBJECTIVE
   MULTIPLE
   PLAIN_TEXT
 }
 
 model Question {
-  id              String           @id              @default(uuid())
+  id              String           @id               @default(uuid())
   content         String?          @db.VarChar(191)
-  formId          String           @map("form_id")
+  formId          String           @map("form_id")   @db.VarChar(36)
   form            Form             @relation(fields: [formId], references: [id])
   children        Question[]       @relation("children")
-  parentId        String?          @map("parent_id")
+  parentId        String?          @db.VarChar(36)   @map("parent_id")
   parent          Question?        @relation("children", fields: [parentId], references: [id])
   type            QuestionType?    @default(OBJECTIVE)
+  order           Int              @default(999)
   answers         Answer[]
   questionAnswers QuestionAnswer[]
   createdAt       DateTime?        @default(now())  @map("created_at")
@@ -221,61 +222,61 @@ model Question {
 }
 
 model Answer {
-  id              String           @id              @default(uuid())
+  id              String           @id                 @default(uuid()) @db.VarChar(36)
   content         String           @db.VarChar(191)
-  hasContent      Boolean?         @db.Boolean()    @default(false) @map("has_content")
-  isDefault       Boolean?         @db.Boolean()    @default(false) @map("is_default")
-  questionId      String           @map("question_id")
+  hasContent      Boolean?         @db.Boolean()       @default(false) @map("has_content")
+  isDefault       Boolean?         @db.Boolean()       @default(false) @map("is_default")
+  questionId      String           @db.VarChar(36) @map("question_id")
   question        Question         @relation(fields: [questionId], references: [id])
   questionAnswers QuestionAnswer[]
-  createdAt       DateTime?        @default(now())  @map("created_at")
-  updatedAt       DateTime?        @updatedAt       @map("updated_at")
+  createdAt       DateTime?        @default(now())     @map("created_at")
+  updatedAt       DateTime?        @updatedAt          @map("updated_at")
   deleted         DateTime?
   @@index([questionId])
   @@map("answers")
 }
 
 model QuestionAnswer {
-  id         String                 @id             @default(uuid())
-  formId     String                 @map("form_id")
+  id         String                 @id                 @default(uuid()) @db.VarChar(36)
+  formId     String                 @db.VarChar(36)     @map("form_id")
   form       Form                   @relation(fields: [formId], references: [id])
-  questionId String                 @map("question_id")
+  questionId String                 @db.VarChar(36)     @map("question_id")
   question   Question               @relation(fields: [questionId], references: [id])
-  answerId   String?                @map("answer_id")
+  answerId   String?                @db.VarChar(36)     @map("answer_id")
   answer     Answer?                @relation(fields: [answerId], references: [id])
   response   String?                @db.Text()
   people     PersonQuestionAnswer[]
   inputs     PersonInputQuestionAnswer[]
-  createdAt  DateTime?              @default(now()) @map("created_at")
-  updatedAt  DateTime?              @updatedAt      @map("updated_at")
+  createdAt  DateTime?              @default(now())     @map("created_at")
+  updatedAt  DateTime?              @updatedAt          @map("updated_at")
   deleted    DateTime?
   @@index([formId, questionId, answerId])
   @@map("question_answers")
 }
 
 model PersonQuestionAnswer {
-  id                  String         @id @default(uuid())
-  personId            String         @map("person_id")
+  id                  String         @id @default(uuid()) @db.VarChar(36)
+  personId            String         @db.VarChar(36)      @map("person_id")
   person              Person         @relation(fields: [personId], references: [id])
-  questionAnswerId    String         @map("question_answer_id")
+  questionAnswerId    String         @db.VarChar(36)      @map("question_answer_id")
   questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
-  createdAt           DateTime?      @default(now())  @map("created_at")
-  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  createdAt           DateTime?      @default(now())      @map("created_at")
+  updatedAt           DateTime?      @updatedAt           @map("updated_at")
   deleted             DateTime?
   @@index([personId, questionAnswerId])
   @@map("person_question_answers")
 }
 
 model PersonInputQuestionAnswer {
-  id                  String         @id @default(uuid())
-  personInputId       String         @map("person_input_id")
+  id                  String         @id @default(uuid())       @db.VarChar(36)
+  personInputId       String         @db.VarChar(36)            @map("person_input_id")
   personInput         PersonInput    @relation(fields: [personInputId], references: [id])
-  formId              String         @map("form_id")
+  formId              String         @db.VarChar(36)            @map("form_id")
   form                Form           @relation(fields: [formId], references: [id])
-  questionAnswerId    String         @map("question_answer_id")
+  questionAnswerId    String         @db.VarChar(36)            @map("question_answer_id")
   questionAnswer      QuestionAnswer @relation(fields: [questionAnswerId], references: [id])
-  createdAt           DateTime?      @default(now())  @map("created_at")
-  updatedAt           DateTime?      @updatedAt       @map("updated_at")
+  createdAt           DateTime?      @default(now())            @map("created_at")
+  updatedAt           DateTime?      @updatedAt                 @map("updated_at")
   deleted             DateTime?
   @@index([personInputId, formId, questionAnswerId])
   @@map("person_input_question_answers")

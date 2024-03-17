@@ -36,7 +36,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
             parentId: null,
             deleted: null
           },
-          orderBy: { createdAt: 'asc' }
+          orderBy: { order: 'asc' }
         }
       };
     }
@@ -51,7 +51,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
             parentId: null,
             deleted: null
           },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { order: 'asc' },
           include: {
             answers: true,
             children: {
@@ -65,9 +65,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
           }
         }
       },
-      orderBy: {
-        order: 'asc'
-      },
+      orderBy: { order: 'asc' },
       where: {
         companies: {
           some: {
