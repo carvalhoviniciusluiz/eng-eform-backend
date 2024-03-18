@@ -15,6 +15,7 @@ type SignInParams = {
 };
 
 type SignUpParams = {
+  username?: string;
   email: string;
   password: string;
 };
@@ -47,15 +48,12 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const accessTokenDecoded = this.jwtService.decode(accessToken) as AccessTokenDecoded;
     const accessTokenExpiresIn = accessTokenDecoded.exp;
-
     const refreshTokenOptions: JwtSignOptions = {
       expiresIn: JWT_SECRET_REFRESHTOKEN_EXPIRES_IN
     };
-
     const refreshToken = this.jwtService.sign(payload, refreshTokenOptions);
     const refreshTokenDecoded = this.jwtService.decode(refreshToken) as AccessTokenDecoded;
     const refreshTokenExpiresIn = refreshTokenDecoded.exp;
-
     return {
       accessToken,
       accessTokenExpiresIn,
@@ -73,20 +71,19 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-
     const isPasswordValid = await this.validateUserPassword(password, user.passwordHashed);
     if (!isPasswordValid) {
       throw new UnauthorizedException();
     }
-
     return this.generateToken(user);
   }
 
   async signUp(params: SignUpParams): Promise<UserModel> {
-    const { email, password } = params;
+    const { username, email, password } = params;
     const passwordHashed = await this.generatePasswordHashed(password);
     return this.usersService.create({
       email,
+      username: username ? username : email.split('@')[0],
       passwordHashed
     });
   }

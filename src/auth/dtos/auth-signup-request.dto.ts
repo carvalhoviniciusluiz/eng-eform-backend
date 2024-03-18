@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class AuthSignUpRequestDTO {
   @Expose()
@@ -12,6 +12,16 @@ export class AuthSignUpRequestDTO {
     example: 'carvalho.viniciusluiz@gmail.com'
   })
   email: string;
+
+  @Expose()
+  @IsOptional()
+  @MaxLength(191)
+  @ApiProperty({
+    type: String,
+    description: 'Value for username',
+    example: 'carvalho.viniciusluiz'
+  })
+  username: string;
 
   @Expose()
   @IsNotEmpty()

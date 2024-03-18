@@ -283,6 +283,29 @@ export class FormInputsService {
     };
   }
 
+  private async getPersonInputMeta(user: any) {
+    const { company } = user;
+    const { day, month, year } = this.getYearMonthDay();
+    const personInputCount = await this.prisma.personInput.count();
+    const companyCode = company.code.toString();
+    const protocolNumber =
+      `${year}${month.toString().padStart(2, '0')}${day}` +
+      companyCode +
+      `${personInputCount + 1}`.toString().padStart(8, '0');
+    return {
+      protocolNumber,
+      companyCurrent: {
+        name: company.name,
+        initials: company.initials,
+        code: company.code
+      },
+      receptionist: {
+        username: user.username,
+        email: user.email
+      }
+    };
+  }
+
   async createFormInput(inputData: InputProps, user: UserModel) {
     const { aggressor, mainForms, victim } = inputData;
     if (!aggressor || !mainForms || !victim) {
@@ -306,18 +329,15 @@ export class FormInputsService {
     // }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
 
-    const { company } = user as any;
-    const { day, month, year } = this.getYearMonthDay();
     try {
       const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
       const firstPerson = await this.persistForPerson(personalDataFormId, victim);
       const secondPerson = await this.persistForPerson(personalDataFormId, aggressor);
-      const personInputCount = await this.prisma.personInput.count();
+      const { protocolNumber, companyCurrent, receptionist } = await this.getPersonInputMeta(user);
       const personInput = await this.prisma.personInput.create({
         data: {
           id: randomUUID(),
-          number:
-            `${year}${month}${day}` + company.code.toString() + `${personInputCount + 1}`.toString().padStart(8, '0')
+          number: protocolNumber
         }
       });
       await this.prisma.personInputDetail.createMany({
@@ -353,6 +373,12 @@ export class FormInputsService {
       await this.prisma.personInputQuestionAnswer.createMany({
         data: personInputQuestionAnswers
       });
+      return {
+        protocolNumber,
+        companyCurrent,
+        receptionist,
+        createdAt: personInput.createdAt
+      };
     } catch (error) {
       throw new DataBaseError(error);
     }

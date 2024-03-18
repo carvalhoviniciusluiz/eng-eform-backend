@@ -62,10 +62,10 @@ VALUES
 -- master@master.com
 -- sepm@sepm.com
 -- Ch@nge123
-INSERT INTO "public"."users" ("id","email","role","password_hashed","company_id","created_at","updated_at")
+INSERT INTO "public"."users" ("id","username","email","role","password_hashed","company_id","created_at","updated_at")
 VALUES
-('977e22e0-4c36-4fbc-b394-3456c16492e0', 'master@master.com','MASTER','$2a$10$WC4znjUbRFWfc1uOXorKxecXmZv8bgtQ2EG.Jf4yk8ROdrgluCe8O',null,'2023-03-27 12:47:53.671 UTC','2023-03-27 12:47:53.671 UTC'),
-('a8164d83-b66c-435a-be84-8f5c981fa222', 'sepm@sepm.com','ADMIN','$2a$10$xk0YVVUyh2qkoaAehWP8vuUsxyPKpN6EwLdljI0cbNkYw3ebZ6S2q','b973f87a-a7d0-4e14-b295-97326f5476a1','2023-03-27 12:47:53.671 UTC','2023-03-27 12:47:53.671 UTC');
+('977e22e0-4c36-4fbc-b394-3456c16492e0','master','master@master.com','MASTER','$2a$10$WC4znjUbRFWfc1uOXorKxecXmZv8bgtQ2EG.Jf4yk8ROdrgluCe8O',null,'2023-03-27 12:47:53.671 UTC','2023-03-27 12:47:53.671 UTC'),
+('a8164d83-b66c-435a-be84-8f5c981fa222','sepm','sepm@sepm.com','ADMIN','$2a$10$xk0YVVUyh2qkoaAehWP8vuUsxyPKpN6EwLdljI0cbNkYw3ebZ6S2q','b973f87a-a7d0-4e14-b295-97326f5476a1','2023-03-27 12:47:53.671 UTC','2023-03-27 12:47:53.671 UTC');
 
 -- InsertForms
 
