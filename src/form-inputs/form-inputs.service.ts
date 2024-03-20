@@ -69,7 +69,11 @@ export class FormInputsService {
       where.OR.push({
         details: {
           some: {
-            personId: victimId,
+            person: {
+              name: {
+                startsWith: victimId
+              }
+            },
             personType: 'VICTIM'
           }
         }
@@ -79,7 +83,11 @@ export class FormInputsService {
       where.OR.push({
         details: {
           some: {
-            personId: aggressorId,
+            person: {
+              name: {
+                startsWith: aggressorId
+              }
+            },
             personType: 'AGGRESSOR'
           }
         }
