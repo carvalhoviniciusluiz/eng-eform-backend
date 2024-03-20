@@ -206,7 +206,7 @@ enum QuestionType {
 
 model Question {
   id              String           @id               @default(uuid())
-  content         String?          @db.VarChar(191)
+  content         String?
   formId          String           @map("form_id")   @db.VarChar(36)
   form            Form             @relation(fields: [formId], references: [id])
   children        Question[]       @relation("children")

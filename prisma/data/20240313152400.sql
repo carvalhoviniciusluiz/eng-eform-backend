@@ -71,13 +71,44 @@ VALUES
 
 INSERT INTO "public"."forms" ("id","name","created_at","updated_at","author_id","author_draft","status", "order", "segment")
 VALUES
+('64f9e7dd-de6d-400b-877c-252c965c0f12','ACOMPANHAMENTO','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 1, 'CAD_PERSON'),
 ('f594187f-504c-4266-b313-6d1fb19bb197','INFORMAÇÕES GERAIS','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 0, 'CAD_PERSON');
 
 -- InsertFormConsumers
 
 INSERT INTO "public"."form_consumers" ("id", "form_id", "company_id")
-VALUES ('b3fdccb0-3a97-4979-80e9-31765bc35de2', 'f594187f-504c-4266-b313-6d1fb19bb197', 'b973f87a-a7d0-4e14-b295-97326f5476a1');
+VALUES
+('30b67f70-d6a0-4e08-b0b3-46e46652a15a', '64f9e7dd-de6d-400b-877c-252c965c0f12', 'b973f87a-a7d0-4e14-b295-97326f5476a1'),
+('b3fdccb0-3a97-4979-80e9-31765bc35de2', 'f594187f-504c-4266-b313-6d1fb19bb197', 'b973f87a-a7d0-4e14-b295-97326f5476a1');
 
+/**
+* ACOMPANHAMENTO
+*/
+-- InsertSubQuestions
+
+INSERT INTO "public"."questions" ("id","content","created_at","updated_at","form_id","type", "order")
+VALUES ('b488a7e1-efce-43cb-ad3e-d4d59ac02c86','Durante o atendimento, a vítima demonstra percepção de risco sobre sua situação? A percepção é de existência ou inexistência do risco? (por exemplo, ela diz que o agressor pode matá-la, ou ela justifica o comportamento do agressor ou naturaliza o comportamento violento?). Anote a percepção e explique.','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('c0bdb180-79a1-4807-9875-216ca27762d1','Existem outras informações relevantes com relação ao contexto ou situação da vítima e que possam indicar risco de novas agressões? (Por exemplo, a vítima tem novo(a) companheiro(a) ou tomou decisões que anunciam um rompimento definitivo com o agressor (pretende mudar de casa, bairro, cidade). Anote e explique.','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('9938d346-423c-4dbe-b150-a51979484c61','Como a vítima se apresenta física e emocionalmente? (Tem sinais de esgotamento emocional, está tomando medicação controlada, necessita de acompanhamento psicológico e/ou psiquiátrico?) Descreva.','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('9403a773-7860-4538-af03-1d3cd4c9a1f6','Existe o risco de a vítima tentar suicídio ou existem informações de que tenha tentado se matar?','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('b6443897-f443-4436-ab95-6b66b43bbaea','A vítima ainda reside com o(a) agressor(a) ou ele tem acesso fácil à sua residência? Explique a situação.','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('42311562-4d7d-4d78-8c22-545d7bb205b3','Descreva, de forma sucinta, outras circunstâncias que chamaram sua atenção e que poderão representar risco de novas agressões, a serem observadas no fluxo de atendimento.','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999),
+('55d6df5d-7e70-4bfb-88a0-9d2d47333aaa','Quais são os encaminhamentos sugeridos para a vítima?','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','PLAIN_TEXT', 999);
+
+-- InsertQuestions
+
+INSERT INTO "public"."questions" ("id","content","created_at","updated_at","form_id","type")
+VALUES
+('55129c12-8758-4cb6-b2aa-de232028b90a','A vítima concordou com os encaminhamentos?','2024-01-30 18:01:20.819 UTC','2024-01-30 18:01:20.819 UTC','64f9e7dd-de6d-400b-877c-252c965c0f12','OBJECTIVE');
+
+INSERT INTO "public"."answers" ("id","content","created_at","updated_at","question_id")
+VALUES
+('dce70f8a-7f01-41bf-a592-dca0d56bfaf5','Sim','2024-01-30 18:01:20.819 UTC','2024-01-30 18:01:20.819 UTC','55129c12-8758-4cb6-b2aa-de232028b90a'),
+('80bad7ed-9dfb-4a21-9cd7-b5afe45e67f1','Não','2024-01-30 18:01:20.819 UTC','2024-01-30 18:01:20.819 UTC','55129c12-8758-4cb6-b2aa-de232028b90a');
+
+/**
+* INFORMAÇÕES GERAIS
+*/
 -- InsertQuestions
 
 INSERT INTO "public"."questions" ("id","content","created_at","updated_at","form_id","type")
