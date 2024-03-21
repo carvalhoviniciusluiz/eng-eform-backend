@@ -57,6 +57,47 @@ interface InputProps {
 export class FormInputsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getFormByProcessNumber(processNumber: string, user: any) {
+    const personInput = await this.prisma.personInput.findFirst({
+      where: {
+        number: processNumber
+      },
+      include: {
+        details: {
+          select: {
+            personType: true,
+            person: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+    if (!personInput) {
+      throw new NotFoundError(`Number ${processNumber} not found`);
+    }
+    return {
+      user: {
+        email: user.email,
+        username: user.username,
+        company: {
+          name: user.company.name,
+          initials: user.company.initials,
+          code: user.company.code
+        }
+      },
+      input: {
+        id: personInput.id,
+        number: personInput.number,
+        createdAt: personInput.createdAt,
+        details: personInput.details
+      }
+    };
+  }
+
   async getPersonInputsByVictimAndAggressorAndProtocol(params: any) {
     const { victimId, aggressorId, protocolNumber } = params;
     if (!victimId && !aggressorId && !protocolNumber) {

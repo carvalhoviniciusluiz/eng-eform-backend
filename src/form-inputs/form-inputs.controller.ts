@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User as UserModel } from '@prisma/client';
@@ -24,6 +24,15 @@ export class FormInputsController {
   @Get('/protocols')
   async getPersonInputsIdAndNumber() {
     return this.formInputsService.getPersonInputsIdAndNumber();
+  }
+
+  @Get('/:processNumber')
+  async getFormByProcessNumber(@Param('processNumber') processNumber: string, @GetUser() user: UserModel) {
+    try {
+      return this.formInputsService.getFormByProcessNumber(processNumber, user);
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 
   @Post()
