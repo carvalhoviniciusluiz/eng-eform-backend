@@ -29,14 +29,12 @@ export class FormWithQuestionsResponseDto {
 
   constructor(params: Params) {
     const { form, questions } = params;
-
     this.form = {
       id: form.id,
       name: form.name,
       status: form.status,
       updatedAt: form.updatedAt
     };
-
     this.questions = questions?.map(question => ({
       id: question.id,
       content: question.content,

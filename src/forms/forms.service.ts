@@ -43,7 +43,7 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
     return this.prisma.form.findUnique(options) as any;
   }
 
-  async getFullForm(companyId: string) {
+  async getFullForm(params: any, companyId: string) {
     return this.prisma.form.findMany({
       include: {
         questions: {
@@ -67,6 +67,9 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
       },
       orderBy: { order: 'asc' },
       where: {
+        AND: {
+          id: params.only
+        },
         companies: {
           some: {
             companyId

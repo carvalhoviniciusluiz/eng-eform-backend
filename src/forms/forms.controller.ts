@@ -63,9 +63,9 @@ export class FormsController {
 
   @UseInterceptors(CacheInterceptor)
   @Get('/full')
-  async getFullForm(@GetUser() user: UserModel) {
+  async getFullForm(@Query() params: any, @GetUser() user: UserModel) {
     try {
-      const forms = await this.formService.getFullForm(user.companyId);
+      const forms = await this.formService.getFullForm(params, user.companyId);
       return forms;
     } catch (error) {
       throw new BadRequestException();
