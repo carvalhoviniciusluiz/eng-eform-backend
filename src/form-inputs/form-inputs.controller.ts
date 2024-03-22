@@ -51,4 +51,18 @@ export class FormInputsController {
       throw new BadRequestException();
     }
   }
+
+  @Post('/:processNumber')
+  async createFormInputByProcessNumber(
+    @Param('processNumber') processNumber: string,
+    @Body() mainForm: any,
+    @GetUser() user: UserModel
+  ): Promise<any> {
+    try {
+      const output = await this.formInputsService.createFormInputByProcessNumber(processNumber, mainForm, user);
+      return output;
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
 }

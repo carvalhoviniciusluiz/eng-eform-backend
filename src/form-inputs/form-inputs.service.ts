@@ -432,4 +432,36 @@ export class FormInputsService {
       throw new DataBaseError(error);
     }
   }
+
+  async createFormInputByProcessNumber(processNumber: string, mainForm: MainForm, user: UserModel) {
+    if (!processNumber) {
+      throw new NotFoundError(`process number ${processNumber} not found`);
+    }
+    const personInput = await this.prisma.personInput.findFirst({
+      where: {
+        number: processNumber
+      }
+    });
+    try {
+      const questionAnswerList = [];
+      for (const [formId, questions] of Object.entries(mainForm)) {
+        const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
+        await this.prisma.questionAnswer.createMany({
+          data: questionAnswers
+        });
+        questionAnswerList.push(questionAnswers);
+      }
+      const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+        id: randomUUID(),
+        formId: questionAnswer.formId,
+        questionAnswerId: questionAnswer.id,
+        personInputId: personInput.id
+      }));
+      await this.prisma.personInputQuestionAnswer.createMany({
+        data: personInputQuestionAnswers
+      });
+    } catch (error) {
+      throw new DataBaseError(error);
+    }
+  }
 }
