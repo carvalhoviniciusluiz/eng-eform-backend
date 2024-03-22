@@ -46,6 +46,21 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
   async getFullForm(params: any, companyId: string) {
     return this.prisma.form.findMany({
       include: {
+        questionAnswers: {
+          select: {
+            id: true,
+            questionId: true,
+            answer: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true
+              }
+            },
+            response: true,
+            createdAt: true
+          }
+        },
         questions: {
           where: {
             parentId: null,
