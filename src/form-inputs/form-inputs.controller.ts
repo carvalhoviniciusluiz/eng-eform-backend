@@ -41,6 +41,7 @@ export class FormInputsController {
       const output = await this.formInputsService.createFormInput(inputData, user);
       return output;
     } catch (error) {
+      console.log({ error });
       const isValueError = error instanceof ValueError;
       if (isValueError) {
         throw new BadRequestException(`NAME_ALREADY_EXISTS::${error.message}`, {
@@ -55,13 +56,13 @@ export class FormInputsController {
   @Post('/:processNumber')
   async createFormInputByProcessNumber(
     @Param('processNumber') processNumber: string,
-    @Body() mainForm: any,
-    @GetUser() user: UserModel
+    @Body() mainForm: any
   ): Promise<any> {
     try {
-      const output = await this.formInputsService.createFormInputByProcessNumber(processNumber, mainForm, user);
+      const output = await this.formInputsService.createFormInputByProcessNumber(processNumber, mainForm);
       return output;
     } catch (error) {
+      console.log({ error });
       throw new BadRequestException();
     }
   }

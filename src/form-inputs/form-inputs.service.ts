@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ContactType, DocumentType, PersonType, User as UserModel } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '~/common/service';
-import { DataBaseError, NotFoundError, UnexpectedError } from '~/form-inputs/error';
+import { NotFoundError, UnexpectedError } from '~/form-inputs/error';
 
-interface Questions {
-  [questionId: string]: string | string[] | { response: string } | Questions;
+interface Question {
+  [questionId: string]: string | string[] | { response: string; questionAnswerId: string } | Question;
 }
 interface Person {
   id: string;
@@ -37,14 +37,14 @@ interface Document {
 }
 interface PersonInputProps {
   person: Person;
-  questions: Questions;
+  questions: Question;
   adresses: Address[];
   contacts: Contact[];
   documents: Document[];
 }
 interface MainForm {
   [mainFormId: string]: {
-    [questionId: string]: Questions;
+    [questionId: string]: Question;
   };
 }
 interface InputProps {
@@ -200,11 +200,11 @@ export class FormInputsService {
     return newArray;
   }
 
-  private rearrangeQuestionsForm(formId: string, data: Questions): any[] {
-    const questionIds = Object.keys(data);
+  private rearrangeQuestionsForm(formId: string, question: Question): any[] {
+    const questionIds = Object.keys(question);
     const ids = questionIds.reduce((acc, questionId) => {
-      const id = crypto.randomUUID();
-      const answerData = data[questionId as any];
+      const answerData = question[questionId] as any;
+      const id = answerData?.questionAnswerId;
       const isObject = this.isObject(answerData);
       const isArray = Array.isArray(answerData);
       if (isObject) {
@@ -241,6 +241,8 @@ export class FormInputsService {
   }
 
   private parseDate(value: string) {
+    const hasValue = !!value;
+    if (!hasValue) return;
     const dateValue = value.split('/').reverse().join('-');
     const date = this.isDateValid(dateValue) ? new Date(dateValue) : null;
     return date;
@@ -307,16 +309,43 @@ export class FormInputsService {
     // condicao diferente se for edite
 
     const questionAnswers = this.rearrangeQuestionsForm(formId, input.questions);
-    await this.prisma.questionAnswer.createMany({
-      data: questionAnswers
+    questionAnswers.forEach(async questionAnswer => {
+      await this.prisma.questionAnswer.upsert({
+        where: { id: questionAnswer.id },
+        update: questionAnswer,
+        create: questionAnswer
+      });
     });
-    await this.prisma.personQuestionAnswer.createMany({
-      data: questionAnswers.map(questionAnswer => ({
-        id: randomUUID(),
-        personId: personPersisted.id,
-        questionAnswerId: questionAnswer.id
-      }))
+    const personQuestionAnswers = questionAnswers.map(questionAnswer => ({
+      id: randomUUID(), ///TODO:
+      personId: personPersisted.id,
+      questionAnswerId: questionAnswer.id
+    }));
+    personQuestionAnswers.forEach(async personQuestionAnswer => {
+      const found = await this.prisma.personQuestionAnswer.findFirst({
+        where: {
+          personId: personQuestionAnswer.personId,
+          questionAnswerId: personQuestionAnswer.questionAnswerId
+        }
+      });
+      if (!found) {
+        await this.prisma.personQuestionAnswer.create({
+          data: personQuestionAnswer
+        });
+      }
     });
+
+    // const questionAnswers = this.rearrangeQuestionsForm(formId, input.questions);
+    // await this.prisma.questionAnswer.createMany({
+    //   data: questionAnswers
+    // });
+    // await this.prisma.personQuestionAnswer.createMany({
+    //   data: questionAnswers.map(questionAnswer => ({
+    //     id: randomUUID(),
+    //     personId: personPersisted.id,
+    //     questionAnswerId: questionAnswer.id
+    //   }))
+    // });
     return personPersisted;
   }
 
@@ -378,62 +407,60 @@ export class FormInputsService {
     // }
     // console.log(JSON.stringify({ aggressor, mainForms, victim }, null, 4));
 
-    try {
-      const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
-      const firstPerson = await this.persistForPerson(personalDataFormId, victim);
-      const secondPerson = await this.persistForPerson(personalDataFormId, aggressor);
-      const { protocolNumber, companyCurrent, receptionist } = await this.getPersonInputMeta(user);
-      const personInput = await this.prisma.personInput.create({
-        data: {
-          id: randomUUID(),
-          number: protocolNumber
-        }
-      });
-      await this.prisma.personInputDetail.createMany({
-        data: [
-          {
-            id: randomUUID(),
-            personType: PersonType.VICTIM,
-            personId: firstPerson.id,
-            personInputId: personInput.id
-          },
-          {
-            id: randomUUID(),
-            personType: PersonType.AGGRESSOR,
-            personId: secondPerson.id,
-            personInputId: personInput.id
-          }
-        ]
-      });
-      const questionAnswerList = [];
-      for (const [formId, questions] of Object.entries(mainForms)) {
-        const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
-        await this.prisma.questionAnswer.createMany({
-          data: questionAnswers
-        });
-        questionAnswerList.push(questionAnswers);
-      }
-      const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+    const personalDataFormId = 'f594187f-504c-4266-b313-6d1fb19bb197'; // TODO: default
+    const firstPerson = await this.persistForPerson(personalDataFormId, victim);
+    const secondPerson = await this.persistForPerson(personalDataFormId, aggressor);
+    const { protocolNumber, companyCurrent, receptionist } = await this.getPersonInputMeta(user);
+    const personInput = await this.prisma.personInput.create({
+      data: {
         id: randomUUID(),
-        formId: questionAnswer.formId,
-        questionAnswerId: questionAnswer.id,
-        personInputId: personInput.id
-      }));
-      await this.prisma.personInputQuestionAnswer.createMany({
-        data: personInputQuestionAnswers
-      });
-      return {
-        protocolNumber,
-        companyCurrent,
-        receptionist,
-        createdAt: personInput.createdAt
-      };
-    } catch (error) {
-      throw new DataBaseError(error);
-    }
+        number: protocolNumber
+      }
+    });
+    await this.prisma.personInputDetail.createMany({
+      data: [
+        {
+          id: randomUUID(),
+          personType: PersonType.VICTIM,
+          personId: firstPerson.id,
+          personInputId: personInput.id
+        },
+        {
+          id: randomUUID(),
+          personType: PersonType.AGGRESSOR,
+          personId: secondPerson.id,
+          personInputId: personInput.id
+        }
+      ]
+    });
+    await this.createFormInputByProcessNumber(personInput.number, mainForms);
+
+    // const questionAnswerList = [];
+    // for (const [formId, questions] of Object.entries(mainForms)) {
+    //   const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
+    //   await this.prisma.questionAnswer.createMany({
+    //     data: questionAnswers
+    //   });
+    //   questionAnswerList.push(questionAnswers);
+    // }
+    // const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+    //   id: randomUUID(),
+    //   formId: questionAnswer.formId,
+    //   questionAnswerId: questionAnswer.id,
+    //   personInputId: personInput.id
+    // }));
+    // await this.prisma.personInputQuestionAnswer.createMany({
+    //   data: personInputQuestionAnswers
+    // });
+    return {
+      protocolNumber,
+      companyCurrent,
+      receptionist,
+      createdAt: personInput.createdAt
+    };
   }
 
-  async createFormInputByProcessNumber(processNumber: string, mainForm: MainForm, user: UserModel) {
+  async createFormInputByProcessNumber(processNumber: string, mainForm: MainForm) {
     if (!processNumber) {
       throw new NotFoundError(`process number ${processNumber} not found`);
     }
@@ -442,26 +469,37 @@ export class FormInputsService {
         number: processNumber
       }
     });
-    try {
-      const questionAnswerList = [];
-      for (const [formId, questions] of Object.entries(mainForm)) {
-        const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
-        await this.prisma.questionAnswer.createMany({
-          data: questionAnswers
+    const questionAnswerList = [];
+    for (const [formId, questions] of Object.entries(mainForm)) {
+      const questionAnswers = this.rearrangeQuestionsForm(formId, questions);
+      questionAnswers.forEach(async questionAnswer => {
+        await this.prisma.questionAnswer.upsert({
+          where: { id: questionAnswer.id },
+          update: questionAnswer,
+          create: questionAnswer
         });
-        questionAnswerList.push(questionAnswers);
-      }
-      const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
-        id: randomUUID(),
-        formId: questionAnswer.formId,
-        questionAnswerId: questionAnswer.id,
-        personInputId: personInput.id
-      }));
-      await this.prisma.personInputQuestionAnswer.createMany({
-        data: personInputQuestionAnswers
       });
-    } catch (error) {
-      throw new DataBaseError(error);
+      questionAnswerList.push(questionAnswers);
     }
+    const personInputQuestionAnswers = questionAnswerList.flat().map(questionAnswer => ({
+      id: randomUUID(),
+      formId: questionAnswer.formId,
+      questionAnswerId: questionAnswer.id,
+      personInputId: personInput.id
+    }));
+    personInputQuestionAnswers.forEach(async personInputQuestionAnswer => {
+      const found = await this.prisma.personInputQuestionAnswer.findFirst({
+        where: {
+          formId: personInputQuestionAnswer.formId,
+          questionAnswerId: personInputQuestionAnswer.questionAnswerId,
+          personInputId: personInputQuestionAnswer.personInputId
+        }
+      });
+      if (!found) {
+        await this.prisma.personInputQuestionAnswer.create({
+          data: personInputQuestionAnswer
+        });
+      }
+    });
   }
 }

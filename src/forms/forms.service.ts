@@ -44,19 +44,13 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
   }
 
   async getFullForm(params: any, companyId: string) {
-    return this.prisma.form.findMany({
+    const forms = await this.prisma.form.findMany({
       include: {
         questionAnswers: {
           select: {
             id: true,
             questionId: true,
-            answer: {
-              select: {
-                id: true,
-                content: true,
-                createdAt: true
-              }
-            },
+            answer: true,
             response: true,
             createdAt: true
           }
@@ -92,6 +86,21 @@ ORDER BY Questions.content ASC, Answers.content ASC;`,
         }
       }
     });
+    const data = forms.map(form => {
+      const { questions, questionAnswers, ...rest } = form;
+      const newQuestions = questions.map(question => {
+        const found = questionAnswers.find(questionAnswer => questionAnswer.questionId === question.id);
+        if (found) {
+          return {
+            ...question,
+            questionAnswer: found
+          };
+        }
+        return question;
+      });
+      return { ...rest, questions: newQuestions };
+    });
+    return data;
   }
 
   async getAll(params: {
