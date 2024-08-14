@@ -224,7 +224,7 @@ VALUES
 
 INSERT INTO "public"."forms" ("id","name","created_at","updated_at","author_id","author_draft","status", "order", "segment")
 VALUES
-('e3728c43-98c9-4ff3-a6be-7feeba7a5702','FIXA DE ATENDIMENTO','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 0, 'CAD_PERSON');
+('e3728c43-98c9-4ff3-a6be-7feeba7a5702','FICHA DE ATENDIMENTO','2023-03-27 13:48:22.181 UTC','2023-03-27 13:48:22.181 UTC','a8164d83-b66c-435a-be84-8f5c981fa222','{"id":"a8164d83-b66c-435a-be84-8f5c981fa222","email":"sepm@sepm.com","updatedAt":"2023-03-27T12:47:53.671Z"}','PUBLISHED', 0, 'CAD_PERSON');
 
 -- InsertFormConsumers
 
@@ -517,7 +517,7 @@ VALUES
 -- InsertSubQuestions
 
 INSERT INTO "public"."questions" ("id","content","parent_id","created_at","updated_at","form_id","type")
-VALUES ('3738cd56-cc88-4c18-b0f8-899731133a30','Vinculo com o agressor','933e71a4-c22a-4ff7-8edb-ec9b6c8d010f','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE');
+VALUES ('3738cd56-cc88-4c18-b0f8-899731133a30','Vinculo com o agressor (a)','933e71a4-c22a-4ff7-8edb-ec9b6c8d010f','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE');
 
 INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
 VALUES
@@ -543,7 +543,7 @@ VALUES
 -- InsertSubQuestions
 
 INSERT INTO "public"."questions" ("id","content","parent_id","created_at","updated_at","form_id","type")
-VALUES ('10616219-d701-47d4-82df-6cfb9587b7f0','Potencializadores da violência','dab18c45-e636-44ce-9d2a-bc150d652323','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE');
+VALUES ('10616219-d701-47d4-82df-6cfb9587b7f0','Potencializadores da violência','dab18c45-e636-44ce-9d2a-bc150d652323','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','MULTIPLE');
 
 INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
 VALUES
@@ -567,7 +567,7 @@ VALUES
 -- InsertQuestions
 
 INSERT INTO "public"."questions" ("id","content","created_at","updated_at","form_id","type","order")
-VALUES ('3dabb6e9-0c84-4f08-99c6-9fb5716f1bfc','TIPOLOGIA DA VIOLÊNCIA','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE',5);
+VALUES ('3dabb6e9-0c84-4f08-99c6-9fb5716f1bfc','TIPOLOGIA DA VIOLÊNCIA','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','MULTIPLE',5);
 
 INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
 VALUES
@@ -590,32 +590,6 @@ VALUES
 
 INSERT INTO "public"."questions" ("id","content","parent_id","created_at","updated_at","form_id","type")
 VALUES ('349843ed-6d8b-4f88-8674-753fee1f22fb','Descrição da violência','3dabb6e9-0c84-4f08-99c6-9fb5716f1bfc','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','PLAIN_TEXT');
-
--- InsertSubQuestions
-
-INSERT INTO "public"."questions" ("id","content","parent_id","created_at","updated_at","form_id","type")
-VALUES ('a4cf1db8-9d8a-496d-9998-0e04ae37d77e','Vínculo com o Agressor (a)','3dabb6e9-0c84-4f08-99c6-9fb5716f1bfc','2024-01-30 17:07:56.161 UTC','2024-01-30 17:07:56.161 UTC','e3728c43-98c9-4ff3-a6be-7feeba7a5702','OBJECTIVE');
-
-INSERT INTO "public"."answers" ("id","content","has_content","is_default","question_id","created_at","updated_at")
-VALUES
-('d57177c2-3cba-492c-bc2c-67be191a6033','Companheiro',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('802b7035-2a0c-4164-ad79-6e3e030b3bda','Companheira',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('78dd5cd7-40ba-497f-898a-09bfa9dc7f71','Namorado',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('77399d62-fb08-4997-9989-413231d73aa2','Namorada',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('040fb23e-24d8-48e3-9d2a-4ce283aa9582','Ex companheiro',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('ff1e7456-a8db-4b72-b7a4-a2cae7dc541f','Ex companheiro',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('9571c465-0fc0-40fb-b2be-fdd5924688ad','Ex namorado',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('814ac872-abe3-495f-984e-d79bdd26c1ac','Ex namorada',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('abf9b52c-3653-4197-9fbf-ccb89cc50d4d','Empregador',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('c173810d-4226-4ddf-8d72-9d1adbd0af5f','Pai',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('8d7c6b39-b177-44f3-bd32-28eb637daaf1','Mãe',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('9c564152-c499-48bf-a0a0-d3e94ccd9c41','Filho',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('f5032f26-9348-43ff-acf3-b27890e5fbd1','Filha',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('5a1d047a-723d-406d-89ca-5b5e479327f2','Irmão',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('4d558bcf-1646-431a-ae98-181a51a976a5','Irmã',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('d4ecd4ba-3f31-43c7-9be4-fbb800c874cd','Padrastro',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('d95d569c-7ba9-4338-acbc-6b1bf8d10d36','Madrasta',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC'),
-('bd8748fa-c153-4a31-980e-e76e08297c0f','Sem vínculo',false,false,'a4cf1db8-9d8a-496d-9998-0e04ae37d77e','2024-01-30 16:12:23.784 UTC','2024-01-30 16:12:23.784 UTC');
 
 -- InsertSubQuestions
 
